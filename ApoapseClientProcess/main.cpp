@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Common.h"
-#include "DummyConnection.h"//TEMP
+#include "GenericConnection.h"//TEMP
 
 #ifdef UNIT_TESTS
 #include "UnitTestsManager.h"
@@ -28,8 +28,8 @@ int main(int argcount, char* argv[])
 
 	{
 		boost::asio::io_service ioService;
-		auto connection = std::make_shared<DummyConnection>(ioService);
-		connection->Connect("127.0.0.1", 3000);
+		auto connection = std::make_shared<GenericConnection>(ioService);
+		connection->Connect("127.0.0.1", 55056);
 		connection->Send(std::make_unique<std::string>("CONNECT\nuser password"));
 		ioService.run();
 	}

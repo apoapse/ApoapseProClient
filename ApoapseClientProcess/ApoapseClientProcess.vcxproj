@@ -143,10 +143,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="UnitTestsAutoRegistration.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="DummyConnection.h" />
-    <ClInclude Include="stdafx.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

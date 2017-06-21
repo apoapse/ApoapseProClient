@@ -4,8 +4,4 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="UnitTestsAutoRegistration.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="DummyConnection.h" />
-  </ItemGroup>
 </Project>
