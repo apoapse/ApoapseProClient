@@ -97,7 +97,7 @@
       <SDLCheck>true</SDLCheck>
       <ExceptionHandling>Sync</ExceptionHandling>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalIncludeDirectories>..\..\ApoapseCore\Code\;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>UNIT_TESTS;_WIN32_WINNT=0x0501;_SCL_SECURE_NO_WARNINGS;DEBUG;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -129,7 +129,7 @@
       <SDLCheck>true</SDLCheck>
       <ExceptionHandling>Sync</ExceptionHandling>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalIncludeDirectories>..\..\ApoapseCore\Code\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -141,6 +141,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="UnitTestsAutoRegistration.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

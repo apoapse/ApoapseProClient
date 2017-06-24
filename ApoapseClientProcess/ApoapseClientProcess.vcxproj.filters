@@ -3,5 +3,6 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="UnitTestsAutoRegistration.cpp" />
+    <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
 </Project>
