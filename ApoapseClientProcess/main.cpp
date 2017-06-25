@@ -29,8 +29,10 @@ int main(int argcount, char* argv[])
 	{
 		boost::asio::io_service ioService;
 		auto connection = std::make_shared<GenericConnection>(ioService);
-		connection->Connect("127.0.0.1", 55056);
-		connection->Send(std::make_unique<std::string>("CONNECT\nuser password"));
+		connection->Connect("127.0.0.1", 5700);
+
+		auto test = std::vector<byte> { 'a', 'b', 'c', 'd' };
+		connection->Send(IdsCommand::CONNECT, std::make_unique<std::vector<byte>>(test), nullptr);
 		ioService.run();
 	}
 
