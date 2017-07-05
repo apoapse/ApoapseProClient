@@ -4,5 +4,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="UnitTestsAutoRegistration.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="ConnectCmd.cpp" />
   </ItemGroup>
 </Project>
