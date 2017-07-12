@@ -16,7 +16,7 @@ int main(int argcount, char* argv[])
 	ASSERT(global == nullptr);
 	global = Global::CreateGlobal();
 
-	global->logger = std::make_unique<Logger>("log.txt");
+	global->logger = std::make_unique<Logger>("log_client.txt");
 	global->threadPool = std::make_unique<ThreadPool>("Global thread pool", 8); // #TODO dynamically choose the number of threads into the global thread pool
 
 	// Run unit tests if requested
