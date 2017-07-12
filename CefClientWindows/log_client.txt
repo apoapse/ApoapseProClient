@@ -1,0 +1,9 @@
+Wed, 12 Jul 2017 09:33:13 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 09:33:22 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 09:33:22 - DEBUG: [Hello] HELLO!
+Wed, 12 Jul 2017 09:33:22 - [ConnectCmd] 6
+Wed, 12 Jul 2017 09:33:22 - [ConnectCmd] 7
+Wed, 12 Jul 2017 09:33:22 - [ConnectCmd] 8
+Wed, 12 Jul 2017 09:33:22 - [ConnectCmd] -625
+Wed, 12 Jul 2017 09:33:22 - WARNING: [Command] Command auto validate: the field test_array on command 1 is invalid according to an user provided check function
+Wed, 12 Jul 2017 09:33:23 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée

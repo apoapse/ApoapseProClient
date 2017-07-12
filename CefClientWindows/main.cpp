@@ -3,6 +3,7 @@
 #include "GenericConnection.h"//TEMP
 #include "CommandsManager.h"//temp
 #include "NetworkPayload.h"
+#include "test.h"
 
 #ifdef UNIT_TESTS
 #include "UnitTestsManager.h"
@@ -11,14 +12,14 @@
 int main(int argcount, char* argv[])
 {
 	std::vector<std::string> launchArgs(argv, argv + argcount);
-
+	
 	// Initialize global systems
 	ASSERT(global == nullptr);
 	global = Global::CreateGlobal();
 
 	global->logger = std::make_unique<Logger>("log_client.txt");
 	global->threadPool = std::make_unique<ThreadPool>("Global thread pool", 8); // #TODO dynamically choose the number of threads into the global thread pool
-
+	Hello();
 	// Run unit tests if requested
 #ifdef UNIT_TESTS
 	if (std::find(launchArgs.begin(), launchArgs.end(), "-run_unit_tests") != launchArgs.end())
