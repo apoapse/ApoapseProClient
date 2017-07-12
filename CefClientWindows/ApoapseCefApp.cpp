@@ -44,8 +44,7 @@ private:
 void ApoapseCefApp::OnContextInitialized() {
 	CEF_REQUIRE_UI_THREAD();
 
-	CefRefPtr<CefCommandLine> command_line =
-		CefCommandLine::GetGlobalCommandLine();
+	CefRefPtr<CefCommandLine> command_line = CefCommandLine::GetGlobalCommandLine();
 
 #if defined(OS_WIN) || defined(OS_LINUX)
 	// Create the browser using the Views framework if "--use-views" is specified
@@ -71,7 +70,8 @@ void ApoapseCefApp::OnContextInitialized() {
 	if (url.empty())
 		url = "http://www.google.com";
 
-	if (use_views) {
+	if (use_views)
+	{
 		// Create the BrowserView.
 		CefRefPtr<CefBrowserView> browser_view = CefBrowserView::CreateBrowserView(
 			handler, url, browser_settings, NULL, NULL);
@@ -79,7 +79,8 @@ void ApoapseCefApp::OnContextInitialized() {
 		// Create the Window. It will show itself after creation.
 		CefWindow::CreateTopLevelWindow(new SimpleWindowDelegate(browser_view));
 	}
-	else {
+	else
+	{
 		// Information used when creating the native window.
 		CefWindowInfo window_info;
 
@@ -90,7 +91,6 @@ void ApoapseCefApp::OnContextInitialized() {
 #endif
 
 		// Create the first browser window.
-		CefBrowserHost::CreateBrowser(window_info, handler, url, browser_settings,
-			NULL);
+		CefBrowserHost::CreateBrowser(window_info, handler, url, browser_settings, NULL);
 	}
 }

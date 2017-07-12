@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 
 #ifdef DYN_LIBRARY  
 #define DLL_EXPORT __declspec(dllexport)   
@@ -6,7 +7,4 @@
 #define DLL_EXPORT __declspec(dllimport)   
 #endif  
 
-#include <vector>
-
-DLL_EXPORT int ClientMain(int argcount, char* argv[]);
-DLL_EXPORT void Test();
+DLL_EXPORT int ClientMain(const std::vector<std::string>& launchArgs);

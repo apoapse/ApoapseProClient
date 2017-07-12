@@ -11,10 +11,8 @@
 #include "MessagePack.hpp"
 #include "NetworkPayload.h"
 
-int ClientMain(int argcount, char* argv[])
+int ClientMain(const std::vector<std::string>& launchArgs)
 {
-	std::vector<std::string> launchArgs(argv, argv + argcount);
-
 	// Initialize global systems
 	{
 		ASSERT(global == nullptr);
@@ -79,9 +77,4 @@ int ClientMain(int argcount, char* argv[])
 	}
 
 	return 1;
-}
-
-void Test()
-{
-	std::cout << "Coucou" << std::endl;
 }
