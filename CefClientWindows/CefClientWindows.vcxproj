@@ -71,9 +71,9 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>..\..\Bin\$(Configuration)_$(Platform)\</OutDir>
+    <OutDir>..\..\Bin\$(Configuration)_$(Platform)\CefClient\</OutDir>
     <IntDir>..\..\vs_build\$(ProjectName)\$(Configuration)_$(Platform)\</IntDir>
-    <IncludePath>C:\Program Files\boost\boost_1_64_0;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(SolutionDir)ThirdParty\cef_binary\;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <SourcePath>$(VC_SourcePath);</SourcePath>
     <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
     <LinkIncremental>true</LinkIncremental>
@@ -81,7 +81,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>..\..\Bin\$(Configuration)_$(Platform)\</OutDir>
     <IntDir>..\..\vs_build\$(ProjectName)\$(Configuration)_$(Platform)\</IntDir>
-    <IncludePath>C:\Program Files\boost\boost_1_64_0;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(SolutionDir)ThirdParty\cef_binary\;C:\Program Files\boost\boost_1_64_0;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <SourcePath>$(VC_SourcePath);</SourcePath>
     <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
@@ -99,16 +99,19 @@
       <SDLCheck>true</SDLCheck>
       <ExceptionHandling>Sync</ExceptionHandling>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>..\..\ApoapseCore\Code\;..\ApoapseClientShared\</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>UNIT_TESTS;_WIN32_WINNT=0x0501;_SCL_SECURE_NO_WARNINGS;DEBUG;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>..\ApoapseClientShared\</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>CEF_USE_SANDBOX;UNIT_TESTS;_WIN32_WINNT=0x0501;_SCL_SECURE_NO_WARNINGS;DEBUG;_MBCS;CEF_USE_ATL;NOMINMAX;UNICODE;_UNICODE</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ApoapseClientShared.lib;ApoapseCore.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Program Files\boost\boost_1_64_0\lib64-msvc-14.1;</AdditionalLibraryDirectories>
-      <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>ApoapseClientShared.lib;cef_sandbox.lib;libcef_dll_wrapper.lib;libcef.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;comctl32.lib;rpcrt4.lib;shlwapi.lib;ws2_32.lib;dbghelp.lib;psapi.lib;version.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(TargetDir);$(SolutionDir)ThirdParty\cef_binary\Debug;C:\Program Files\boost\boost_1_64_0\lib64-msvc-14.1</AdditionalLibraryDirectories>
+      <SubSystem>NotSet</SubSystem>
       <OptimizeReferences>false</OptimizeReferences>
-      <AdditionalOptions>/WHOLEARCHIVE:ApoapseCore.lib /WHOLEARCHIVE:ApoapseClientShared.lib %(AdditionalOptions)</AdditionalOptions>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -133,24 +136,29 @@
       <SDLCheck>true</SDLCheck>
       <ExceptionHandling>Sync</ExceptionHandling>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <AdditionalIncludeDirectories>..\..\ApoapseCore\Code\;..\ApoapseClientShared\</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>CEF_USE_SANDBOX;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>ApoapseClientShared.lib;ApoapseCore.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Program Files\boost\boost_1_64_0\lib64-msvc-14.1;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libcef.lib;ApoapseClientShared.lib;ApoapseCore.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)ThirdParty\cef_binary\Release;C:\Program Files\boost\boost_1_64_0\lib64-msvc-14.1;..\..\Bin\Debug_x64</AdditionalLibraryDirectories>
       <AdditionalOptions>/WHOLEARCHIVE:ApoapseCore.lib /WHOLEARCHIVE:ApoapseClientShared.lib %(AdditionalOptions)</AdditionalOptions>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
+      <SubSystem>NotSet</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ConnectCmd.cpp" />
+    <ClCompile Include="ApoapseCefApp.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
+    <ClCompile Include="simple_handler.cpp" />
+    <ClCompile Include="simple_handler_win.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ApoapseCefApp.h" />
+    <ClInclude Include="simple_handler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

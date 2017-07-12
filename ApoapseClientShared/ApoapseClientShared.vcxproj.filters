@@ -2,10 +2,10 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="UT_test.cpp" />
-    <ClCompile Include="test.cpp" />
+    <ClCompile Include="ClientEntryPoint.cpp" />
+    <ClCompile Include="ConnectCmd.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="test.h" />
+    <ClInclude Include="ClientEntryPoint.h" />
   </ItemGroup>
 </Project>

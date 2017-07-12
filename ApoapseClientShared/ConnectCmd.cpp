@@ -13,7 +13,7 @@ class ConnectCmd : public Command
 		{
 			CommandField{ "user", FieldRequirement::ANY_MENDATORY, FIELD_VALUE_VALIDATOR(std::string, ConnectCmd::Test) },
 			CommandField{ "pass", FieldRequirement::ANY_MENDATORY, FIELD_VALUE(std::string) },
-			CommandField{"test_array", FieldRequirement::ANY_OPTIONAL, FIELD_ARRAY_VALIDATOR(int, ConnectCmd::TestArray)}
+			CommandField{ "test_array", FieldRequirement::ANY_OPTIONAL, FIELD_ARRAY_VALIDATOR(int, ConnectCmd::TestArray) }
 		};
 
 		return info;
@@ -26,7 +26,7 @@ class ConnectCmd : public Command
 
 	static bool Test(const std::string& str)
 	{
-		
+
 
 		return true;
 	}
@@ -38,7 +38,7 @@ class ConnectCmd : public Command
 			LOG << item;
 		}
 
-		return false;
+		return true;
 	}
 };
 

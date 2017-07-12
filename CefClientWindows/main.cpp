@@ -1,81 +1,45 @@
-#include "stdafx.h"
-#include "Common.h"
-#include "GenericConnection.h"//TEMP
-#include "CommandsManager.h"//temp
-#include "NetworkPayload.h"
-#include "test.h"
+//#include "Common.h"
+#include "ClientEntryPoint.h"
+// #include <iostream>
+#include <Windows.h>
 
-#ifdef UNIT_TESTS
-#include "UnitTestsManager.h"
-#endif //UNIT_TESTS
+#include <include/cef_sandbox_win.h>
+#include "ApoapseCefApp.h"
 
 int main(int argcount, char* argv[])
 {
-	std::vector<std::string> launchArgs(argv, argv + argcount);
-	
-	// Initialize global systems
-	ASSERT(global == nullptr);
-	global = Global::CreateGlobal();
+	CefEnableHighDPISupport();
+	void* sandbox_info = nullptr;
 
-	global->logger = std::make_unique<Logger>("log_client.txt");
-	global->threadPool = std::make_unique<ThreadPool>("Global thread pool", 8); // #TODO dynamically choose the number of threads into the global thread pool
-	Hello();
-	// Run unit tests if requested
-#ifdef UNIT_TESTS
-	if (std::find(launchArgs.begin(), launchArgs.end(), "-run_unit_tests") != launchArgs.end())
-	{
-		UnitTestsManager::GetInstance().RunTests();
+#if defined(CEF_USE_SANDBOX)
+	CefScopedSandboxInfo scoped_sandbox;
+	sandbox_info = scoped_sandbox.sandbox_info();
+#endif
+
+	//CefMainArgs main_args(hInstance);
+	CefMainArgs main_args;
+
+	int exit_code = CefExecuteProcess(main_args, nullptr, sandbox_info);
+	if (exit_code >= 0)
+		return exit_code;
+
+	CefSettings settings;
+#if !defined(CEF_USE_SANDBOX)
+	settings.no_sandbox = true;
+#endif
+
+	// Initialize CEF.
+	CefRefPtr<ApoapseCefApp> app(new ApoapseCefApp);
+
+	CefInitialize(main_args, settings, app.get(), sandbox_info);
+
+	if (ClientMain(argcount, argv) <= 0)
 		return 0;
-	}
-#endif //UNIT_TESTS
 
-	{
-		MessagePackSerializer serializer;
-		std::vector<int> arrayData{ 6, 7, 8, -625 };
+	// Run the CEF message loop. This will block until CefQuitMessageLoop() is called.
+	CefRunMessageLoop();
 
-		serializer.Group("",
-		{
-			MSGPK_ORDERED_APPEND(serializer, "user", "guillaume"),
-			MSGPK_ORDERED_APPEND(serializer, "pass", "ddqsdqzdssfzsedqsd5sdf8se9sf5"),
-			MSGPK_ORDERED_APPEND_ARRAY(serializer, int, "test_array", arrayData),
+	CefShutdown();
 
-			//[&] { serializer.OrderedAppendArray<int>("test_array", std::vector<int> { 1, 2, 3 }); }
-		});
-
-		auto payloadBody = serializer.GetMessagePackBytes();
-		auto header = NetworkPayload::GenerateHeader(Commands::CONNECT, payloadBody);
-		std::vector<byte> data(header.begin(), header.end());
-		data.insert(data.end(), payloadBody.begin(), payloadBody.end());
-
-		auto payload = std::make_shared<NetworkPayload>();
-		auto cmd = CommandsManager::GetInstance().CreateCommand(Commands::CONNECT);
-
-		{
-			std::array<byte, READ_BUFFER_SIZE> arr;
-			std::copy(data.begin(), data.end(), arr.begin());
-
-			Range<std::array<byte, READ_BUFFER_SIZE>> range(arr, data.size());
-			payload->Insert(range);
-
-			ASSERT(payload->headerInfo->command == Commands::CONNECT);
-		}
-		
-		cmd->Parse(payload);
-	}
-
-	{
-		boost::asio::io_service ioService;
-		auto connection = std::make_shared<GenericConnection>(ioService);
-		connection->Connect("127.0.0.1", 5700);
-
-		auto test = std::vector<byte> { 'a', 'b', 'c', 'd' };
-		connection->Send(Commands::CONNECT, std::make_unique<std::vector<byte>>(test), nullptr);
-		ioService.run();
-	}
-
-	std::string inputstr;
-	getline(std::cin, inputstr);
-
-	delete global;
 	return 0;
 }

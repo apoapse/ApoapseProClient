@@ -4,10 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CefClientWindows", "CefClientWindows\CefClientWindows.vcxproj", "{1319BCBC-21D8-46EA-82FE-AF04F58D0CEA}"
-	ProjectSection(ProjectDependencies) = postProject
-		{8F57335E-BE7D-466B-9860-74AD3ED4F810} = {8F57335E-BE7D-466B-9860-74AD3ED4F810}
-		{189F8797-4C05-43B2-A5F2-5242E52DE550} = {189F8797-4C05-43B2-A5F2-5242E52DE550}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ApoapseCore", "..\ApoapseCore\Code\ApoapseCore.vcxproj", "{8F57335E-BE7D-466B-9860-74AD3ED4F810}"
 EndProject

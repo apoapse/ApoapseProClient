@@ -7,3 +7,265 @@ Wed, 12 Jul 2017 09:33:22 - [ConnectCmd] 8
 Wed, 12 Jul 2017 09:33:22 - [ConnectCmd] -625
 Wed, 12 Jul 2017 09:33:22 - WARNING: [Command] Command auto validate: the field test_array on command 1 is invalid according to an user provided check function
 Wed, 12 Jul 2017 09:33:23 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+Wed, 12 Jul 2017 10:27:03 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 10:27:03 - [ConnectCmd] 6
+Wed, 12 Jul 2017 10:27:03 - [ConnectCmd] 7
+Wed, 12 Jul 2017 10:27:03 - [ConnectCmd] 8
+Wed, 12 Jul 2017 10:27:03 - [ConnectCmd] -625
+Wed, 12 Jul 2017 10:27:03 - WARNING: [Command] Command auto validate: the field test_array on command 1 is invalid according to an user provided check function
+Wed, 12 Jul 2017 10:27:04 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+Wed, 12 Jul 2017 11:27:58 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 11:27:58 - [ConnectCmd] 6
+Wed, 12 Jul 2017 11:27:58 - [ConnectCmd] 7
+Wed, 12 Jul 2017 11:27:58 - [ConnectCmd] 8
+Wed, 12 Jul 2017 11:27:58 - [ConnectCmd] -625
+Wed, 12 Jul 2017 11:27:58 - WARNING: [Command] Command auto validate: the field test_array on command 1 is invalid according to an user provided check function
+Wed, 12 Jul 2017 11:27:59 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+Wed, 12 Jul 2017 11:29:44 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 11:29:44 - [ConnectCmd] 6
+Wed, 12 Jul 2017 11:29:44 - [ConnectCmd] 7
+Wed, 12 Jul 2017 11:29:44 - [ConnectCmd] 8
+Wed, 12 Jul 2017 11:29:44 - [ConnectCmd] -625
+Wed, 12 Jul 2017 11:29:44 - WARNING: [Command] Command auto validate: the field test_array on command 1 is invalid according to an user provided check function
+Wed, 12 Jul 2017 11:29:45 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+Wed, 12 Jul 2017 11:30:26 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 11:30:41 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 11:31:17 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 11:31:50 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 11:31:50 - [ConnectCmd] 6
+Wed, 12 Jul 2017 11:31:50 - [ConnectCmd] 7
+Wed, 12 Jul 2017 11:31:50 - [ConnectCmd] 8
+Wed, 12 Jul 2017 11:31:50 - [ConnectCmd] -625
+Wed, 12 Jul 2017 11:31:50 - WARNING: [Command] Command auto validate: the field test_array on command 1 is invalid according to an user provided check function
+Wed, 12 Jul 2017 11:31:51 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+Wed, 12 Jul 2017 11:32:06 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 11:32:06 - [ConnectCmd] 6
+Wed, 12 Jul 2017 11:32:06 - [ConnectCmd] 7
+Wed, 12 Jul 2017 11:32:06 - [ConnectCmd] 8
+Wed, 12 Jul 2017 11:32:06 - [ConnectCmd] -625
+Wed, 12 Jul 2017 11:32:06 - WARNING: [Command] Command auto validate: the field test_array on command 1 is invalid according to an user provided check function
+Wed, 12 Jul 2017 11:32:07 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+Wed, 12 Jul 2017 11:32:20 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 11:32:20 - [ConnectCmd] 6
+Wed, 12 Jul 2017 11:32:20 - [ConnectCmd] 7
+Wed, 12 Jul 2017 11:32:20 - [ConnectCmd] 8
+Wed, 12 Jul 2017 11:32:20 - [ConnectCmd] -625
+Wed, 12 Jul 2017 11:32:21 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+Wed, 12 Jul 2017 12:06:29 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 12:06:29 - [ConnectCmd] 6
+Wed, 12 Jul 2017 12:06:29 - [ConnectCmd] 7
+Wed, 12 Jul 2017 12:06:29 - [ConnectCmd] 8
+Wed, 12 Jul 2017 12:06:29 - [ConnectCmd] -625
+Wed, 12 Jul 2017 12:06:30 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+Wed, 12 Jul 2017 12:07:01 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 12:07:01 - [ConnectCmd] 6
+Wed, 12 Jul 2017 12:07:01 - [ConnectCmd] 7
+Wed, 12 Jul 2017 12:07:01 - [ConnectCmd] 8
+Wed, 12 Jul 2017 12:07:01 - [ConnectCmd] -625
+Wed, 12 Jul 2017 12:07:02 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+Wed, 12 Jul 2017 12:07:08 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 12:07:08 - [ConnectCmd] 6
+Wed, 12 Jul 2017 12:07:08 - [ConnectCmd] 7
+Wed, 12 Jul 2017 12:07:08 - [ConnectCmd] 8
+Wed, 12 Jul 2017 12:07:08 - [ConnectCmd] -625
+Wed, 12 Jul 2017 12:07:29 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 12:07:29 - [ConnectCmd] 6
+Wed, 12 Jul 2017 12:07:29 - [ConnectCmd] 7
+Wed, 12 Jul 2017 12:07:29 - [ConnectCmd] 8
+Wed, 12 Jul 2017 12:07:29 - [ConnectCmd] -625
+Wed, 12 Jul 2017 12:07:30 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+Wed, 12 Jul 2017 12:12:24 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 12:12:24 - [ConnectCmd] 6
+Wed, 12 Jul 2017 12:12:24 - [ConnectCmd] 7
+Wed, 12 Jul 2017 12:12:24 - [ConnectCmd] 8
+Wed, 12 Jul 2017 12:12:24 - [ConnectCmd] -625
+Wed, 12 Jul 2017 12:12:25 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+Wed, 12 Jul 2017 12:18:11 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 12:18:11 - [ConnectCmd] 6
+Wed, 12 Jul 2017 12:18:11 - [ConnectCmd] 7
+Wed, 12 Jul 2017 12:18:11 - [ConnectCmd] 8
+Wed, 12 Jul 2017 12:18:11 - [ConnectCmd] -625
+Wed, 12 Jul 2017 12:18:12 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+Wed, 12 Jul 2017 12:18:36 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 12:18:36 - [ConnectCmd] 6
+Wed, 12 Jul 2017 12:18:36 - [ConnectCmd] 7
+Wed, 12 Jul 2017 12:18:36 - [ConnectCmd] 8
+Wed, 12 Jul 2017 12:18:36 - [ConnectCmd] -625
+Wed, 12 Jul 2017 12:18:37 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+Wed, 12 Jul 2017 12:18:43 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 12:18:43 - [ConnectCmd] 6
+Wed, 12 Jul 2017 12:18:43 - [ConnectCmd] 7
+Wed, 12 Jul 2017 12:18:43 - [ConnectCmd] 8
+Wed, 12 Jul 2017 12:18:43 - [ConnectCmd] -625
+Wed, 12 Jul 2017 12:18:44 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+Wed, 12 Jul 2017 12:19:00 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 12:19:02 - [ConnectCmd] 6
+Wed, 12 Jul 2017 12:19:02 - [ConnectCmd] 7
+Wed, 12 Jul 2017 12:19:02 - [ConnectCmd] 8
+Wed, 12 Jul 2017 12:19:02 - [ConnectCmd] -625
+Wed, 12 Jul 2017 12:19:03 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+Wed, 12 Jul 2017 12:25:29 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 12:25:35 - [ConnectCmd] 6
+Wed, 12 Jul 2017 12:25:35 - [ConnectCmd] 7
+Wed, 12 Jul 2017 12:25:35 - [ConnectCmd] 8
+Wed, 12 Jul 2017 12:25:35 - [ConnectCmd] -625
+Wed, 12 Jul 2017 12:25:36 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+Wed, 12 Jul 2017 14:39:05 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 14:39:05 - [ConnectCmd] 6
+Wed, 12 Jul 2017 14:39:05 - [ConnectCmd] 7
+Wed, 12 Jul 2017 14:39:05 - [ConnectCmd] 8
+Wed, 12 Jul 2017 14:39:05 - [ConnectCmd] -625
+Wed, 12 Jul 2017 14:39:09 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 14:39:09 - [ConnectCmd] 6
+Wed, 12 Jul 2017 14:39:09 - [ConnectCmd] 7
+Wed, 12 Jul 2017 14:39:09 - [ConnectCmd] 8
+Wed, 12 Jul 2017 14:39:09 - [ConnectCmd] -625
+Wed, 12 Jul 2017 14:42:41 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 14:42:41 - [ConnectCmd] 6
+Wed, 12 Jul 2017 14:42:41 - [ConnectCmd] 7
+Wed, 12 Jul 2017 14:42:41 - [ConnectCmd] 8
+Wed, 12 Jul 2017 14:42:41 - [ConnectCmd] -625
+Wed, 12 Jul 2017 14:42:52 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 14:42:52 - [ConnectCmd] 6
+Wed, 12 Jul 2017 14:42:52 - [ConnectCmd] 7
+Wed, 12 Jul 2017 14:42:52 - [ConnectCmd] 8
+Wed, 12 Jul 2017 14:42:52 - [ConnectCmd] -625
+Wed, 12 Jul 2017 14:43:04 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 14:43:04 - [ConnectCmd] 6
+Wed, 12 Jul 2017 14:43:04 - [ConnectCmd] 7
+Wed, 12 Jul 2017 14:43:04 - [ConnectCmd] 8
+Wed, 12 Jul 2017 14:43:04 - [ConnectCmd] -625
+Wed, 12 Jul 2017 15:09:24 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 15:09:24 - [ConnectCmd] 6
+Wed, 12 Jul 2017 15:09:24 - [ConnectCmd] 7
+Wed, 12 Jul 2017 15:09:24 - [ConnectCmd] 8
+Wed, 12 Jul 2017 15:09:24 - [ConnectCmd] -625
+Wed, 12 Jul 2017 15:09:25 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+Wed, 12 Jul 2017 15:09:34 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 15:09:34 - [ConnectCmd] 6
+Wed, 12 Jul 2017 15:09:34 - [ConnectCmd] 7
+Wed, 12 Jul 2017 15:09:34 - [ConnectCmd] 8
+Wed, 12 Jul 2017 15:09:34 - [ConnectCmd] -625
+Wed, 12 Jul 2017 15:09:44 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 15:09:44 - [ConnectCmd] 6
+Wed, 12 Jul 2017 15:09:44 - [ConnectCmd] 7
+Wed, 12 Jul 2017 15:09:44 - [ConnectCmd] 8
+Wed, 12 Jul 2017 15:09:44 - [ConnectCmd] -625
+Wed, 12 Jul 2017 15:12:36 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 15:12:36 - [ConnectCmd] 6
+Wed, 12 Jul 2017 15:12:36 - [ConnectCmd] 7
+Wed, 12 Jul 2017 15:12:36 - [ConnectCmd] 8
+Wed, 12 Jul 2017 15:12:36 - [ConnectCmd] -625
+Wed, 12 Jul 2017 15:12:37 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+Wed, 12 Jul 2017 15:12:50 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 15:12:50 - [ConnectCmd] 6
+Wed, 12 Jul 2017 15:12:50 - [ConnectCmd] 7
+Wed, 12 Jul 2017 15:12:50 - [ConnectCmd] 8
+Wed, 12 Jul 2017 15:12:50 - [ConnectCmd] -625
+Wed, 12 Jul 2017 15:12:51 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+Wed, 12 Jul 2017 15:14:35 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 15:14:35 - [ConnectCmd] 6
+Wed, 12 Jul 2017 15:14:35 - [ConnectCmd] 7
+Wed, 12 Jul 2017 15:14:35 - [ConnectCmd] 8
+Wed, 12 Jul 2017 15:14:35 - [ConnectCmd] -625
+Wed, 12 Jul 2017 15:14:36 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+Wed, 12 Jul 2017 15:16:51 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 15:16:51 - [ConnectCmd] 6
+Wed, 12 Jul 2017 15:16:51 - [ConnectCmd] 7
+Wed, 12 Jul 2017 15:16:51 - [ConnectCmd] 8
+Wed, 12 Jul 2017 15:16:51 - [ConnectCmd] -625
+Wed, 12 Jul 2017 15:16:51 - DEBUG: [TCPConnection] 3 bytes has been sent successfully to 127.0.0.1:5700
+Wed, 12 Jul 2017 15:16:51 - DEBUG: [TCPConnection] 4 bytes has been sent successfully to 127.0.0.1:5700
+Wed, 12 Jul 2017 15:17:01 - WARNING: [GenericConnection] End of file
+Wed, 12 Jul 2017 15:17:44 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 15:17:44 - [ConnectCmd] 6
+Wed, 12 Jul 2017 15:17:44 - [ConnectCmd] 7
+Wed, 12 Jul 2017 15:17:44 - [ConnectCmd] 8
+Wed, 12 Jul 2017 15:17:44 - [ConnectCmd] -625
+Wed, 12 Jul 2017 15:17:44 - DEBUG: [TCPConnection] 3 bytes has been sent successfully to 127.0.0.1:5700
+Wed, 12 Jul 2017 15:17:44 - DEBUG: [TCPConnection] 4 bytes has been sent successfully to 127.0.0.1:5700
+Wed, 12 Jul 2017 15:17:51 - WARNING: [GenericConnection] End of file
+Wed, 12 Jul 2017 15:21:21 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 15:21:21 - [ConnectCmd] 6
+Wed, 12 Jul 2017 15:21:21 - [ConnectCmd] 7
+Wed, 12 Jul 2017 15:21:21 - [ConnectCmd] 8
+Wed, 12 Jul 2017 15:21:21 - [ConnectCmd] -625
+Wed, 12 Jul 2017 15:21:22 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+Wed, 12 Jul 2017 15:22:33 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 15:22:33 - [ConnectCmd] 6
+Wed, 12 Jul 2017 15:22:33 - [ConnectCmd] 7
+Wed, 12 Jul 2017 15:22:33 - [ConnectCmd] 8
+Wed, 12 Jul 2017 15:22:33 - [ConnectCmd] -625
+Wed, 12 Jul 2017 15:22:33 - DEBUG: [TCPConnection] 3 bytes has been sent successfully to 127.0.0.1:5700
+Wed, 12 Jul 2017 15:22:33 - DEBUG: [TCPConnection] 4 bytes has been sent successfully to 127.0.0.1:5700
+Wed, 12 Jul 2017 15:22:42 - WARNING: [GenericConnection] End of file
+Wed, 12 Jul 2017 15:23:07 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 15:23:07 - [ConnectCmd] 6
+Wed, 12 Jul 2017 15:23:07 - [ConnectCmd] 7
+Wed, 12 Jul 2017 15:23:07 - [ConnectCmd] 8
+Wed, 12 Jul 2017 15:23:07 - [ConnectCmd] -625
+Wed, 12 Jul 2017 15:23:07 - DEBUG: [TCPConnection] 3 bytes has been sent successfully to 127.0.0.1:5700
+Wed, 12 Jul 2017 15:23:07 - DEBUG: [TCPConnection] 4 bytes has been sent successfully to 127.0.0.1:5700
+Wed, 12 Jul 2017 15:23:10 - WARNING: [GenericConnection] End of file
+Wed, 12 Jul 2017 18:06:54 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 18:06:54 - [ConnectCmd] 6
+Wed, 12 Jul 2017 18:06:54 - [ConnectCmd] 7
+Wed, 12 Jul 2017 18:06:54 - [ConnectCmd] 8
+Wed, 12 Jul 2017 18:06:54 - [ConnectCmd] -625
+Wed, 12 Jul 2017 18:06:55 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+Wed, 12 Jul 2017 18:09:39 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 18:09:39 - [ConnectCmd] 6
+Wed, 12 Jul 2017 18:09:39 - [ConnectCmd] 7
+Wed, 12 Jul 2017 18:09:39 - [ConnectCmd] 8
+Wed, 12 Jul 2017 18:09:39 - [ConnectCmd] -625
+Wed, 12 Jul 2017 18:09:39 - DEBUG: [TCPConnection] 3 bytes has been sent successfully to 127.0.0.1:5700
+Wed, 12 Jul 2017 18:09:39 - DEBUG: [TCPConnection] 4 bytes has been sent successfully to 127.0.0.1:5700
+Wed, 12 Jul 2017 18:10:00 - WARNING: [GenericConnection] End of file
+Wed, 12 Jul 2017 18:10:55 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 18:10:55 - [ConnectCmd] 6
+Wed, 12 Jul 2017 18:10:55 - [ConnectCmd] 7
+Wed, 12 Jul 2017 18:10:55 - [ConnectCmd] 8
+Wed, 12 Jul 2017 18:10:55 - [ConnectCmd] -625
+Wed, 12 Jul 2017 18:10:56 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+Wed, 12 Jul 2017 18:11:05 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 18:11:05 - [ConnectCmd] 6
+Wed, 12 Jul 2017 18:11:05 - [ConnectCmd] 7
+Wed, 12 Jul 2017 18:11:05 - [ConnectCmd] 8
+Wed, 12 Jul 2017 18:11:05 - [ConnectCmd] -625
+Wed, 12 Jul 2017 18:11:06 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+Wed, 12 Jul 2017 18:13:49 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 18:14:46 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 18:14:46 - [ConnectCmd] 6
+Wed, 12 Jul 2017 18:14:46 - [ConnectCmd] 7
+Wed, 12 Jul 2017 18:14:46 - [ConnectCmd] 8
+Wed, 12 Jul 2017 18:14:46 - [ConnectCmd] -625
+Wed, 12 Jul 2017 18:14:47 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+Wed, 12 Jul 2017 18:16:23 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 18:16:23 - [ConnectCmd] 6
+Wed, 12 Jul 2017 18:16:23 - [ConnectCmd] 7
+Wed, 12 Jul 2017 18:16:23 - [ConnectCmd] 8
+Wed, 12 Jul 2017 18:16:23 - [ConnectCmd] -625
+Wed, 12 Jul 2017 18:16:24 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+Wed, 12 Jul 2017 18:21:21 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 18:21:21 - [ConnectCmd] 6
+Wed, 12 Jul 2017 18:21:21 - [ConnectCmd] 7
+Wed, 12 Jul 2017 18:21:21 - [ConnectCmd] 8
+Wed, 12 Jul 2017 18:21:21 - [ConnectCmd] -625
+Wed, 12 Jul 2017 18:21:22 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+Wed, 12 Jul 2017 18:23:17 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 18:23:17 - [ConnectCmd] 6
+Wed, 12 Jul 2017 18:23:17 - [ConnectCmd] 7
+Wed, 12 Jul 2017 18:23:17 - [ConnectCmd] 8
+Wed, 12 Jul 2017 18:23:17 - [ConnectCmd] -625
+Wed, 12 Jul 2017 18:23:18 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+Wed, 12 Jul 2017 18:23:33 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 18:23:33 - [ConnectCmd] 6
+Wed, 12 Jul 2017 18:23:33 - [ConnectCmd] 7
+Wed, 12 Jul 2017 18:23:33 - [ConnectCmd] 8
+Wed, 12 Jul 2017 18:23:33 - [ConnectCmd] -625
+Wed, 12 Jul 2017 18:23:47 - [ThreadPool] Created the thread pool Global thread pool with 8 worker threads
+Wed, 12 Jul 2017 18:23:47 - [ConnectCmd] 6
+Wed, 12 Jul 2017 18:23:47 - [ConnectCmd] 7
+Wed, 12 Jul 2017 18:23:47 - [ConnectCmd] 8
+Wed, 12 Jul 2017 18:23:47 - [ConnectCmd] -625
+Wed, 12 Jul 2017 18:23:48 - WARNING: [GenericConnection] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
