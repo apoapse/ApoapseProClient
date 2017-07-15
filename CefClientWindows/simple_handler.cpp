@@ -12,61 +12,46 @@
 
 namespace {
 
-	SimpleHandler* g_instance = NULL;
+	GenericHandler* g_instance = nullptr;
 
 }  // namespace
 
-SimpleHandler::SimpleHandler(bool use_views)
-	: use_views_(use_views), is_closing_(false) {
+GenericHandler::GenericHandler() : m_isClosing(false)
+{
 	DCHECK(!g_instance);
 	g_instance = this;
 }
 
-SimpleHandler::~SimpleHandler() {
-	g_instance = NULL;
+GenericHandler::~GenericHandler() {
+	g_instance = nullptr;
 }
 
 // static
-SimpleHandler* SimpleHandler::GetInstance() {
+GenericHandler* GenericHandler::GetInstance() {
 	return g_instance;
 }
 
-void SimpleHandler::OnTitleChange(CefRefPtr<CefBrowser> browser,
+void GenericHandler::OnTitleChange(CefRefPtr<CefBrowser> browser,
 	const CefString& title) {
 	CEF_REQUIRE_UI_THREAD();
 
-	if (use_views_) {
-		// Set the title of the window using the Views framework.
-		CefRefPtr<CefBrowserView> browser_view =
-			CefBrowserView::GetForBrowser(browser);
-		if (browser_view) {
-			CefRefPtr<CefWindow> window = browser_view->GetWindow();
-			if (window)
-				window->SetTitle(title);
-		}
-	}
-	else {
-		// Set the title of the window using platform APIs.
-		PlatformTitleChange(browser, title);
-	}
+	// Set the title of the window using platform APIs.
+	PlatformTitleChange(browser, title);
 }
 
-void SimpleHandler::OnAfterCreated(CefRefPtr<CefBrowser> browser) {
+void GenericHandler::OnAfterCreated(CefRefPtr<CefBrowser> browser) {
 	CEF_REQUIRE_UI_THREAD();
 
 	// Add to the list of existing browsers.
-	browser_list_.push_back(browser);
+	m_browserList.push_back(browser);
 }
 
-bool SimpleHandler::DoClose(CefRefPtr<CefBrowser> browser) {
+bool GenericHandler::DoClose(CefRefPtr<CefBrowser> browser) {
 	CEF_REQUIRE_UI_THREAD();
 
-	// Closing the main window requires special handling. See the DoClose()
-	// documentation in the CEF header for a detailed destription of this
-	// process.
-	if (browser_list_.size() == 1) {
+	if (m_browserList.size() == 1) {
 		// Set a flag to indicate that the window close should be allowed.
-		is_closing_ = true;
+		m_isClosing = true;
 	}
 
 	// Allow the close. For windowed browsers this will result in the OS close
@@ -74,29 +59,27 @@ bool SimpleHandler::DoClose(CefRefPtr<CefBrowser> browser) {
 	return false;
 }
 
-void SimpleHandler::OnBeforeClose(CefRefPtr<CefBrowser> browser) {
+void GenericHandler::OnBeforeClose(CefRefPtr<CefBrowser> browser) {
 	CEF_REQUIRE_UI_THREAD();
 
 	// Remove from the list of existing browsers.
-	BrowserList::iterator bit = browser_list_.begin();
-	for (; bit != browser_list_.end(); ++bit) {
+
+	BrowserList::iterator bit = m_browserList.begin();
+	for (; bit != m_browserList.end(); ++bit) {
 		if ((*bit)->IsSame(browser)) {
-			browser_list_.erase(bit);
+			m_browserList.erase(bit);
 			break;
 		}
 	}
 
-	if (browser_list_.empty()) {
+	if (m_browserList.empty()) {
 		// All browser windows have closed. Quit the application message loop.
 		CefQuitMessageLoop();
 	}
 }
 
-void SimpleHandler::OnLoadError(CefRefPtr<CefBrowser> browser,
-	CefRefPtr<CefFrame> frame,
-	ErrorCode errorCode,
-	const CefString& errorText,
-	const CefString& failedUrl) {
+void GenericHandler::OnLoadError(CefRefPtr<CefBrowser> browser,	CefRefPtr<CefFrame> frame, ErrorCode errorCode,	const CefString& errorText,	const CefString& failedUrl)
+{
 	CEF_REQUIRE_UI_THREAD();
 
 	// Don't display an error for downloaded files.
@@ -112,18 +95,20 @@ void SimpleHandler::OnLoadError(CefRefPtr<CefBrowser> browser,
 	frame->LoadString(ss.str(), failedUrl);
 }
 
-void SimpleHandler::CloseAllBrowsers(bool force_close) {
+void GenericHandler::CloseAllBrowsers(bool forceClose) {
 	if (!CefCurrentlyOn(TID_UI)) {
-		// Execute on the UI thread.
-		CefPostTask(TID_UI, base::Bind(&SimpleHandler::CloseAllBrowsers, this,
-			force_close));
+		CefPostTask(TID_UI, base::Bind(&GenericHandler::CloseAllBrowsers, this,	forceClose));
 		return;
 	}
 
-	if (browser_list_.empty())
+	if (m_browserList.empty())
 		return;
 
-	BrowserList::const_iterator it = browser_list_.begin();
-	for (; it != browser_list_.end(); ++it)
-		(*it)->GetHost()->CloseBrowser(force_close);
+	for (auto& browser : m_browserList)
+		browser->GetHost()->CloseBrowser(forceClose);
+}
+
+void GenericHandler::PlatformTitleChange(CefRefPtr<CefBrowser> browser, const CefString& title)
+{
+
 }

@@ -1,19 +1,19 @@
 #pragma once
 #include <include/cef_app.h>
 
-// Implement application-level callbacks for the browser process.
-class ApoapseCefApp : public CefApp, public CefBrowserProcessHandler {
+class ApoapseCefApp : public CefApp, public CefBrowserProcessHandler
+{
 public:
 	ApoapseCefApp() = default;
 
-	// CefApp methods:
-	virtual CefRefPtr<CefBrowserProcessHandler> GetBrowserProcessHandler()
-		OVERRIDE {
+	virtual CefRefPtr<CefBrowserProcessHandler> GetBrowserProcessHandler() override
+	{
 		return this;
 	}
 
-	// CefBrowserProcessHandler methods:
-	virtual void OnContextInitialized() OVERRIDE;
+	virtual void OnBeforeCommandLineProcessing(const CefString& processType, CefRefPtr<CefCommandLine> commandLine) override;
+
+	virtual void OnContextInitialized() override;
 
 private:
 	// Include the default reference counting implementation.

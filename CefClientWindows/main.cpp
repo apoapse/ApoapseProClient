@@ -1,6 +1,4 @@
-//#include "Common.h"
 #include "ClientEntryPoint.h"
-// #include <iostream>
 #include <Windows.h>
 
 #include <include/cef_sandbox_win.h>
@@ -18,14 +16,22 @@ int main(int argcount, char* argv[])
 	sandbox_info = scoped_sandbox.sandbox_info();
 #endif
 
-	//CefMainArgs main_args(hInstance);
-	CefMainArgs main_args;
+	CefMainArgs mainArgs;
 
-	int exit_code = CefExecuteProcess(main_args, nullptr, sandbox_info);
+	int exit_code = CefExecuteProcess(mainArgs, nullptr, sandbox_info);
 	if (exit_code >= 0)
 		return exit_code;
 
 	CefSettings settings;
+	settings.multi_threaded_message_loop = false;
+	settings.command_line_args_disabled = true;
+	settings.single_process = true;//TEST??????
+
+#ifdef DEBUG
+	settings.remote_debugging_port = 8080;
+#endif // DEBUG
+
+
 #if !defined(CEF_USE_SANDBOX)
 	settings.no_sandbox = true;
 #endif
@@ -33,7 +39,7 @@ int main(int argcount, char* argv[])
 	// Initialize CEF.
 	CefRefPtr<ApoapseCefApp> app(new ApoapseCefApp);
 
-	CefInitialize(main_args, settings, app.get(), sandbox_info);
+	CefInitialize(mainArgs, settings, app.get(), sandbox_info);
 
 	if (ClientMain(launchArgs) <= 0)
 		return 0;
