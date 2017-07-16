@@ -153,13 +153,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ApoapseCefApp.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="simple_handler.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="ApoapseCefApp.h" />
-    <ClInclude Include="simple_handler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

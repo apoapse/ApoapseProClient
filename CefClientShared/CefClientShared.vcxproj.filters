@@ -2,8 +2,12 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="ApoapseSchemeHandler.cpp" />
+    <ClCompile Include="GenericHandler.cpp" />
+    <ClCompile Include="ApoapseCefApp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ApoapseSchemeHandler.h" />
+    <ClInclude Include="GenericHandler.h" />
+    <ClInclude Include="ApoapseCefApp.h" />
   </ItemGroup>
 </Project>

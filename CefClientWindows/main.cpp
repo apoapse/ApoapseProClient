@@ -25,9 +25,10 @@ int main(int argcount, char* argv[])
 	CefSettings settings;
 	settings.multi_threaded_message_loop = false;
 	settings.command_line_args_disabled = true;
-	settings.single_process = true;//TEST??????
+	settings.persist_session_cookies = 0;
 
 #ifdef DEBUG
+	settings.single_process = true;
 	settings.remote_debugging_port = 8080;
 #endif // DEBUG
 

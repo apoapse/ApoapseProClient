@@ -1,4 +1,4 @@
-#include "simple_handler.h"
+#include "GenericHandler.h"
 
 #include <sstream>
 #include <string>
@@ -31,22 +31,48 @@ GenericHandler* GenericHandler::GetInstance() {
 	return g_instance;
 }
 
-void GenericHandler::OnTitleChange(CefRefPtr<CefBrowser> browser,
-	const CefString& title) {
-	CEF_REQUIRE_UI_THREAD();
-
-	// Set the title of the window using platform APIs.
-	PlatformTitleChange(browser, title);
+void GenericHandler::OnBeforeContextMenu(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefContextMenuParams> params, CefRefPtr<CefMenuModel> model)
+{
+	model->Clear();
 }
 
-void GenericHandler::OnAfterCreated(CefRefPtr<CefBrowser> browser) {
+bool GenericHandler::OnContextMenuCommand(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefContextMenuParams> params, int command_id, EventFlags event_flags)
+{
+	return true;
+}
+
+bool GenericHandler::OnBeforeBrowse(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefRequest> request, bool is_redirect)
+{
+	bool allowRequest = false;
+
+	// Requests whitelist
+	const std::string url = request->GetURL();
+	const std::string apoapseUrl = "http://apoapse/";
+
+	if (url.substr(0, apoapseUrl.length()) == apoapseUrl)
+		allowRequest = true;
+
+	return !allowRequest;
+}
+
+void GenericHandler::OnTitleChange(CefRefPtr<CefBrowser> browser, const CefString& title)
+{
+	CEF_REQUIRE_UI_THREAD();
+
+}
+
+void GenericHandler::OnAfterCreated(CefRefPtr<CefBrowser> browser)
+{
 	CEF_REQUIRE_UI_THREAD();
 
 	// Add to the list of existing browsers.
 	m_browserList.push_back(browser);
+
+	//browser->GetMainFrame()->ExecuteJavaScript("alert('yup');", browser->GetMainFrame()->GetURL(), 0);
 }
 
-bool GenericHandler::DoClose(CefRefPtr<CefBrowser> browser) {
+bool GenericHandler::DoClose(CefRefPtr<CefBrowser> browser)
+{
 	CEF_REQUIRE_UI_THREAD();
 
 	if (m_browserList.size() == 1) {
@@ -59,7 +85,8 @@ bool GenericHandler::DoClose(CefRefPtr<CefBrowser> browser) {
 	return false;
 }
 
-void GenericHandler::OnBeforeClose(CefRefPtr<CefBrowser> browser) {
+void GenericHandler::OnBeforeClose(CefRefPtr<CefBrowser> browser)
+{
 	CEF_REQUIRE_UI_THREAD();
 
 	// Remove from the list of existing browsers.
@@ -78,7 +105,7 @@ void GenericHandler::OnBeforeClose(CefRefPtr<CefBrowser> browser) {
 	}
 }
 
-void GenericHandler::OnLoadError(CefRefPtr<CefBrowser> browser,	CefRefPtr<CefFrame> frame, ErrorCode errorCode,	const CefString& errorText,	const CefString& failedUrl)
+void GenericHandler::OnLoadError(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, ErrorCode errorCode, const CefString& errorText, const CefString& failedUrl)
 {
 	CEF_REQUIRE_UI_THREAD();
 
@@ -95,9 +122,10 @@ void GenericHandler::OnLoadError(CefRefPtr<CefBrowser> browser,	CefRefPtr<CefFra
 	frame->LoadString(ss.str(), failedUrl);
 }
 
-void GenericHandler::CloseAllBrowsers(bool forceClose) {
+void GenericHandler::CloseAllBrowsers(bool forceClose)
+{
 	if (!CefCurrentlyOn(TID_UI)) {
-		CefPostTask(TID_UI, base::Bind(&GenericHandler::CloseAllBrowsers, this,	forceClose));
+		CefPostTask(TID_UI, base::Bind(&GenericHandler::CloseAllBrowsers, this, forceClose));
 		return;
 	}
 
@@ -106,9 +134,4 @@ void GenericHandler::CloseAllBrowsers(bool forceClose) {
 
 	for (auto& browser : m_browserList)
 		browser->GetHost()->CloseBrowser(forceClose);
-}
-
-void GenericHandler::PlatformTitleChange(CefRefPtr<CefBrowser> browser, const CefString& title)
-{
-
 }
