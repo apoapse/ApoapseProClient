@@ -1,10 +1,6 @@
 #pragma once
 #include <vector>
+#include <string>
+#include "DllExportSymbolApi.hpp"
 
-#ifdef DYN_LIBRARY  
-#define DLL_EXPORT __declspec(dllexport)   
-#else  
-#define DLL_EXPORT __declspec(dllimport)   
-#endif  
-
-DLL_EXPORT int ClientMain(const std::vector<std::string>& launchArgs);
+DLL_EXPOSE_SYMBOL int ClientMain(const std::vector<std::string>& launchArgs);

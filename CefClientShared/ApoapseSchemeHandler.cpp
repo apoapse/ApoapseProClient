@@ -14,8 +14,8 @@ bool ApoapseSchemeHandler::ProcessRequest(CefRefPtr<CefRequest> request, CefRefP
 {
 	CEF_REQUIRE_IO_THREAD();
 
-	std::string method = request->GetMethod();
-	std::string fullUrl = request->GetURL();
+	const std::string method = request->GetMethod();
+	const std::string fullUrl = request->GetURL();
 	
 	DLOG(INFO) << "MOTHOD: " << method << " URL: " << fullUrl;
 
@@ -33,7 +33,7 @@ bool ApoapseSchemeHandler::ProcessRequest(CefRefPtr<CefRequest> request, CefRefP
 			//std::vector<byte> arr(bytes, bytes + bytesCount);
 
 			std::string str(bytes, bytes + bytesCount);
-
+			delete bytes;
 			DLOG(INFO) << "POST data: " << str;
 		}
 	}

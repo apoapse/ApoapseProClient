@@ -100,7 +100,7 @@
       <ExceptionHandling>Sync</ExceptionHandling>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>..\CefClientShared\;..\ApoapseClientShared\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CefClientShared\;..\ApoapseClientShared\;..\..\ApoapseCore\Code\;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>UNIT_TESTS;_WIN32_WINNT=0x0501;_SCL_SECURE_NO_WARNINGS;DEBUG;_MBCS;CEF_USE_ATL;NOMINMAX;UNICODE;_UNICODE</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <DisableSpecificWarnings>
@@ -139,7 +139,7 @@
       <ExceptionHandling>Sync</ExceptionHandling>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>..\CefClientShared\;..\ApoapseClientShared\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CefClientShared\;..\ApoapseClientShared\;..\..\ApoapseCore\Code\;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>CEF_USE_SANDBOX;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>

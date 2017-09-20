@@ -8,12 +8,10 @@ class ConnectCmd : public Command
 	CommandInfo& GetInfo() const override
 	{
 		static auto info = CommandInfo();
-		info.command = Commands::CONNECT;
+		info.command = CommandId::connect;
 		info.fields =
 		{
-			CommandField{ "user", FieldRequirement::ANY_MENDATORY, FIELD_VALUE_VALIDATOR(std::string, ConnectCmd::Test) },
-			CommandField{ "pass", FieldRequirement::ANY_MENDATORY, FIELD_VALUE(std::string) },
-			CommandField{ "test_array", FieldRequirement::ANY_OPTIONAL, FIELD_ARRAY_VALIDATOR(int, ConnectCmd::TestArray) }
+			CommandField{ "user", FieldRequirement::any_mendatory, FIELD_VALUE_VALIDATOR(std::string, ConnectCmd::Test) },
 		};
 
 		return info;
@@ -42,4 +40,4 @@ class ConnectCmd : public Command
 	}
 };
 
-APOAPSE_COMMAND_REGISTER(ConnectCmd, Commands::CONNECT);
+APOAPSE_COMMAND_REGISTER(ConnectCmd, CommandId::connect);

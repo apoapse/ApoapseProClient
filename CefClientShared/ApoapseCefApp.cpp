@@ -38,7 +38,7 @@ void ApoapseCefApp::OnContextInitialized()
 {
 	CEF_REQUIRE_UI_THREAD();
 
-	CefRegisterSchemeHandlerFactory("http", "apoapse", new ApoapseSchemeHandlerFactory()); // #TODO Add support to check every single http and https request
+	CefRegisterSchemeHandlerFactory("http", "apoapse", new ApoapseSchemeHandlerFactory());
 
 
 	const bool useView = false;
