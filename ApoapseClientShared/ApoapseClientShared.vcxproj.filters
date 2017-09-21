@@ -4,8 +4,28 @@
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="ClientEntryPoint.cpp" />
     <ClCompile Include="ConnectCmd.cpp" />
+    <ClCompile Include="WebResourcesManager.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="HTMLUI.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientEntryPoint.h" />
+    <ClInclude Include="WebResourcesManager.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="HTMLUI.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="UI">
+      <UniqueIdentifier>{2aad6bf9-0bda-429c-bc91-a0fec5b3e69f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network">
+      <UniqueIdentifier>{a6d40b2f-b128-4e2b-887f-021905a90af1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

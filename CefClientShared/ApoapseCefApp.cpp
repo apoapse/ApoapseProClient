@@ -9,6 +9,8 @@
 
 #include "ApoapseSchemeHandler.h"
 
+ApoapseCefApp::ApoapseCefApp()= default;
+
 void ApoapseCefApp::OnBeforeCommandLineProcessing(const CefString& processType, CefRefPtr<CefCommandLine> commandLine)
 {
 	//commandLine->AppendSwitchWithValue("url", "about:credits");
@@ -16,29 +18,14 @@ void ApoapseCefApp::OnBeforeCommandLineProcessing(const CefString& processType, 
 
 }
 
-class ApoapseSchemeHandlerFactory : public CefSchemeHandlerFactory
-{
-public:
-	ApoapseSchemeHandlerFactory() = default;
 
-	// Return a new scheme handler instance to handle the request.
-	CefRefPtr<CefResourceHandler> Create(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, const CefString& scheme_name, CefRefPtr<CefRequest> request) override
-	{
-		CEF_REQUIRE_IO_THREAD();
-		return new ApoapseSchemeHandler();
-	}
-
-private:
-	IMPLEMENT_REFCOUNTING(ApoapseSchemeHandlerFactory);
-	DISALLOW_COPY_AND_ASSIGN(ApoapseSchemeHandlerFactory);
-};
 
 
 void ApoapseCefApp::OnContextInitialized()
 {
 	CEF_REQUIRE_UI_THREAD();
 
-	CefRegisterSchemeHandlerFactory("http", "apoapse", new ApoapseSchemeHandlerFactory());
+	CefRegisterSchemeHandlerFactory("http", "apoapse", new ApoapseSchemeHandlerFactory);
 
 
 	const bool useView = false;
@@ -46,7 +33,7 @@ void ApoapseCefApp::OnContextInitialized()
 
 	CefBrowserSettings browserSettings;
 
-	const std::string url = "http://apoapse/hi/hello";
+	const std::string url = "http://apoapse/resources/main.html";
 
 	// Information used when creating the native window.
 	CefWindowInfo windowInfo;

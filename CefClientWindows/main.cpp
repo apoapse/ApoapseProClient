@@ -1,5 +1,6 @@
 #include "ClientEntryPoint.h"
 #include <Windows.h>
+#include <memory>
 
 #include <include/cef_sandbox_win.h>
 #include "ApoapseCefApp.h"
@@ -37,18 +38,20 @@ int main(int argcount, char* argv[])
 	settings.no_sandbox = true;
 #endif
 
-	// Initialize CEF.
+	// Initialize Apoapse client (ApoapseClientShared.dll)
+	if (ApoapseClient::ClientMain(launchArgs) <= 0)
+		return 0;
+
+	// Initialize CEF
 	CefRefPtr<ApoapseCefApp> app(new ApoapseCefApp);
 
 	CefInitialize(mainArgs, settings, app.get(), sandbox_info);
-
-	if (ClientMain(launchArgs) <= 0)
-		return 0;
 
 	// Run the CEF message loop. This will block until CefQuitMessageLoop() is called.
 	CefRunMessageLoop();
 
 	CefShutdown();
+	ApoapseClient::Shutdown();
 
 	return 0;
 }

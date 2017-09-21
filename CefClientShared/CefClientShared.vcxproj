@@ -87,7 +87,7 @@
       <SDLCheck>true</SDLCheck>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>..\..\ApoapseCore\Code\;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ApoapseCore\Code\;..\ApoapseClientShared\;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>

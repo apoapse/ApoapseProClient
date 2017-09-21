@@ -4,7 +4,7 @@
 class ApoapseCefApp : public CefApp, public CefBrowserProcessHandler
 {
 public:
-	ApoapseCefApp() = default;
+	ApoapseCefApp();
 
 	virtual CefRefPtr<CefBrowserProcessHandler> GetBrowserProcessHandler() override
 	{

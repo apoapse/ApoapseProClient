@@ -147,13 +147,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ConnectCmd.cpp" />
+    <ClCompile Include="HTMLUI.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ClientEntryPoint.cpp" />
+    <ClCompile Include="WebResourcesManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientEntryPoint.h" />
+    <ClInclude Include="HTMLUI.h" />
+    <ClInclude Include="WebResourcesManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

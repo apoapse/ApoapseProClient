@@ -47,7 +47,7 @@ bool GenericHandler::OnBeforeBrowse(CefRefPtr<CefBrowser> browser, CefRefPtr<Cef
 
 	// Requests whitelist
 	const std::string url = request->GetURL();
-	const std::string apoapseUrl = "http://apoapse/";
+	static const std::string apoapseUrl = "http://apoapse/";
 
 	if (url.substr(0, apoapseUrl.length()) == apoapseUrl)
 		allowRequest = true;

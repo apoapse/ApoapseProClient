@@ -2,12 +2,13 @@
 #include "ClientEntryPoint.h"
 #include "Common.h"
 #include "LibraryLoader.hpp"
+#include "HTMLUI.h"
 
 #ifdef UNIT_TESTS
 #include "UnitTestsManager.h"
 #endif //UNIT_TESTS
 
-int ClientMain(const std::vector<std::string>& launchArgs)
+int ApoapseClient::ClientMain(const std::vector<std::string>& launchArgs)
 {
 	// Initialize global systems
 	{
@@ -16,6 +17,7 @@ int ClientMain(const std::vector<std::string>& launchArgs)
 
 		global->logger = std::make_unique<Logger>("log_client.txt");
 		global->threadPool = std::make_unique<ThreadPool>("Global thread pool", 8); // #TODO dynamically choose the number of threads into the global thread pool
+		global->htmlUI = new HTMLUI;
 	}
 
 	// Run unit tests if requested
@@ -42,15 +44,20 @@ int ClientMain(const std::vector<std::string>& launchArgs)
 		FatalError("Unable to access the database");
 	}
 
-	{
-// 		boost::asio::io_service ioService;
-// 		auto connection = std::make_shared<GenericConnection>(ioService);
-// 		connection->Connect("127.0.0.1", 5700);
-// 
-// 		auto test = std::vector<byte>{ 'a', 'b', 'c', 'd' };
-// 		connection->Send(Commands::CONNECT, std::make_unique<std::vector<byte>>(test), nullptr);
-// 		ioService.run();
-	}
-
 	return 1;
+}
+
+void ApoapseClient::Shutdown()
+{
+	delete global->htmlUI;
+}
+
+std::vector<byte> ApoapseClient::ReadFile(const std::string& filename, const std::string& fileExtension)
+{
+	return global->htmlUI->GetWebResourcesManager().ReadFile(filename, fileExtension);
+}
+
+std::string ApoapseClient::OnReceivedSignal(const std::string& name, const std::string& data)
+{
+	return global->htmlUI->OnReceivedSignal(name, data);
 }
