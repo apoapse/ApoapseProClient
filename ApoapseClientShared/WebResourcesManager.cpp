@@ -16,12 +16,8 @@ std::vector<byte> WebResourcesManager::ReadFile(const std::string& filename, con
 			const size_t size = static_cast<size_t>(inputStream.tellg());
 			inputStream.seekg(0);
 
-			char* raw = new char[size];
-			inputStream.read(raw, size);
-
 			output.resize(size);
-			std::copy(raw, raw + size, output.begin());
-			delete[] raw;
+			inputStream.read(reinterpret_cast<char*>(output.data()), size);
 
 			ASSERT(output.size() == size);
 			LOG << "Loaded web resource " << filename << " length: " << size << " bytes";

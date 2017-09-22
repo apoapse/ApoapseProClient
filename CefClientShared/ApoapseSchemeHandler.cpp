@@ -20,38 +20,40 @@ bool ApoapseSchemeHandler::ProcessRequest(CefRefPtr<CefRequest> request, CefRefP
 	const std::string fullUrl = request->GetURL();
 	const std::string fileExtension = ReadFileExtension(fullUrl);
 	
-	DLOG(INFO) << "MOTHOD: " << method << " URL: " << fullUrl << " fileExtension:" << fileExtension;
+	//DLOG(INFO) << "MOTHOD: " << method << " URL: " << fullUrl << " fileExtension:" << fileExtension;
 
 	if (!fileExtension.empty())
 	{
+		// Data
 		SetMimeFromExtension(fileExtension);
 		m_responseData = ApoapseClient::ReadFile("ClientResources/" + ReadFileName(fullUrl), fileExtension);
 	}
 	else
 	{
+		// Signal
+		std::string postData{};
+
+		if (request->GetPostData().get() != nullptr)
+		{
+			CefPostData::ElementVector postElements;
+			request->GetPostData()->GetElements(postElements);
+
+			for (const auto& element : postElements)
+			{
+				const size_t bytesCount = element->GetBytesCount();
+				byte* bytes = new byte[bytesCount];
+				element->GetBytes(bytesCount, bytes);
+
+				postData = std::string(bytes, bytes + bytesCount);
+				delete[] bytes;
+			}
+		}
+
+		std::string returnData = ApoapseClient::OnReceivedSignal(ReadSignalName(fullUrl), postData);
+		m_responseData = std::vector<byte>(returnData.begin(), returnData.end());
+
 		SetMimeFromExtension("");
 	}
-
-	if (request->GetPostData().get() != nullptr)
-	{
-		CefPostData::ElementVector postElements;
-		request->GetPostData()->GetElements(postElements);
-
-		for (const auto& element : postElements)
-		{
-			const size_t bytesCount = element->GetBytesCount();
-			byte* bytes = new unsigned char[bytesCount];
-			element->GetBytes(bytesCount, bytes);
-
-			//std::vector<byte> arr(bytes, bytes + bytesCount);
-
-			std::string str(bytes, bytes + bytesCount);
-			delete[] bytes;
-			DLOG(INFO) << "POST data: " << str;
-		}
-	}
-
-	//PrepareResponse(std::make_unique<std::string>("WORKS!<script>xmlhttp = new XMLHttpRequest();    xmlhttp.open('POST', 'http://apoapse/action/', true);    xmlhttp.send('var=1');</script>"));
 
 	callback->Continue();
 
@@ -73,6 +75,7 @@ void ApoapseSchemeHandler::GetResponseHeaders(CefRefPtr<CefResponse> response, i
 	{
 		response->SetStatus(404);
 	}
+
 }
 
 bool ApoapseSchemeHandler::ReadResponse(void* data_out, int bytes_to_read, int& bytes_read, CefRefPtr<CefCallback> callback)
@@ -137,6 +140,13 @@ std::string ApoapseSchemeHandler::ReadFileExtension(const std::string& path)
 std::string ApoapseSchemeHandler::ReadFileName(const std::string& path)
 {
 	static const std::string basePath = "http://apoapse/resources/";
+
+	return path.substr(basePath.length(), path.length());
+}
+
+std::string ApoapseSchemeHandler::ReadSignalName(const std::string& path)
+{
+	static const std::string basePath = "http://apoapse/signal/";
 
 	return path.substr(basePath.length(), path.length());
 }

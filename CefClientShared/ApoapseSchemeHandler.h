@@ -30,6 +30,7 @@ private:
 	void SetMimeFromExtension(const std::string fileExtension);
 	static std::string ReadFileExtension(const std::string& path);
 	static std::string ReadFileName(const std::string& path);
+	static std::string ReadSignalName(const std::string& path);
 
 	IMPLEMENT_REFCOUNTING(ApoapseSchemeHandler);
 	DISALLOW_COPY_AND_ASSIGN(ApoapseSchemeHandler);
