@@ -1,10 +1,12 @@
 #pragma once
 #include "WebResourcesManager.h"
 #include <memory>
+#include "ISignalSender.hpp"
 
 class HTMLUI
 {
 	std::unique_ptr<WebResourcesManager> m_webResourcesManager;
+	ISignalSender* m_uiSignalSender = nullptr;
 
 public:
 
@@ -19,6 +21,8 @@ public:
 	{
 		return *m_webResourcesManager;
 	}
+
+	void RegisterSignalSender(ISignalSender* signalSender);
 
 	std::string OnReceivedSignal(const std::string& name, const std::string& data);
 	void SendSignal(const std::string& name, const std::string& data);

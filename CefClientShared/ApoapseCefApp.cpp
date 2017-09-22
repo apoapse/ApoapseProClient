@@ -8,8 +8,9 @@
 #include <include/wrapper/cef_helpers.h>
 
 #include "ApoapseSchemeHandler.h"
+#include "ClientEntryPoint.h"
 
-ApoapseCefApp::ApoapseCefApp()= default;
+ApoapseCefApp::ApoapseCefApp() = default;
 
 void ApoapseCefApp::OnBeforeCommandLineProcessing(const CefString& processType, CefRefPtr<CefCommandLine> commandLine)
 {
@@ -17,9 +18,6 @@ void ApoapseCefApp::OnBeforeCommandLineProcessing(const CefString& processType, 
 	//commandLine->AppendSwitchWithValue("default-background-color", "ff0000ff");
 
 }
-
-
-
 
 void ApoapseCefApp::OnContextInitialized()
 {
@@ -44,5 +42,19 @@ void ApoapseCefApp::OnContextInitialized()
 	windowInfo.SetAsPopup(NULL, "Apoapse Pro");
 #endif
 	// Create the first browser window.
-	CefBrowserHost::CreateBrowser(windowInfo, handler, url, browserSettings, nullptr);
+	m_browser = CefBrowserHost::CreateBrowserSync(windowInfo, handler, url, browserSettings, nullptr);
+
+	ApoapseClient::RegisterSignalSender(this);
+}
+
+void ApoapseCefApp::SendSignal(const std::string& name, const std::string& data)
+{
+	if (!data.empty())
+	{
+		m_browser->GetMainFrame()->ExecuteJavaScript("$(document).trigger(\"" + name + "\", [\'" + data + "\']);", "", 1);
+	}
+	else
+	{
+		m_browser->GetMainFrame()->ExecuteJavaScript("$(document).trigger(\"" + name + "\");", "", 1);
+	}
 }

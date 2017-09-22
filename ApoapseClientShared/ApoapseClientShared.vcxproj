@@ -157,6 +157,7 @@
   <ItemGroup>
     <ClInclude Include="ClientEntryPoint.h" />
     <ClInclude Include="HTMLUI.h" />
+    <ClInclude Include="ISignalSender.hpp" />
     <ClInclude Include="WebResourcesManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

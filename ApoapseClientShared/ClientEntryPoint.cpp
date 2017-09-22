@@ -57,6 +57,11 @@ std::vector<byte> ApoapseClient::ReadFile(const std::string& filename, const std
 	return global->htmlUI->GetWebResourcesManager().ReadFile(filename, fileExtension);
 }
 
+void ApoapseClient::RegisterSignalSender(ISignalSender* signalSender)
+{
+	global->htmlUI->RegisterSignalSender(signalSender);
+}
+
 std::string ApoapseClient::OnReceivedSignal(const std::string& name, const std::string& data)
 {
 	return global->htmlUI->OnReceivedSignal(name, data);

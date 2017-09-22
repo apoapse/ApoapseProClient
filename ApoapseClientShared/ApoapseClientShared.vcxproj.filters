@@ -19,6 +19,9 @@
     <ClInclude Include="HTMLUI.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="ISignalSender.hpp">
+      <Filter>UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="UI">
