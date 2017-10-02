@@ -41,18 +41,20 @@ bool GenericHandler::OnContextMenuCommand(CefRefPtr<CefBrowser> browser, CefRefP
 	return true;
 }
 
-bool GenericHandler::OnBeforeBrowse(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefRequest> request, bool is_redirect)
+CefRequestHandler::ReturnValue GenericHandler::OnBeforeResourceLoad(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefRequest> request, CefRefPtr<CefRequestCallback> callback)
 {
-	bool allowRequest = false;
-
-	// Requests whitelist
 	const std::string url = request->GetURL();
 	static const std::string apoapseUrl = "http://apoapse/";
 
 	if (url.substr(0, apoapseUrl.length()) == apoapseUrl)
-		allowRequest = true;
-
-	return !allowRequest;
+	{
+		return RV_CONTINUE;
+	}
+	else
+	{
+		DLOG(INFO) << "GenericHandler::OnBeforeResourceLoad Blocked the request: " << apoapseUrl;
+		return RV_CANCEL;
+	}
 }
 
 void GenericHandler::OnTitleChange(CefRefPtr<CefBrowser> browser, const CefString& title)
