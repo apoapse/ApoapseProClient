@@ -26,7 +26,7 @@ bool ApoapseSchemeHandler::ProcessRequest(CefRefPtr<CefRequest> request, CefRefP
 	{
 		// Data
 		SetMimeFromExtension(fileExtension);
-		m_responseData = ApoapseClient::ReadFile("ClientResources/" + ReadFileName(fullUrl), fileExtension);
+		m_responseData = ApoapseClientEntry::ReadFile("ClientResources/" + ReadFileName(fullUrl), fileExtension);
 	}
 	else
 	{
@@ -49,7 +49,7 @@ bool ApoapseSchemeHandler::ProcessRequest(CefRefPtr<CefRequest> request, CefRefP
 			}
 		}
 
-		std::string returnData = ApoapseClient::OnReceivedSignal(ReadSignalName(fullUrl), postData);
+		std::string returnData = ApoapseClientEntry::OnReceivedSignal(ReadSignalName(fullUrl), postData);
 		m_responseData = std::vector<byte>(returnData.begin(), returnData.end());
 
 		SetMimeFromExtension("");

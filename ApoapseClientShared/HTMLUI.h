@@ -2,18 +2,17 @@
 #include "WebResourcesManager.h"
 #include <memory>
 #include "ISignalSender.hpp"
+class ApoapseClient;
 
 class HTMLUI
 {
+	ApoapseClient& m_apoapseClient;
 	std::unique_ptr<WebResourcesManager> m_webResourcesManager;
 	ISignalSender* m_uiSignalSender = nullptr;
 
 public:
 
-	HTMLUI()
-	{
-		m_webResourcesManager = std::make_unique<WebResourcesManager>();
-	}
+	HTMLUI(ApoapseClient& client);
 
 // 	virtual ~HTMLUI();
 

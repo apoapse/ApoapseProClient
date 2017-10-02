@@ -6,9 +6,8 @@
 #include "DllExportSymbolApi.hpp"
 #include "ISignalSender.hpp"
 
-namespace ApoapseClient
+namespace ApoapseClientEntry
 {
-
 DLL_EXPOSE_SYMBOL int ClientMain(const std::vector<std::string>& launchArgs);
 DLL_EXPOSE_SYMBOL void Shutdown();
 

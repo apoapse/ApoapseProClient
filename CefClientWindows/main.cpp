@@ -27,6 +27,7 @@ int main(int argcount, char* argv[])
 	settings.multi_threaded_message_loop = false;
 	settings.command_line_args_disabled = true;
 	settings.persist_session_cookies = 0;
+	settings.log_severity = LOGSEVERITY_ERROR;
 
 #ifdef DEBUG
 	settings.single_process = true;
@@ -39,7 +40,7 @@ int main(int argcount, char* argv[])
 #endif
 
 	// Initialize Apoapse client (ApoapseClientShared.dll)
-	if (ApoapseClient::ClientMain(launchArgs) <= 0)
+	if (ApoapseClientEntry::ClientMain(launchArgs) <= 0)
 		return 0;
 
 	// Initialize CEF
@@ -51,7 +52,7 @@ int main(int argcount, char* argv[])
 	CefRunMessageLoop();
 
 	CefShutdown();
-	ApoapseClient::Shutdown();
+	ApoapseClientEntry::Shutdown();
 
 	return 0;
 }

@@ -44,7 +44,7 @@ void ApoapseCefApp::OnContextInitialized()
 	// Create the first browser window.
 	m_browser = CefBrowserHost::CreateBrowserSync(windowInfo, handler, url, browserSettings, nullptr);
 
-	ApoapseClient::RegisterSignalSender(this);
+	ApoapseClientEntry::RegisterSignalSender(this);
 }
 
 void ApoapseCefApp::SendSignal(const std::string& name, const std::string& data)

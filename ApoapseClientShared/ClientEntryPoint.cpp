@@ -3,12 +3,15 @@
 #include "Common.h"
 #include "LibraryLoader.hpp"
 #include "HTMLUI.h"
+#include "ApoapseClient.h"
 
 #ifdef UNIT_TESTS
 #include "UnitTestsManager.h"
 #endif //UNIT_TESTS
 
-int ApoapseClient::ClientMain(const std::vector<std::string>& launchArgs)
+ApoapseClient* m_apoapseClient = nullptr;
+
+int ApoapseClientEntry::ClientMain(const std::vector<std::string>& launchArgs)
 {
 	// Initialize global systems
 	{
@@ -17,7 +20,9 @@ int ApoapseClient::ClientMain(const std::vector<std::string>& launchArgs)
 
 		global->logger = std::make_unique<Logger>("log_client.txt");
 		global->threadPool = std::make_unique<ThreadPool>("Global thread pool", 8); // #TODO dynamically choose the number of threads into the global thread pool
-		global->htmlUI = new HTMLUI;
+
+		m_apoapseClient = new ApoapseClient;
+		global->htmlUI = new HTMLUI(*m_apoapseClient);
 	}
 
 	// Run unit tests if requested
@@ -47,22 +52,23 @@ int ApoapseClient::ClientMain(const std::vector<std::string>& launchArgs)
 	return 1;
 }
 
-void ApoapseClient::Shutdown()
+void ApoapseClientEntry::Shutdown()
 {
 	delete global->htmlUI;
+	delete m_apoapseClient;
 }
 
-std::vector<byte> ApoapseClient::ReadFile(const std::string& filename, const std::string& fileExtension)
+std::vector<byte> ApoapseClientEntry::ReadFile(const std::string& filename, const std::string& fileExtension)
 {
 	return global->htmlUI->GetWebResourcesManager().ReadFile(filename, fileExtension);
 }
 
-void ApoapseClient::RegisterSignalSender(ISignalSender* signalSender)
+void ApoapseClientEntry::RegisterSignalSender(ISignalSender* signalSender)
 {
 	global->htmlUI->RegisterSignalSender(signalSender);
 }
 
-std::string ApoapseClient::OnReceivedSignal(const std::string& name, const std::string& data)
+std::string ApoapseClientEntry::OnReceivedSignal(const std::string& name, const std::string& data)
 {
 	return global->htmlUI->OnReceivedSignal(name, data);
 }
