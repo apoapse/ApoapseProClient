@@ -10,6 +10,12 @@
     <ClCompile Include="HTMLUI.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="ApoapseClient.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientConnection.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientEntryPoint.h" />
@@ -22,13 +28,22 @@
     <ClInclude Include="ISignalSender.hpp">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="ApoapseClient.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientConnection.h">
+      <Filter>Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="UI">
       <UniqueIdentifier>{2aad6bf9-0bda-429c-bc91-a0fec5b3e69f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Network">
+    <Filter Include="System">
       <UniqueIdentifier>{a6d40b2f-b128-4e2b-887f-021905a90af1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network">
+      <UniqueIdentifier>{f30b81ee-1d9a-44c7-bc59-7ef52b625200}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
