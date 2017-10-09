@@ -1,6 +1,7 @@
 #pragma once
 #include "WebResourcesManager.h"
 #include <memory>
+#include "ThreadPool.h"
 #include "ISignalSender.hpp"
 class ApoapseClient;
 
@@ -9,6 +10,7 @@ class HTMLUI
 	ApoapseClient& m_apoapseClient;
 	std::unique_ptr<WebResourcesManager> m_webResourcesManager;
 	ISignalSender* m_uiSignalSender = nullptr;
+	std::unique_ptr<ThreadPool> m_clientMainThread;
 
 public:
 

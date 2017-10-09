@@ -4,9 +4,28 @@
 #include "Json.hpp"
 #include "ClientConnection.h"
 #include "HTMLUI.h"
+#include "CmdConnect.h"
 
 void ApoapseClient::Connect(const std::string& serverAddress, const std::string& username, const std::string& password)
 {
+	if (serverAddress.length() < 3)
+	{
+		global->htmlUI->UpdateStatusBar("@invalid_server_address", true);
+		return;
+	}
+	else if ( username.length() < 6 || password.length() < 8)// #TODO use values from the create user cmd)
+	{
+		global->htmlUI->UpdateStatusBar("@invalid_login_input", true);
+		return;
+	}
+
+	global->htmlUI->UpdateStatusBar("@password_encryption_status");
+	CmdConnect connectCmd;
+	LOG << "Starting login hashing";
+	connectCmd.PrepareLoginCmd(username, password);
+	LOG << "Login hashing complete";
+
+	global->htmlUI->UpdateStatusBar("@connecting_status");
 	const UInt16 port = 3000;
 	auto connection = std::make_shared<ClientConnection>(m_IOService, *this);
 	connection->Connect(serverAddress, port);
@@ -25,9 +44,16 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 
 std::string ApoapseClient::OnReceivedSignal(const std::string& name, const std::string& data)
 {
-	if (name == "login" && m_connected)
+
+
+	return "";
+}
+
+std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonHelper& json)
+{
+	if (name == "login" && !m_connected)
 	{
-		Login(data);
+		OnUILogin(json);
 	}
 
 	return "";
@@ -35,14 +61,12 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const std::
 
 void ApoapseClient::OnDisconnect()
 {
-	ASSERT(m_connected);
 	m_connected = false;
 
 	global->htmlUI->UpdateStatusBar("@disconnected_status", true);
 }
 
-void ApoapseClient::Login(const std::string& json)
+void ApoapseClient::OnUILogin(const JsonHelper& deserializer)
 {
-	JsonHelper deserializer(json);
 	Connect(deserializer.ReadFieldValue<std::string>("server").get(), deserializer.ReadFieldValue<std::string>("server").get(), deserializer.ReadFieldValue<std::string>("password").get());
 }

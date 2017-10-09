@@ -1,4 +1,5 @@
 #pragma once
+#include "Json.hpp"
 class ClientConnection;
 
 class ApoapseClient
@@ -15,7 +16,9 @@ public:
 	void Connect(const std::string& serverAddress, const std::string& username, const std::string& password);
 	
 	std::string OnReceivedSignal(const std::string& name, const std::string& data);
+	std::string OnReceivedSignal(const std::string& name, const JsonHelper& deserializer);
 	void OnDisconnect();
-	void Login(const std::string& json);
+
+	void OnUILogin(const JsonHelper& deserializer);
 private:
 };
