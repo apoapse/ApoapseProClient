@@ -21,7 +21,7 @@ public:
 	std::string OnReceivedSignal(const std::string& name, const std::string& data);
 	std::string OnReceivedSignal(const std::string& name, const JsonHelper& deserializer);
 	void OnConnectedToServer();
-	void OnDisconnect();
+	void OnDisconnect(bool IsAuthenticated);
 
 	void OnUILogin(const JsonHelper& deserializer);
 private:

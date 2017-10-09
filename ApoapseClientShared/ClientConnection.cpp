@@ -15,13 +15,13 @@ ClientConnection::ClientConnection(boost::asio::io_service& ioService, ApoapseCl
 ClientConnection::~ClientConnection()
 {
 	LOG_DEBUG << "~ClientConnection";
-	client.OnDisconnect();
+	client.OnDisconnect(IsAuthenticated());
 }
 
 bool ClientConnection::OnReceivedError(const boost::system::error_code& error)
 {
 	LOG << error.message() << LogSeverity::warning;
-	client.OnDisconnect();
+	client.OnDisconnect(IsAuthenticated());
 
 	return true;
 }
