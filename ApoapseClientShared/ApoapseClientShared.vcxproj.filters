@@ -3,7 +3,6 @@
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="ClientEntryPoint.cpp" />
-    <ClCompile Include="ConnectCmd.cpp" />
     <ClCompile Include="WebResourcesManager.cpp">
       <Filter>UI</Filter>
     </ClCompile>
@@ -15,6 +14,9 @@
     </ClCompile>
     <ClCompile Include="ClientConnection.cpp">
       <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="CmdConnect.cpp">
+      <Filter>Commands</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -34,6 +36,9 @@
     <ClInclude Include="ClientConnection.h">
       <Filter>Network</Filter>
     </ClInclude>
+    <ClInclude Include="CmdConnect.h">
+      <Filter>Commands</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="UI">
@@ -44,6 +49,9 @@
     </Filter>
     <Filter Include="Network">
       <UniqueIdentifier>{f30b81ee-1d9a-44c7-bc59-7ef52b625200}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Commands">
+      <UniqueIdentifier>{64ad570f-b8d7-4d84-affb-e153f972c49e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

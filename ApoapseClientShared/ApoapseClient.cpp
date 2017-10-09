@@ -4,7 +4,6 @@
 #include "Json.hpp"
 #include "ClientConnection.h"
 #include "HTMLUI.h"
-#include "CmdConnect.h"
 
 void ApoapseClient::Connect(const std::string& serverAddress, const std::string& username, const std::string& password)
 {
@@ -13,27 +12,30 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 		global->htmlUI->UpdateStatusBar("@invalid_server_address", true);
 		return;
 	}
-	else if ( username.length() < 6 || password.length() < 8)// #TODO use values from the create user cmd)
+	else if ( username.length() < 6 || password.length() < 8)// #TODO use values from the create user cmd
 	{
 		global->htmlUI->UpdateStatusBar("@invalid_login_input", true);
 		return;
 	}
 
 	global->htmlUI->UpdateStatusBar("@password_encryption_status");
-	CmdConnect connectCmd;
-	LOG << "Starting login hashing";
-	connectCmd.PrepareLoginCmd(username, password);
-	LOG << "Login hashing complete";
+	{
+		m_loginCmd = std::make_unique<CmdConnect>();
 
-	global->htmlUI->UpdateStatusBar("@connecting_status");
-	const UInt16 port = 3000;
-	auto connection = std::make_shared<ClientConnection>(m_IOService, *this);
-	connection->Connect(serverAddress, port);
+		LOG << "Starting login hashing";
+		m_loginCmd.value()->PrepareLoginCmd(username, password);
+		LOG << "Login hashing complete";
+	}
 
-	m_connection = connection.get();
-	m_connected = true;
+	{
+		global->htmlUI->UpdateStatusBar("@connecting_status");
+		const UInt16 port = 3000;
+		auto connection = std::make_shared<ClientConnection>(m_IOService, *this);
+		connection->Connect(serverAddress, port);
 
-	LOG << "TCP Client started to " << serverAddress << " port: " << port;
+		m_connection = connection.get();
+		LOG << "TCP Client started to " << serverAddress << " port: " << port;
+	}
 
 	std::thread threadMainClient([this]
 	{
@@ -44,8 +46,6 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 
 std::string ApoapseClient::OnReceivedSignal(const std::string& name, const std::string& data)
 {
-
-
 	return "";
 }
 
@@ -57,6 +57,15 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 	}
 
 	return "";
+}
+
+void ApoapseClient::OnConnectedToServer()
+{
+	m_connected = true;
+	global->htmlUI->UpdateStatusBar("@connected_waiting_authentication");
+
+	m_loginCmd.value()->Send(*m_connection);
+	m_loginCmd.reset();
 }
 
 void ApoapseClient::OnDisconnect()

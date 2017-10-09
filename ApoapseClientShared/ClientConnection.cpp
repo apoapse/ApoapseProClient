@@ -39,7 +39,7 @@ void ClientConnection::Authenticate()
 bool ClientConnection::OnConnectedToServer()
 {
 	LOG_DEBUG << "OnConnectedToServer";
-	global->htmlUI->UpdateStatusBar("@connected_waiting_authentication...");
+	client.OnConnectedToServer();
 
 	return true;
 }
