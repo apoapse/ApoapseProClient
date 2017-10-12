@@ -10,6 +10,7 @@ CommandInfo& CmdConnect::GetInfo() const
 	static auto info = CommandInfo();
 	info.command = CommandId::connect;
 	info.serverOnly = true;
+	info.onlyNonAuthenticated = true;
 
 	return info;
 }

@@ -71,11 +71,11 @@ void ApoapseClient::OnConnectedToServer()
 void ApoapseClient::OnDisconnect(bool isAuthenticated)
 {
 	m_connected = false;
+	m_connection = nullptr;
 
 	global->htmlUI->UpdateStatusBar("@disconnected_status", true);
 
-	if (!isAuthenticated)
-		global->htmlUI->SendSignal("login_form_enable_back", "");
+	global->htmlUI->SendSignal("login_form_enable_back", "");
 }
 
 void ApoapseClient::OnUILogin(const JsonHelper& deserializer)
