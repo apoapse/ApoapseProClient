@@ -1,7 +1,7 @@
 #pragma once
 #include "Command.h"
 #include "MessagePack.hpp"
-#include "HashTypes.hpp"
+#include "CryptographyTypes.hpp"
 class ClientConnection;
 
 class CmdConnect : public Command
