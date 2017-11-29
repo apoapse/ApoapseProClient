@@ -5,6 +5,16 @@
 #include "ClientConnection.h"
 #include "HTMLUI.h"
 
+ClientConnection* ApoapseClient::GetConnection() const
+{
+	return m_connection;
+}
+
+bool ApoapseClient::IsConnected() const
+{
+	return m_connected;
+}
+
 void ApoapseClient::Connect(const std::string& serverAddress, const std::string& username, const std::string& password)
 {
 	if (serverAddress.length() < 3)
@@ -12,7 +22,7 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 		global->htmlUI->UpdateStatusBar("@invalid_server_address", true);
 		return;
 	}
-	else if ( username.length() < 6 || password.length() < 8)// #TODO use values from the create user cmd
+	else if (username.length() < 6 || password.length() < 8)// #TODO use values from the create user cmd
 	{
 		global->htmlUI->UpdateStatusBar("@invalid_login_input", true);
 		return;
@@ -56,6 +66,18 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 		OnUILogin(json);
 	}
 
+	else if (name == "create_admin")
+	{
+		if (m_connected && !m_connection->IsAuthenticated())
+		{
+
+		}
+		else
+		{
+			LOG << LogSeverity::error << "Trying to create an admin account but the the connection is not on setup state";
+		}
+	}
+
 	return "";
 }
 
@@ -66,6 +88,11 @@ void ApoapseClient::OnConnectedToServer()
 
 	m_loginCmd.value()->Send(*m_connection);
 	m_loginCmd.reset();
+}
+
+void ApoapseClient::OnSetupState()
+{
+	global->htmlUI->SendSignal("show_setup_state", "");
 }
 
 void ApoapseClient::OnDisconnect(bool isAuthenticated)

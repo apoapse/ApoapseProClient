@@ -36,7 +36,7 @@ int ApoapseClientEntry::ClientMain(const std::vector<std::string>& launchArgs)
 #endif //UNIT_TESTS
 
 	// Database
-	boost::shared_ptr<IDatabase> databaseSharedPtr = LibraryLoader::LoadLibrary<IDatabase>("DatabaseImpl.sqlite");
+	/*boost::shared_ptr<IDatabase> databaseSharedPtr = LibraryLoader::LoadLibrary<IDatabase>("DatabaseImpl.sqlite");
 	global->database = databaseSharedPtr.get();
 	const char* dbParams[1];
 	dbParams[0] = "server_database.db";
@@ -47,7 +47,7 @@ int ApoapseClientEntry::ClientMain(const std::vector<std::string>& launchArgs)
 	else
 	{
 		FatalError("Unable to access the database");
-	}
+	}*/
 
 	return 1;
 }

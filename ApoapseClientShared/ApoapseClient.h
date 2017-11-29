@@ -15,13 +15,17 @@ public:
 	//ApoapseClient();
 	//virtual ~ApoapseClient();
 
+	ClientConnection* GetConnection() const;
+	bool IsConnected() const;
 
 	void Connect(const std::string& serverAddress, const std::string& username, const std::string& password);
 	
 	std::string OnReceivedSignal(const std::string& name, const std::string& data);
 	std::string OnReceivedSignal(const std::string& name, const JsonHelper& deserializer);
 	void OnConnectedToServer();
+	void OnSetupState();
 	void OnDisconnect(bool IsAuthenticated);
+	
 
 	void OnUILogin(const JsonHelper& deserializer);
 private:

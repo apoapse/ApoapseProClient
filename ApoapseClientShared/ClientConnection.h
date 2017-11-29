@@ -6,11 +6,11 @@ class ApoapseClient;
 
 class ClientConnection : public GenericConnection
 {
-	ApoapseClient& client;
 	bool m_isAuthenticated = false;
 
-
 public:
+	ApoapseClient& client;
+
 	ClientConnection(boost::asio::io_service& ioService, ApoapseClient& client);
 	virtual ~ClientConnection() override;
 

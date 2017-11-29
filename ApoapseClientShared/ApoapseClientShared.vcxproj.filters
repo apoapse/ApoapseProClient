@@ -18,6 +18,16 @@
     <ClCompile Include="CmdConnect.cpp">
       <Filter>Commands</Filter>
     </ClCompile>
+    <ClCompile Include="CmdServerInfo.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="CmdCreateInitialAdmin.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="User.cpp" />
+    <ClCompile Include="UT_UsergroupBlock.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientEntryPoint.h" />
@@ -39,6 +49,12 @@
     <ClInclude Include="CmdConnect.h">
       <Filter>Commands</Filter>
     </ClInclude>
+    <ClInclude Include="User.h">
+      <Filter>UsersSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="CmdCreateInitialAdmin.h">
+      <Filter>Commands</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="UI">
@@ -52,6 +68,12 @@
     </Filter>
     <Filter Include="Commands">
       <UniqueIdentifier>{64ad570f-b8d7-4d84-affb-e153f972c49e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UsersSystem">
+      <UniqueIdentifier>{338cfd4e-30bf-4a3d-a497-cfbcba659684}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests">
+      <UniqueIdentifier>{bafb35f5-2bbc-46e4-9023-1004799655f8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
