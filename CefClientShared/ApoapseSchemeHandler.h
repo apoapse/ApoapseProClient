@@ -23,9 +23,6 @@ public:
 
 	virtual void Cancel() override;
 
-	void PrepareResponse(std::unique_ptr<std::string> data);
-	//void PrepareResponse(const std::vector<byte>* data);
-
 private:
 	void SetMimeFromExtension(const std::string fileExtension);
 	static std::string ReadFileExtension(const std::string& path);

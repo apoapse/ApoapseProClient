@@ -4,6 +4,7 @@
 #include "Json.hpp"
 #include "ClientConnection.h"
 #include "HTMLUI.h"
+#include "CmdCreateInitialAdmin.h"
 
 ClientConnection* ApoapseClient::GetConnection() const
 {
@@ -22,11 +23,11 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 		global->htmlUI->UpdateStatusBar("@invalid_server_address", true);
 		return;
 	}
-	else if (username.length() < 6 || password.length() < 8)// #TODO use values from the create user cmd
+	/*else if (username.length() < 6 || password.length() < 8)// #TODO use values from the create user cmd
 	{
 		global->htmlUI->UpdateStatusBar("@invalid_login_input", true);
 		return;
-	}
+	}*/
 
 	global->htmlUI->UpdateStatusBar("@password_encryption_status");
 	{
@@ -65,7 +66,7 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 	{
 		OnUILogin(json);
 	}
-
+			CmdCreateInitialAdmin::CreateAndSend(json.ReadFieldValue<std::string>("username").get(), json.ReadFieldValue<std::string>("password").get(), *this);
 	else if (name == "create_admin")
 	{
 		if (m_connected && !m_connection->IsAuthenticated())

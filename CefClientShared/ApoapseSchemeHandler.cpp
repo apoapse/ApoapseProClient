@@ -103,13 +103,6 @@ void ApoapseSchemeHandler::Cancel()
 	CEF_REQUIRE_IO_THREAD();
 }
 
-void ApoapseSchemeHandler::PrepareResponse(std::unique_ptr<std::string> data)
-{
-	//ASSERT(!m_responseData.has_value());
-
-	//m_responseData = std::move(data);
-}
-
 void ApoapseSchemeHandler::SetMimeFromExtension(const std::string fileExtension)
 {
 	m_mime = "text/html";	// Default mime
