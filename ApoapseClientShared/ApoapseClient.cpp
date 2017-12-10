@@ -66,12 +66,12 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 	{
 		OnUILogin(json);
 	}
-			CmdCreateInitialAdmin::CreateAndSend(json.ReadFieldValue<std::string>("username").get(), json.ReadFieldValue<std::string>("password").get(), *this);
+
 	else if (name == "create_admin")
 	{
 		if (m_connected && !m_connection->IsAuthenticated())
 		{
-
+			CmdCreateInitialAdmin::CreateAndSend(json.ReadFieldValue<std::string>("username").get(), json.ReadFieldValue<std::string>("password").get(), *this);
 		}
 		else
 		{
@@ -108,5 +108,5 @@ void ApoapseClient::OnDisconnect(bool isAuthenticated)
 
 void ApoapseClient::OnUILogin(const JsonHelper& deserializer)
 {
-	Connect(deserializer.ReadFieldValue<std::string>("server").get(), deserializer.ReadFieldValue<std::string>("server").get(), deserializer.ReadFieldValue<std::string>("password").get());
+	Connect(deserializer.ReadFieldValue<std::string>("server").get(), deserializer.ReadFieldValue<std::string>("username").get(), deserializer.ReadFieldValue<std::string>("password").get());
 }
