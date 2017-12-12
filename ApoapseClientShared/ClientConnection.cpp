@@ -6,8 +6,8 @@
 #include "SecurityAlert.h"
 
 ClientConnection::ClientConnection(boost::asio::io_service& ioService, ApoapseClient& client)
-	: GenericConnection(ioService),
-	client(client)
+	: GenericConnection(ioService)
+	, client(client)
 {
 
 }
@@ -15,25 +15,15 @@ ClientConnection::ClientConnection(boost::asio::io_service& ioService, ApoapseCl
 ClientConnection::~ClientConnection()
 {
 	LOG_DEBUG << "~ClientConnection";
-	client.OnDisconnect(IsAuthenticated());
+	client.OnDisconnect();
 }
 
 bool ClientConnection::OnReceivedError(const boost::system::error_code& error)
 {
 	LOG << error.message() << LogSeverity::warning;
-	client.OnDisconnect(IsAuthenticated());
+	client.OnDisconnect();
 
 	return true;
-}
-
-bool ClientConnection::IsAuthenticated() const
-{
-	return m_isAuthenticated;
-}
-
-void ClientConnection::Authenticate()
-{
-	m_isAuthenticated = true;
 }
 
 bool ClientConnection::OnConnectedToServer()
@@ -46,7 +36,7 @@ bool ClientConnection::OnConnectedToServer()
 
 void ClientConnection::OnReceivedValidCommand(std::unique_ptr<Command> cmd)
 {
-	const bool authenticated = IsAuthenticated();
+	const bool authenticated = client.IsAuthenticated();
 
 	if (cmd->GetInfo().serverOnly)
 	{

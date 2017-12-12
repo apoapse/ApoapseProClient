@@ -15,14 +15,14 @@ CommandInfo& CmdConnect::GetInfo() const
 	return info;
 }
 
-void CmdConnect::PrepareLoginCmd(const std::string& username, const std::string& password)
+void CmdConnect::PrepareLoginCmd(const Username& username, const std::string& password)
 {
 	m_serializedData = MessagePackSerializer();
 
 	m_serializedData->Group("",
 	{
 		MSGPK_ORDERED_APPEND(m_serializedData.value(), "protocol_version", protocolVersion),
-		MSGPK_ORDERED_APPEND(m_serializedData.value(), "username", User::HashUsername(username).GetRaw()),
+		MSGPK_ORDERED_APPEND(m_serializedData.value(), "username", username.GetRaw()),
 		MSGPK_ORDERED_APPEND(m_serializedData.value(), "password", User::HashPasswordForServer(password)),
 	});
 }

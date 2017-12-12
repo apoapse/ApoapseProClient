@@ -168,6 +168,7 @@
     <ClInclude Include="CmdCreateInitialAdmin.h" />
     <ClInclude Include="HTMLUI.h" />
     <ClInclude Include="ISignalSender.hpp" />
+    <ClInclude Include="LocalUser.h" />
     <ClInclude Include="User.h" />
     <ClInclude Include="WebResourcesManager.h" />
   </ItemGroup>

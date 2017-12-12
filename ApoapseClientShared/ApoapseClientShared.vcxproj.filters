@@ -55,6 +55,9 @@
     <ClInclude Include="CmdCreateInitialAdmin.h">
       <Filter>Commands</Filter>
     </ClInclude>
+    <ClInclude Include="LocalUser.h">
+      <Filter>UsersSystem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="UI">

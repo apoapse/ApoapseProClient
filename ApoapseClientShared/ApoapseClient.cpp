@@ -5,16 +5,7 @@
 #include "ClientConnection.h"
 #include "HTMLUI.h"
 #include "CmdCreateInitialAdmin.h"
-
-ClientConnection* ApoapseClient::GetConnection() const
-{
-	return m_connection;
-}
-
-bool ApoapseClient::IsConnected() const
-{
-	return m_connected;
-}
+#include "User.h"
 
 void ApoapseClient::Connect(const std::string& serverAddress, const std::string& username, const std::string& password)
 {
@@ -25,8 +16,8 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 	}
 	/*else if (username.length() < 6 || password.length() < 8)// #TODO use values from the create user cmd
 	{
-		global->htmlUI->UpdateStatusBar("@invalid_login_input", true);
-		return;
+	global->htmlUI->UpdateStatusBar("@invalid_login_input", true);
+	return;
 	}*/
 
 	global->htmlUI->UpdateStatusBar("@password_encryption_status");
@@ -34,7 +25,10 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 		m_loginCmd = std::make_unique<CmdConnect>();
 
 		LOG << "Starting login hashing";
-		m_loginCmd.value()->PrepareLoginCmd(username, password);
+		m_identityPasswordHash = User::HashPasswordForIdentityPrivateKey(password);
+		m_lastLoginTryUsername = User::HashUsername(username);
+		m_loginCmd.value()->PrepareLoginCmd(m_lastLoginTryUsername, password);
+
 		LOG << "Login hashing complete";
 	}
 
@@ -60,16 +54,26 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const std::
 	return "";
 }
 
+ClientConnection* ApoapseClient::GetConnection() const
+{
+	return m_connection;
+}
+
+bool ApoapseClient::IsConnectedToServer() const
+{
+	return m_connected;
+}
+
 std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonHelper& json)
 {
 	if (name == "login" && !m_connected)
 	{
-		OnUILogin(json);
+		Connect(json.ReadFieldValue<std::string>("server").get(), json.ReadFieldValue<std::string>("username").get(), json.ReadFieldValue<std::string>("password").get());
 	}
 
 	else if (name == "create_admin")
 	{
-		if (m_connected && !m_connection->IsAuthenticated())
+		if (m_connected && !IsAuthenticated())
 		{
 			CmdCreateInitialAdmin::CreateAndSend(json.ReadFieldValue<std::string>("username").get(), json.ReadFieldValue<std::string>("password").get(), *this);
 		}
@@ -96,17 +100,46 @@ void ApoapseClient::OnSetupState()
 	global->htmlUI->SendSignal("show_setup_state", "");
 }
 
-void ApoapseClient::OnDisconnect(bool isAuthenticated)
+void ApoapseClient::OnDisconnect()
 {
 	m_connected = false;
 	m_connection = nullptr;
+	m_authenticatedUser.reset();
+	m_loginCmd.reset();
 
 	global->htmlUI->UpdateStatusBar("@disconnected_status", true);
 
 	global->htmlUI->SendSignal("login_form_enable_back", "");
 }
 
-void ApoapseClient::OnUILogin(const JsonHelper& deserializer)
+const Username& ApoapseClient::GetLastLoginTryUsername() const
 {
-	Connect(deserializer.ReadFieldValue<std::string>("server").get(), deserializer.ReadFieldValue<std::string>("username").get(), deserializer.ReadFieldValue<std::string>("password").get());
+	return m_lastLoginTryUsername;
+}
+
+void ApoapseClient::Authenticate(const LocalUser& localUser)
+{
+	m_authenticatedUser = localUser;
+
+	LOG << "User " << localUser.username.ToStr() << " authenticated.";
+	global->htmlUI->UpdateStatusBar("@connected_and_authenticated_status", false);
+	global->htmlUI->SendSignal("connected_and_authenticated", ""s);
+}
+
+bool ApoapseClient::IsAuthenticated() const
+{
+	return m_authenticatedUser.has_value();
+}
+
+const hashSecBytes& ApoapseClient::GetIdentityPasswordHash() const
+{
+	ASSERT(!m_identityPasswordHash.empty());
+	return m_identityPasswordHash;
+}
+
+const LocalUser& ApoapseClient::GetLocalUser() const
+{
+	ASSERT_MSG(IsAuthenticated(), "Trying to get the local user but the client is not authenticated");
+
+	return m_authenticatedUser.value();
 }
