@@ -4,7 +4,6 @@
 #include "Json.hpp"
 #include "ClientConnection.h"
 #include "HTMLUI.h"
-#include "CmdCreateInitialAdmin.h"
 #include "User.h"
 
 void ApoapseClient::Connect(const std::string& serverAddress, const std::string& username, const std::string& password)
@@ -49,6 +48,11 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 	threadMainClient.detach();
 }
 
+ApoapseClient::ApoapseClient()
+{
+
+}
+
 std::string ApoapseClient::OnReceivedSignal(const std::string& name, const std::string& data)
 {
 	return "";
@@ -71,17 +75,17 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 		Connect(json.ReadFieldValue<std::string>("server").get(), json.ReadFieldValue<std::string>("username").get(), json.ReadFieldValue<std::string>("password").get());
 	}
 
-	else if (name == "create_admin")
+	/*else if (name == "create_admin")
 	{
 		if (m_connected && !IsAuthenticated())
 		{
-			CmdCreateInitialAdmin::CreateAndSend(json.ReadFieldValue<std::string>("username").get(), json.ReadFieldValue<std::string>("password").get(), *this);
+
 		}
 		else
 		{
 			LOG << LogSeverity::error << "Trying to create an admin account but the the connection is not on setup state";
 		}
-	}
+	}*/
 
 	return "";
 }

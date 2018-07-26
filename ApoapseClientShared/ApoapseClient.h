@@ -18,7 +18,7 @@ class ApoapseClient
 	std::optional<LocalUser> m_authenticatedUser;
 
 public:
-	//ApoapseClient();
+	ApoapseClient();
 	//virtual ~ApoapseClient();
 
 	std::string OnReceivedSignal(const std::string& name, const std::string& data);

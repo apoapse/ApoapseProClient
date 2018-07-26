@@ -151,13 +151,11 @@
     <ClCompile Include="CmdConnect.cpp" />
     <ClCompile Include="CmdServerInfo.cpp" />
     <ClCompile Include="HTMLUI.cpp" />
-    <ClCompile Include="CmdCreateInitialAdmin.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ClientEntryPoint.cpp" />
     <ClCompile Include="User.cpp" />
-    <ClCompile Include="UT_UsergroupBlock.cpp" />
     <ClCompile Include="WebResourcesManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -165,7 +163,6 @@
     <ClInclude Include="ClientConnection.h" />
     <ClInclude Include="ClientEntryPoint.h" />
     <ClInclude Include="CmdConnect.h" />
-    <ClInclude Include="CmdCreateInitialAdmin.h" />
     <ClInclude Include="HTMLUI.h" />
     <ClInclude Include="ISignalSender.hpp" />
     <ClInclude Include="LocalUser.h" />

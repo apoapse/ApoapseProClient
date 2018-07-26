@@ -21,13 +21,7 @@
     <ClCompile Include="CmdServerInfo.cpp">
       <Filter>Commands</Filter>
     </ClCompile>
-    <ClCompile Include="CmdCreateInitialAdmin.cpp">
-      <Filter>Commands</Filter>
-    </ClCompile>
     <ClCompile Include="User.cpp" />
-    <ClCompile Include="UT_UsergroupBlock.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientEntryPoint.h" />
@@ -51,9 +45,6 @@
     </ClInclude>
     <ClInclude Include="User.h">
       <Filter>UsersSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="CmdCreateInitialAdmin.h">
-      <Filter>Commands</Filter>
     </ClInclude>
     <ClInclude Include="LocalUser.h">
       <Filter>UsersSystem</Filter>

@@ -1,11 +1,10 @@
 #pragma once
-#include "IUser.hpp"
 #include <vector>
 #include <string>
 #include "TypeDefs.hpp"
 #include "Username.h"
 
-class User : public IUser
+class User
 {
 	static constexpr UInt32 usernameHashIterations = 100'000;
 	static constexpr UInt32 passwordHashIterationsServer = 100'000;
