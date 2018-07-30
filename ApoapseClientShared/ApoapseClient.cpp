@@ -6,6 +6,7 @@
 #include "HTMLUI.h"
 #include "User.h"
 #include "GlobalVarDefines.hpp"
+#include "CmdRegisterNewUser.h"
 
 void ApoapseClient::Connect(const std::string& serverAddress, const std::string& username, const std::string& password)
 {
@@ -82,6 +83,7 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 	{
 		if (m_connected && !IsAuthenticated())
 		{
+			// #MVP Temporary, need to use a specific create_admin command in the future?
 
 		}
 		else
@@ -89,6 +91,17 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 			LOG << LogSeverity::error << "Trying to create an admin account but the the connection is not on setup state";
 		}
 	}*/
+
+	else if (name == "register_user" && m_connected)
+	{
+		// #MVP Add permissions checks
+		global->htmlUI->UpdateStatusBar("@password_encryption_status");
+
+		const auto username = User::HashUsername(json.ReadFieldValue<std::string>("username").get());
+		const auto password = User::HashPasswordForServer(json.ReadFieldValue<std::string>("password").get());
+		CmdRegisterNewUser::SendRegisterCommand(username, password, *this);
+		m_connection->Close();
+	}
 
 	return "";
 }
@@ -104,7 +117,8 @@ void ApoapseClient::OnConnectedToServer()
 
 void ApoapseClient::OnSetupState()
 {
-	global->htmlUI->SendSignal("show_setup_state", "");
+	global->htmlUI->SendSignal("show_setup_state", "test");
+	global->htmlUI->UpdateStatusBar("@connected_in_setup_phase_status");
 }
 
 void ApoapseClient::OnDisconnect()
@@ -113,6 +127,8 @@ void ApoapseClient::OnDisconnect()
 	m_connection = nullptr;
 	m_authenticatedUser.reset();
 	m_loginCmd.reset();
+
+	m_IOService->reset();
 
 	global->htmlUI->UpdateStatusBar("@disconnected_status", true);
 

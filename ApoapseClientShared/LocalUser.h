@@ -5,6 +5,6 @@
 struct LocalUser 
 {
 	Username username;
-	PublicKeyBytes publicKey;
-	PrivateKeyBytes privateKey;
+//	PublicKeyBytes publicKey;
+//	PrivateKeyBytes privateKey;
 };

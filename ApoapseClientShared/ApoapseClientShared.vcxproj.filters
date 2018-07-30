@@ -22,6 +22,9 @@
       <Filter>Commands</Filter>
     </ClCompile>
     <ClCompile Include="User.cpp" />
+    <ClCompile Include="CmdRegisterNewUser.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientEntryPoint.h" />
@@ -48,6 +51,9 @@
     </ClInclude>
     <ClInclude Include="LocalUser.h">
       <Filter>UsersSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="CmdRegisterNewUser.h">
+      <Filter>Commands</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

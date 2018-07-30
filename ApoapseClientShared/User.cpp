@@ -4,6 +4,7 @@
 #include "Hash.hpp"
 #include "RSA.hpp"
 #include "AES.hpp"
+#include "Random.hpp"
 
 Username User::HashUsername(const std::string& username)
 {
@@ -21,6 +22,11 @@ std::vector<byte> User::HashPasswordForServer(const std::string& password)
 	output.insert(output.begin(), digest.begin(), digest.end());
 
 	return output;
+}
+
+std::vector<byte> User::GenerateTemporaryPassword()
+{
+	return Cryptography::GenerateRandomBytes(sha256Length);
 }
 
 std::pair<PrivateKeyBytes, PublicKeyBytes> User::GenerateIdentityKey()

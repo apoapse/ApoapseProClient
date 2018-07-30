@@ -3,7 +3,7 @@
 #include "Common.h"
 #include "CommandsManager.h"
 #include "User.h"
-#include "ProtocolVersion.hpp"
+#include "GlobalVarDefines.hpp"
 
 CommandInfo& CmdConnect::GetInfo() const
 {
@@ -11,6 +11,12 @@ CommandInfo& CmdConnect::GetInfo() const
 	info.command = CommandId::connect;
 	info.serverOnly = true;
 	info.onlyNonAuthenticated = true;
+	info.fields =
+	{
+		CommandField{ "protocol_version", FieldRequirement::any_mendatory, FIELD_VALUE(int) },
+		CommandField{ "username", FieldRequirement::any_mendatory, FIELD_VALUE_VALIDATOR(std::vector<byte>, [&](const auto& hash) { return (hash.size() == sha256Length); }) },
+		CommandField{ "password", FieldRequirement::any_mendatory, FIELD_VALUE_VALIDATOR(std::vector<byte>, [&](const auto& hash) { return (hash.size() == sha256Length); }) },
+	};
 
 	return info;
 }
