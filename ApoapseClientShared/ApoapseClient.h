@@ -5,11 +5,13 @@
 #include "CryptographyTypes.hpp"
 #include "LocalUser.h"
 #include <optional>
+#include <thread>
 class ClientConnection;
 
 class ApoapseClient
 {
-	boost::asio::io_service m_IOService;
+	std::unique_ptr<boost::asio::io_service> m_IOService;
+	std::thread m_ioServiceThread;
 	ClientConnection* m_connection;
 	bool m_connected;
 	std::optional<std::unique_ptr<CmdConnect>> m_loginCmd;

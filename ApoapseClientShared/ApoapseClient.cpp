@@ -5,6 +5,7 @@
 #include "ClientConnection.h"
 #include "HTMLUI.h"
 #include "User.h"
+#include "GlobalVarDefines.hpp"
 
 void ApoapseClient::Connect(const std::string& serverAddress, const std::string& username, const std::string& password)
 {
@@ -32,20 +33,22 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 	}
 
 	{
+		m_IOService = std::make_unique<boost::asio::io_service>();
+
 		global->htmlUI->UpdateStatusBar("@connecting_status");
-		const UInt16 port = 3000;
-		auto connection = std::make_shared<ClientConnection>(m_IOService, *this);
+		const UInt16 port = defaultServerPort;
+		auto connection = std::make_shared<ClientConnection>(*m_IOService, *this);
 		connection->Connect(serverAddress, port);
 
 		m_connection = connection.get();
 		LOG << "TCP Client started to " << serverAddress << " port: " << port;
 	}
 
-	std::thread threadMainClient([this]
+	m_ioServiceThread = std::thread([this]
 	{
-		m_IOService.run();
+		m_IOService->run();
 	});
-	threadMainClient.detach();
+	m_ioServiceThread.detach();
 }
 
 ApoapseClient::ApoapseClient()
