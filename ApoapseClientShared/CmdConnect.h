@@ -5,7 +5,7 @@
 #include "Username.h"
 class ClientConnection;
 
-class CmdConnect : public Command
+class CmdConnect final : public Command
 {
 
 

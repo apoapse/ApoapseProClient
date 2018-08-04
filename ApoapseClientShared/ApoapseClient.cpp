@@ -26,7 +26,7 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 		m_loginCmd = std::make_unique<CmdConnect>();
 
 		LOG << "Starting login hashing";
-		m_identityPasswordHash = User::HashPasswordForIdentityPrivateKey(password);
+		//m_identityPasswordHash = User::HashPasswordForIdentityPrivateKey(password); // #MVP
 		m_lastLoginTryUsername = User::HashUsername(username);
 		m_loginCmd.value()->PrepareLoginCmd(m_lastLoginTryUsername, password);
 
@@ -103,6 +103,12 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 		m_connection->Close();
 	}
 
+	else if (name == "create_new_room" && m_connected && IsAuthenticated())
+	{
+		// #MVP Add permissions checks
+		m_roomManager->SendCreateNewRoom(json.ReadFieldValue<std::string>("name").get());
+	}
+
 	return "";
 }
 
@@ -143,8 +149,22 @@ const Username& ApoapseClient::GetLastLoginTryUsername() const
 void ApoapseClient::Authenticate(const LocalUser& localUser)
 {
 	m_authenticatedUser = localUser;
-
 	LOG << "User " << localUser.username.ToStr() << " authenticated.";
+
+	OnAuthenticated(localUser);
+}
+
+void ApoapseClient::OnAuthenticated(const LocalUser& localUser)
+{
+	// Database
+	{
+	}
+
+	// Systems
+	m_roomManager = std::make_unique<RoomManager>(*this);
+	m_roomManager->Initialize();
+
+	// UI
 	global->htmlUI->UpdateStatusBar("@connected_and_authenticated_status", false);
 	global->htmlUI->SendSignal("connected_and_authenticated", ""s);
 }
@@ -165,4 +185,11 @@ const LocalUser& ApoapseClient::GetLocalUser() const
 	ASSERT_MSG(IsAuthenticated(), "Trying to get the local user but the client is not authenticated");
 
 	return m_authenticatedUser.value();
+}
+
+RoomManager& ApoapseClient::GetRoomManager() const
+{
+	ASSERT(IsAuthenticated());
+
+	return *m_roomManager;
 }

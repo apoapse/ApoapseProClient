@@ -3,7 +3,7 @@
 #include "Username.h"
 class ApoapseClient;
 
-class CmdRegisterNewUser : public Command
+class CmdRegisterNewUser final : public Command
 {
 	
 public:

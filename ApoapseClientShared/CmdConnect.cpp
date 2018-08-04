@@ -33,4 +33,4 @@ void CmdConnect::PrepareLoginCmd(const Username& username, const std::string& pa
 	});
 }
 
-//APOAPSE_COMMAND_REGISTER(CmdConnect, CommandId::connect);
+APOAPSE_COMMAND_REGISTER(CmdConnect, CommandId::connect);

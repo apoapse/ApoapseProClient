@@ -6,6 +6,7 @@
 #include "LocalUser.h"
 #include <optional>
 #include <thread>
+#include "RoomManager.h"
 class ClientConnection;
 
 class ApoapseClient
@@ -18,6 +19,8 @@ class ApoapseClient
 	hashSecBytes m_identityPasswordHash;
 	Username m_lastLoginTryUsername;
 	std::optional<LocalUser> m_authenticatedUser;
+
+	std::unique_ptr<RoomManager> m_roomManager;
 
 public:
 	ApoapseClient();
@@ -39,5 +42,9 @@ public:
 	bool IsAuthenticated() const;
 	const hashSecBytes& GetIdentityPasswordHash() const;
 	const LocalUser& GetLocalUser() const;
+
+	RoomManager& GetRoomManager() const;
 private:
+
+	void OnAuthenticated(const LocalUser& localUser);
 };
