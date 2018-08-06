@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "ClientEntryPoint.h"
 #include "Common.h"
-#include "LibraryLoader.hpp"
 #include "HTMLUI.h"
 #include "ApoapseClient.h"
 
@@ -34,20 +33,6 @@ int ApoapseClientEntry::ClientMain(const std::vector<std::string>& launchArgs)
 		return 0;
 	}
 #endif //UNIT_TESTS
-
-	// Database
-	/*boost::shared_ptr<IDatabase> databaseSharedPtr = LibraryLoader::LoadLibrary<IDatabase>("DatabaseImpl.sqlite");
-	global->database = databaseSharedPtr.get();
-	const char* dbParams[1];
-	dbParams[0] = "server_database.db";
-	if (databaseSharedPtr->Open(dbParams, 1))
-	{
-		LOG << "Database accessed successfully. Params: " << *dbParams;
-	}
-	else
-	{
-		FatalError("Unable to access the database");
-	}*/
 
 	return 1;
 }

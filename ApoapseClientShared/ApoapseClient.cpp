@@ -7,6 +7,9 @@
 #include "User.h"
 #include "GlobalVarDefines.hpp"
 #include "CmdRegisterNewUser.h"
+#include "LibraryLoader.hpp"
+#include "DatabaseIntegrityPatcher.h"
+#include "ClientDatabaseScheme.hpp"
 
 void ApoapseClient::Connect(const std::string& serverAddress, const std::string& username, const std::string& password)
 {
@@ -135,6 +138,7 @@ void ApoapseClient::OnDisconnect()
 	m_loginCmd.reset();
 
 	m_IOService->reset();
+	UnloadDatabase();
 
 	global->htmlUI->UpdateStatusBar("@disconnected_status", true);
 
@@ -158,6 +162,18 @@ void ApoapseClient::OnAuthenticated(const LocalUser& localUser)
 {
 	// Database
 	{
+		if (!LoadDatabase())
+		{
+			m_connection->Close();
+			return;
+		}
+
+		DatabaseIntegrityPatcher dbIntegrity(GetClientDbScheme());
+		if (!dbIntegrity.CheckAndResolve())
+		{
+			m_connection->Close();
+			return;
+		}
 	}
 
 	// Systems
@@ -167,6 +183,32 @@ void ApoapseClient::OnAuthenticated(const LocalUser& localUser)
 	// UI
 	global->htmlUI->UpdateStatusBar("@connected_and_authenticated_status", false);
 	global->htmlUI->SendSignal("connected_and_authenticated", ""s);
+}
+
+bool ApoapseClient::LoadDatabase()
+{
+	m_databaseSharedPtr = LibraryLoader::LoadLibrary<IDatabase>("DatabaseImpl.sqlite");
+	global->database = m_databaseSharedPtr.get();
+	const char* dbParams[1];
+	std::string dbFileName = "user_" + GetLocalUser().username.ToStr() + ".db";
+	dbParams[0] = dbFileName.c_str();
+	if (m_databaseSharedPtr->Open(dbParams, 1))
+	{
+		LOG << "Database accessed successfully. Params: " << *dbParams;
+		return true;
+	}
+	else
+	{
+		LOG << "Unable to access the database. Params: " << *dbParams << LogSeverity::error;
+		return false;
+	}
+}
+
+void ApoapseClient::UnloadDatabase()
+{
+	m_databaseSharedPtr->Close();
+	m_databaseSharedPtr.reset();
+	global->database = nullptr;
 }
 
 bool ApoapseClient::IsAuthenticated() const

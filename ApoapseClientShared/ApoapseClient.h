@@ -7,10 +7,13 @@
 #include <optional>
 #include <thread>
 #include "RoomManager.h"
+#include <boost/shared_ptr.hpp>
+#include "Database.hpp"
 class ClientConnection;
 
 class ApoapseClient
 {
+	boost::shared_ptr<IDatabase> m_databaseSharedPtr;
 	std::unique_ptr<boost::asio::io_service> m_IOService;
 	std::thread m_ioServiceThread;
 	ClientConnection* m_connection;
@@ -47,4 +50,6 @@ public:
 private:
 
 	void OnAuthenticated(const LocalUser& localUser);
+	bool LoadDatabase();
+	void UnloadDatabase();
 };

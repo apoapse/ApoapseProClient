@@ -164,6 +164,7 @@
   <ItemGroup>
     <ClInclude Include="ApoapseClient.h" />
     <ClInclude Include="ClientConnection.h" />
+    <ClInclude Include="ClientDatabaseScheme.hpp" />
     <ClInclude Include="ClientEntryPoint.h" />
     <ClInclude Include="CmdConnect.h" />
     <ClInclude Include="CmdCreateRoom.h" />

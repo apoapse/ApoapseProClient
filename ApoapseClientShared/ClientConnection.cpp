@@ -44,8 +44,10 @@ void ClientConnection::OnReceivedValidCommand(std::unique_ptr<Command> cmd)
 		return;
 	}
 
+#ifndef DEBUG
 	try
 	{
+#endif
 		if (cmd->GetInfo().requireAuthentication && authenticated)
 		{
 			cmd->Process(*this);
@@ -62,10 +64,12 @@ void ClientConnection::OnReceivedValidCommand(std::unique_ptr<Command> cmd)
 		{
 			SecurityLog::LogAlert(ApoapseErrorCode::cannot_processs_cmd_from_this_connection_type, *this);
 		}
+#ifndef DEBUG
 	}
 	catch (const std::exception& e)
 	{
 		LOG << LogSeverity::error << "Exception trigged while processing a command of type " << static_cast<UInt16>(cmd->GetInfo().command) << ": " << e;
 		Close();
 	}
+#endif
 }
