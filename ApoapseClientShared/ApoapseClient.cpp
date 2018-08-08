@@ -112,6 +112,11 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 		m_roomManager->SendCreateNewRoom(json.ReadFieldValue<std::string>("name").get());
 	}
 
+	else if (name == "loadRoomUI" && m_connected && IsAuthenticated())
+	{
+		m_roomManager->SetUISelectedRoom(json.ReadFieldValue<Int64>("internalId").get());
+	}
+
 	return "";
 }
 
@@ -138,7 +143,9 @@ void ApoapseClient::OnDisconnect()
 	m_loginCmd.reset();
 
 	m_IOService->reset();
-	UnloadDatabase();
+
+	if (global->database != nullptr)
+		UnloadDatabase();
 
 	global->htmlUI->UpdateStatusBar("@disconnected_status", true);
 
@@ -171,6 +178,7 @@ void ApoapseClient::OnAuthenticated(const LocalUser& localUser)
 		DatabaseIntegrityPatcher dbIntegrity(GetClientDbScheme());
 		if (!dbIntegrity.CheckAndResolve())
 		{
+			LOG << LogSeverity::error << "The database integrity patcher has failed";
 			m_connection->Close();
 			return;
 		}
