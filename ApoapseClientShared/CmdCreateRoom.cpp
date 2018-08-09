@@ -21,10 +21,10 @@ CommandInfo& CmdCreateRoom::GetInfo() const
 
 void CmdCreateRoom::Process(ClientConnection& sender)
 {
-	ApoapseRoom room;
-	room.uuid = Uuid(GetFieldsData().GetValue<ByteContainer>("uuid"));
+	auto room = std::make_unique<ApoapseRoom>();
+	room->uuid = Uuid(GetFieldsData().GetValue<ByteContainer>("uuid"));
 
-	sender.client.GetRoomManager().AddNewRoomFromServer(room);
+	sender.client.GetRoomManager().AddNewRoomFromServer(std::move(room));
 }
 
 void CmdCreateRoom::SendCreateRoom(const ApoapseRoom& room, ApoapseClient& client)

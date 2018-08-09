@@ -40,7 +40,38 @@ static std::string GetClientDbScheme()
 			]
 		},
 		{
+			"name": "local_settings",
+			"fields":
+			[
+				{
+					"name": "name",
+					"type": "text",
+					"unique": true
+				},
+				{
+					"name": "value",
+					"type": "text"
+				}
+			]
+		},
+		{
 			"name": "rooms",
+			"fields":
+			[
+				{
+					"name": "id",
+					"type": "integer",
+					"primary": true
+				},		
+				{
+					"name": "uuid",
+					"type": "blob",
+					"unique": true
+				}
+			]
+		},
+		{
+			"name": "threads",
 			"fields":
 			[
 				{

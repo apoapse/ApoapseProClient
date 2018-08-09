@@ -112,6 +112,11 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 		m_roomManager->SendCreateNewRoom(json.ReadFieldValue<std::string>("name").get());
 	}
 
+	else if (name == "create_new_thread" && m_connected && IsAuthenticated())
+	{
+		m_roomManager->SendAddNewThread(json.ReadFieldValue<std::string>("name").get());
+	}
+
 	else if (name == "loadRoomUI" && m_connected && IsAuthenticated())
 	{
 		m_roomManager->SetUISelectedRoom(json.ReadFieldValue<Int64>("internalId").get());
