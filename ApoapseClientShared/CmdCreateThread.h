@@ -12,7 +12,7 @@ public:
 	CommandInfo& GetInfo() const override;
 	void Process(ClientConnection& sender) override;
 
-	static void SendCreateThread(const Uuid& uuid, const std::string& name, ApoapseClient& client);
+	static void SendCreateThread(const Uuid& threadUuid, const Uuid& roomUuid, const std::string& name, ApoapseClient& client);
 private:
 
 };

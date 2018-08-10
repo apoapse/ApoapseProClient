@@ -78,6 +78,10 @@ static std::string GetClientDbScheme()
 					"name": "id",
 					"type": "integer",
 					"primary": true
+				},
+				{
+					"name": "room_uuid",
+					"type": "blob"
 				},		
 				{
 					"name": "uuid",

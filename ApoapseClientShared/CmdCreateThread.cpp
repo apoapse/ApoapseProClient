@@ -14,6 +14,7 @@ CommandInfo& CmdCreateThread::GetInfo() const
 	info.fields =
 	{
 		CommandField{ "uuid", FieldRequirement::any_mendatory, FIELD_VALUE_VALIDATOR(std::vector<byte>, Uuid::IsValid) },
+		CommandField{ "room_uuid", FieldRequirement::any_mendatory, FIELD_VALUE_VALIDATOR(ByteContainer, Uuid::IsValid) },
 	};
 
 	return info;
@@ -22,14 +23,16 @@ CommandInfo& CmdCreateThread::GetInfo() const
 void CmdCreateThread::Process(ClientConnection& sender)
 {
 	const auto uuid = Uuid(GetFieldsData().GetValue<ByteContainer>("uuid"));
+	const auto roomUuid = Uuid(GetFieldsData().GetValue<ByteContainer>("room_uuid"));
 
-	sender.client.GetRoomManager().AddNewThreadFromServer(uuid, ""); // #MVP support names
+	sender.client.GetRoomManager().AddNewThreadFromServer(uuid, roomUuid, ""); // #MVP support names
 }
 
-void CmdCreateThread::SendCreateThread(const Uuid& uuid, const std::string& name, ApoapseClient& client)
+void CmdCreateThread::SendCreateThread(const Uuid& threadUuid, const Uuid& roomUuid, const std::string& name, ApoapseClient& client)
 {
 	MessagePackSerializer ser;
-	ser.UnorderedAppend("uuid", uuid.GetInRawFormat());
+	ser.UnorderedAppend("uuid", threadUuid.GetInRawFormat());
+	ser.UnorderedAppend("room_uuid", roomUuid.GetInRawFormat());
 
 	CmdCreateThread cmd;
 	cmd.Send(ser, *client.GetConnection());

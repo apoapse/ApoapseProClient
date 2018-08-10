@@ -10,6 +10,7 @@
 #include "SQLQuery.h"
 #include "ApoapseThread.h"
 #include "CmdCreateThread.h"
+#include "SQLUtils.hpp"
 
 RoomManager::RoomManager(ApoapseClient& client) : apoapseClient(client)
 {
@@ -37,7 +38,8 @@ void RoomManager::Initialize()
 		SetUISelectedRoom(0);	// #TODO #MVP Select the last room used by the user, not the first one in the list like currently
 
 	UpdateUI();
-	LoadThreadsList();
+
+	LoadThreadsLists();
 	UpdateThreadListUI();
 }
 
@@ -51,8 +53,6 @@ void RoomManager::SendCreateNewRoom(const std::string& name)
 
 void RoomManager::AddNewRoomFromServer(std::unique_ptr<ApoapseRoom> room)
 {
-	m_rooms.push_back(std::move(room));
-
 	// SAVE
 	{
 		DbId newId = m_rooms.size();
@@ -61,6 +61,8 @@ void RoomManager::AddNewRoomFromServer(std::unique_ptr<ApoapseRoom> room)
 		query << INSERT_INTO << "rooms" << " (id, uuid)" << VALUES << "(" << newId << "," << room->uuid.GetInRawFormat() << ")";
 		query.Exec();
 	}
+
+	m_rooms.push_back(std::move(room));
 
 	if (m_rooms.size() == 1)
 		SetUISelectedRoom(0);	// If the user created his first room, we automatically switch to it
@@ -74,6 +76,8 @@ void RoomManager::SetUISelectedRoom(UInt64 internalRoomId)
 	{
 		m_uiSelectedRoom = m_rooms[internalRoomId].get();
 		LOG << "Selected room " << m_uiSelectedRoom->uuid.GetAsByteVector();
+
+		UpdateThreadListUI();
 	}
 	else
 	{
@@ -86,35 +90,57 @@ const ApoapseRoom* RoomManager::GetSelectedRoom() const
 	return m_uiSelectedRoom;
 }
 
-void RoomManager::SendAddNewThread(const std::string& name)
+ApoapseRoom* RoomManager::GetRoomByUuid(const Uuid& uuid) const
 {
-	const auto uuid = Uuid::Generate();
+	const auto res = std::find_if(m_rooms.begin(), m_rooms.end(), [&](const auto& room)
+	{
+		return (room->uuid == uuid);
+	});
 
-	CmdCreateThread::SendCreateThread(uuid, name, apoapseClient);
+	return ((res != m_rooms.end()) ? res->get() : nullptr);
 }
 
-void RoomManager::AddNewThreadFromServer(const Uuid& uuid, const std::string& name)
+void RoomManager::SendAddNewThread(const std::string& name)
+{
+	ASSERT(GetSelectedRoom() != nullptr);
+	const auto uuid = Uuid::Generate();
+
+	CmdCreateThread::SendCreateThread(uuid, GetSelectedRoom()->uuid, name, apoapseClient);
+}
+
+void RoomManager::AddNewThreadFromServer(const Uuid& uuid, const Uuid& roomUuid, const std::string& name)
 {
 	ASSERT(m_uiSelectedRoom != nullptr);
+	const auto relatedRoomUuid = GetRoomByUuid(roomUuid);
+
+	if (relatedRoomUuid == nullptr)
+	{
+		LOG << LogSeverity::error << "Trying to add the thread " << uuid.GetAsByteVector() << " to a room that does not exist";
+		return;
+	}
 
 	SimpleApoapseThread thread;
-	thread.dbId = GetSelectedRoom()->threads.size();
+	thread.dbId = SQLUtils::CountRows("threads");
 	thread.uuid = uuid;
+	thread.roomUuid = roomUuid;
 	thread.name = name;
 
 	// SAVE
 	{
 		SQLQuery query(*global->database);
-		query << INSERT_INTO << "threads" << " (id, uuid)" << VALUES << "(" << thread.dbId << "," << thread.uuid.GetInRawFormat() << ")";
+		query << INSERT_INTO << "threads" << " (id, uuid, room_uuid)" << VALUES << "(" << thread.dbId << "," << thread.uuid.GetInRawFormat() << "," << thread.roomUuid.GetInRawFormat() << ")";
 		query.Exec();
 	}
 
-	m_uiSelectedRoom->threads.push_back(thread);
+	relatedRoomUuid->threads.push_back(thread);
 
-	OnNewThreadAdded(thread);
+	if (relatedRoomUuid == GetSelectedRoom())
+	{
+		OnNewThreadAddedToCurrentRoom(thread);
+	}
 }
 
-void RoomManager::OnNewThreadAdded(SimpleApoapseThread& thread)
+void RoomManager::OnNewThreadAddedToCurrentRoom(SimpleApoapseThread& thread)
 {
 	JsonHelper ser;
 
@@ -124,11 +150,12 @@ void RoomManager::OnNewThreadAdded(SimpleApoapseThread& thread)
 	global->htmlUI->SendSignal("on_added_new_thread", ser.Generate());
 }
 
-void RoomManager::LoadThreadsList()
+void RoomManager::LoadThreadsLists()
 {
+	for (auto& room : m_rooms)
 	{
 		SQLQuery query(*global->database);
-		query << SELECT << ALL << FROM << "threads" << ORDER_BY << "id" << ASC;
+		query << SELECT << ALL << FROM << "threads" << WHERE << "room_uuid" << EQUALS << room->uuid.GetInRawFormat() << ORDER_BY << "id" << ASC ;
 		auto res = query.Exec();
 
 		for (const auto& row : res)
@@ -136,8 +163,9 @@ void RoomManager::LoadThreadsList()
 			SimpleApoapseThread thread;
 			thread.dbId = row[0].GetInt64();
 			thread.uuid = Uuid(row[1].GetByteArray());
+			thread.roomUuid = room->uuid;
 
-			m_uiSelectedRoom->threads.push_back(thread);
+			room->threads.push_back(thread);
 		}
 	}
 }
