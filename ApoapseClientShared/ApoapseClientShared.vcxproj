@@ -110,6 +110,10 @@
       <OptimizeReferences>false</OptimizeReferences>
       <AdditionalOptions>/WHOLEARCHIVE:ApoapseCore.lib %(AdditionalOptions)</AdditionalOptions>
     </Link>
+    <PostBuildEvent>
+      <Message>
+      </Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -147,7 +151,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ApoapseClient.cpp" />
+    <ClCompile Include="ApoapseMessage.cpp" />
+    <ClCompile Include="ApoapseThread.cpp" />
     <ClCompile Include="ClientConnection.cpp" />
+    <ClCompile Include="CmdApoapseMessage.cpp" />
     <ClCompile Include="CmdConnect.cpp" />
     <ClCompile Include="CmdCreateRoom.cpp" />
     <ClCompile Include="CmdCreateThread.cpp" />
@@ -164,10 +171,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ApoapseClient.h" />
+    <ClInclude Include="ApoapseMessage.h" />
     <ClInclude Include="ApoapseThread.h" />
     <ClInclude Include="ClientConnection.h" />
     <ClInclude Include="ClientDatabaseScheme.hpp" />
     <ClInclude Include="ClientEntryPoint.h" />
+    <ClInclude Include="CmdApoapseMessage.h" />
     <ClInclude Include="CmdConnect.h" />
     <ClInclude Include="CmdCreateRoom.h" />
     <ClInclude Include="CmdCreateThread.h" />

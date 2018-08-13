@@ -36,6 +36,15 @@
     <ClCompile Include="User.cpp">
       <Filter>UsersSystem</Filter>
     </ClCompile>
+    <ClCompile Include="ApoapseThread.cpp">
+      <Filter>Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="CmdApoapseMessage.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="ApoapseMessage.cpp">
+      <Filter>Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientEntryPoint.h" />
@@ -79,6 +88,12 @@
       <Filter>Systems</Filter>
     </ClInclude>
     <ClInclude Include="CmdCreateThread.h">
+      <Filter>Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="ApoapseMessage.h">
+      <Filter>Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="CmdApoapseMessage.h">
       <Filter>Commands</Filter>
     </ClInclude>
   </ItemGroup>

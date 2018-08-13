@@ -122,6 +122,19 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 		m_roomManager->SetUISelectedRoom(json.ReadFieldValue<Int64>("internalId").get());
 	}
 
+	else if (name == "loadThread" && m_connected && IsAuthenticated())
+	{
+		m_roomManager->SetActiveThread(json.ReadFieldValue<Int64>("internalId").get());
+	}
+
+	else if (name == "send_new_message" && m_connected && IsAuthenticated())
+	{
+		auto* activeThread = m_roomManager->GetActiveThread();
+		ASSERT(activeThread != nullptr);
+
+		activeThread->SendNewMessage(json.ReadFieldValue<std::string>("msg_content").get());
+	}
+
 	return "";
 }
 

@@ -1,5 +1,8 @@
 #pragma once
 #include "Username.h"
+#include "Uuid.h"
+#include "ApoapseMessage.h"
+class RoomManager;
 
 struct SimpleApoapseThread
 {
@@ -9,15 +12,24 @@ struct SimpleApoapseThread
 	std::string name;
 	Username lastMessageAuthor;
 	std::string lastMessageText;
+
+	virtual ~SimpleApoapseThread() = default;
 };
 
-class ApoapseThread
+class ApoapseThread : public SimpleApoapseThread
 {
-	
+	std::vector<std::unique_ptr<ApoapseMessage>> m_messages;
 
 public:
-	ApoapseThread();
+	RoomManager* roomManager;
+
+	ApoapseThread(const SimpleApoapseThread& simpleThread, RoomManager* roomManager);
+	void LoadMessages();
+	void OnUIDisplay();
+	void SendNewMessage(const std::string& content);
+	void OnAddedNewMessageFromServer(std::unique_ptr<ApoapseMessage> message);
 // 	virtual ~ApoapseThread();
 	
 private:
+	void UpdateMessagesListUI() const;
 };

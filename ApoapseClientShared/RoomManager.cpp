@@ -8,7 +8,6 @@
 #include "ByteUtils.hpp" // TEMP
 #include "HTMLUI.h"
 #include "SQLQuery.h"
-#include "ApoapseThread.h"
 #include "CmdCreateThread.h"
 #include "SQLUtils.hpp"
 
@@ -100,6 +99,18 @@ ApoapseRoom* RoomManager::GetRoomByUuid(const Uuid& uuid) const
 	return ((res != m_rooms.end()) ? res->get() : nullptr);
 }
 
+void RoomManager::SetActiveThread(Int64 id)
+{
+	ASSERT(m_uiSelectedRoom != nullptr);
+	const auto& thread = GetSelectedRoom()->threads.at(id);
+
+	m_selectedThread = ApoapseThread(thread, this); // #TODO cache the Apoapse threads?
+	//LOG << "Apoapse thread " << thread.uuid.GetAsByteVector() << " set to active";
+
+	m_selectedThread->LoadMessages();
+	m_selectedThread->OnUIDisplay();
+}
+
 void RoomManager::SendAddNewThread(const std::string& name)
 {
 	ASSERT(GetSelectedRoom() != nullptr);
@@ -140,11 +151,32 @@ void RoomManager::AddNewThreadFromServer(const Uuid& uuid, const Uuid& roomUuid,
 	}
 }
 
+ApoapseThread* RoomManager::GetActiveThread()
+{
+	return (m_selectedThread.has_value() ? &m_selectedThread.value() : nullptr);
+}
+
+SimpleApoapseThread* RoomManager::GetThreadByUuid(const Uuid& uuid)
+{
+	for (const auto& room : m_rooms)
+	{
+		const auto res = std::find_if(room->threads.begin(), room->threads.end(), [&](const auto& thread)
+		{
+			return (thread.uuid == uuid);
+		});
+
+		if (res != room->threads.end())
+			return &*res;
+	}
+
+	return nullptr;
+}
+
 void RoomManager::OnNewThreadAddedToCurrentRoom(SimpleApoapseThread& thread)
 {
 	JsonHelper ser;
 
-	ser.Insert("internal_id", thread.dbId);
+	ser.Insert("internal_id", m_uiSelectedRoom->threads.size());
 	ser.Insert("name", BytesToHexString(thread.uuid.GetAsByteVector())); // TEMP #MVP
 
 	global->htmlUI->SendSignal("on_added_new_thread", ser.Generate());
@@ -162,15 +194,17 @@ void RoomManager::LoadThreadsLists()
 		{
 			SimpleApoapseThread thread;
 			thread.dbId = row[0].GetInt64();
-			thread.uuid = Uuid(row[1].GetByteArray());
+			thread.uuid = Uuid(row[2].GetByteArray());
 			thread.roomUuid = room->uuid;
+
+			ASSERT(Uuid(row[1].GetByteArray()) == thread.roomUuid);
 
 			room->threads.push_back(thread);
 		}
 	}
 }
 
-void RoomManager::UpdateThreadListUI()
+void RoomManager::UpdateThreadListUI() const
 {
 	if (m_uiSelectedRoom == nullptr)
 		return;
@@ -184,7 +218,7 @@ void RoomManager::UpdateThreadListUI()
 		JsonHelper serThread;
 		const auto& thread = selectedRoom->threads.at(i);
 
-		serThread.Insert("internal_id", thread.dbId);
+		serThread.Insert("internal_id", i);
 		serThread.Insert("name", BytesToHexString(thread.uuid.GetAsByteVector())); // TEMP #MVP
 
 		ser.Insert("threads", serThread);
@@ -193,7 +227,7 @@ void RoomManager::UpdateThreadListUI()
 	global->htmlUI->SendSignal("threads_list_update", ser.Generate());
 }
 
-void RoomManager::UpdateUI()
+void RoomManager::UpdateUI() const
 {
 	// Rooms
 	{

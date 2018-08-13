@@ -1,8 +1,8 @@
 #pragma once
 #include "Uuid.h"
+#include <optional>
 #include "ApoapseThread.h"
 class ApoapseClient;
-struct SimpleApoapseThread;
 
 struct ApoapseRoom
 {
@@ -14,10 +14,12 @@ struct ApoapseRoom
 class RoomManager
 {
 	std::vector<std::unique_ptr<ApoapseRoom>> m_rooms;
-	ApoapseClient& apoapseClient;
 	ApoapseRoom* m_uiSelectedRoom = nullptr;
+	std::optional<ApoapseThread> m_selectedThread;
 
 public:
+	ApoapseClient& apoapseClient;
+
 	RoomManager(ApoapseClient& client);
 	void Initialize();
 	void SendCreateNewRoom(const std::string& name);
@@ -25,15 +27,18 @@ public:
 	void SetUISelectedRoom(UInt64 internalRoomId);
 	const ApoapseRoom* GetSelectedRoom() const;
 	ApoapseRoom* GetRoomByUuid(const Uuid& uuid) const;
+	void SetActiveThread(Int64 id);
 
 	void SendAddNewThread(const std::string& name);
 	void AddNewThreadFromServer(const Uuid& uuid, const Uuid& roomUuid, const std::string& name);
+	ApoapseThread* GetActiveThread();
+	SimpleApoapseThread* GetThreadByUuid(const Uuid& uuid);
 	//virtual ~RoomManager();
 	
 private:
 	void OnNewThreadAddedToCurrentRoom(SimpleApoapseThread& thread);
 	void LoadThreadsLists();
 
-	void UpdateThreadListUI();
-	void UpdateUI();
+	void UpdateThreadListUI() const;
+	void UpdateUI() const;
 };
