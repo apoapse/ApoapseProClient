@@ -4,6 +4,7 @@
 
 #include <include/cef_sandbox_win.h>
 #include "ApoapseCefApp.h"
+#include "Resource.h"
 
 int main(int argcount, char* argv[])
 {
