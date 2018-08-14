@@ -147,7 +147,8 @@ void RoomManager::AddNewThreadFromServer(const Uuid& uuid, const Uuid& roomUuid,
 
 	if (relatedRoomUuid == GetSelectedRoom())
 	{
-		OnNewThreadAddedToCurrentRoom(thread);
+		const UIId uiId = (relatedRoomUuid->threads.size() - 1);
+		OnNewThreadAddedToCurrentRoom(thread, uiId);
 	}
 }
 
@@ -172,11 +173,11 @@ SimpleApoapseThread* RoomManager::GetThreadByUuid(const Uuid& uuid)
 	return nullptr;
 }
 
-void RoomManager::OnNewThreadAddedToCurrentRoom(SimpleApoapseThread& thread)
+void RoomManager::OnNewThreadAddedToCurrentRoom(SimpleApoapseThread& thread, UIId uiId)
 {
 	JsonHelper ser;
 
-	ser.Insert("internal_id", m_uiSelectedRoom->threads.size());
+	ser.Insert("internal_id", uiId);
 	ser.Insert("name", BytesToHexString(thread.uuid.GetAsByteVector())); // TEMP #MVP
 
 	global->htmlUI->SendSignal("on_added_new_thread", ser.Generate());

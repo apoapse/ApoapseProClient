@@ -36,7 +36,7 @@ public:
 	//virtual ~RoomManager();
 	
 private:
-	void OnNewThreadAddedToCurrentRoom(SimpleApoapseThread& thread);
+	void OnNewThreadAddedToCurrentRoom(SimpleApoapseThread& thread, UIId uiId);
 	void LoadThreadsLists();
 
 	void UpdateThreadListUI() const;
