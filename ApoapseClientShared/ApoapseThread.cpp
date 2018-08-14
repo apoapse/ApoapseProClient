@@ -47,6 +47,51 @@ void ApoapseThread::OnAddedNewMessageFromServer(std::unique_ptr<ApoapseMessage> 
 	}
 }
 
+ApoapseMessage* ApoapseThread::GetMostRecentMessage() const
+{
+	if (m_messages.size() == 0)
+		return nullptr;
+
+	return (&*m_messages[m_messages.size() - 1]);
+}
+
+void ApoapseThread::UpdateThreadLastMessagePreview(SimpleApoapseThread& thread, RoomManager& roomManager) // #TODO This function is not aware of any messages cache and do not use the Message class utils to get the data
+{
+	auto* activeThread = roomManager.GetActiveThread();
+	std::string messageContent;
+	Username author;
+
+	if (activeThread != nullptr && activeThread->uuid == thread.uuid)
+	{
+		const auto* lastMessage = activeThread->GetMostRecentMessage();
+
+		if (lastMessage != nullptr)
+		{
+			messageContent = lastMessage->content;
+			author = lastMessage->author;
+		}
+	}
+	else
+	{
+		SQLQuery query(*global->database);
+		query << SELECT << "author, content" << FROM << "messages" << WHERE << "thread_uuid" << EQUALS << thread.uuid.GetInRawFormat() << ORDER_BY << "id" << DESC << LIMIT << 1;
+		auto res = query.Exec();
+
+		if (res.RowCount() == 1)
+		{
+			author = Username(res[0][0].GetByteArray());
+			ByteContainer unformatedContent = res[0][1].GetByteArray();
+			messageContent = std::string(unformatedContent.begin(), unformatedContent.end());
+		}
+	}
+
+	if (!messageContent.empty())
+	{
+		thread.lastMessageAuthor = author;
+		thread.lastMessageText = messageContent;
+	}
+}
+
 void ApoapseThread::LoadMessages()
 {
 	SQLQuery query(*global->database);
@@ -60,6 +105,7 @@ void ApoapseThread::LoadMessages()
 		message->uuid = Uuid(row[1].GetByteArray());
 		message->author = Username(row[3].GetByteArray());
 		message->sentTime = DateTimeUtils::UTCDateTime(row[4].GetText());
+		message->thread = *this;
 
 		{
 			const auto contentRaw = row[5].GetByteArray();

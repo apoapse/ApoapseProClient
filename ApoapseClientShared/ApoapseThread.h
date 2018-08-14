@@ -28,6 +28,9 @@ public:
 	void OnUIDisplay();
 	void SendNewMessage(const std::string& content);
 	void OnAddedNewMessageFromServer(std::unique_ptr<ApoapseMessage> message);
+
+	ApoapseMessage* GetMostRecentMessage() const;
+	static void UpdateThreadLastMessagePreview(SimpleApoapseThread& thread, RoomManager& roomManager);
 // 	virtual ~ApoapseThread();
 	
 private:

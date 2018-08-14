@@ -24,6 +24,8 @@ JsonHelper ApoapseMessage::GenerateJson(Int64 internalId) const
 
 void ApoapseMessage::AddNewMessageFromServer(std::unique_ptr<ApoapseMessage> message, RoomManager& roomManager)
 {
+	SimpleApoapseThread* threadPtr = &message->thread;	// Used so that we can keep access to the object after it has been moved
+
 	{
 		message->dbId = SQLUtils::CountRows("messages");
 		std::vector<byte> formatedContent(message->content.begin(), message->content.end());
@@ -41,4 +43,6 @@ void ApoapseMessage::AddNewMessageFromServer(std::unique_ptr<ApoapseMessage> mes
 			activeThread->OnAddedNewMessageFromServer(std::move(message));
 		}
 	}
+
+	ApoapseThread::UpdateThreadLastMessagePreview(*threadPtr, roomManager);
 }

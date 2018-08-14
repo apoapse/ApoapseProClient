@@ -43,6 +43,7 @@ void CmdApoapseMessage::Process(ClientConnection& sender)
 	message->sentTime = DateTimeUtils::UTCDateTime(GetFieldsData().GetValue<std::string>("sentTime"));
 	message->author = Username(GetFieldsData().GetValue<ByteContainer>("author"));	// #MVP #SECURITY make sure the author exist
 	message->content = std::string(formatedContent.begin(), formatedContent.end());
+	message->thread = *relatedThread;
 
 	ApoapseMessage::AddNewMessageFromServer(std::move(message), sender.client.GetRoomManager());
 

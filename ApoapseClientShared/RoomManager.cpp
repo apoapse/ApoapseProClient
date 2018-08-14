@@ -179,6 +179,8 @@ void RoomManager::OnNewThreadAddedToCurrentRoom(SimpleApoapseThread& thread, UII
 
 	ser.Insert("internal_id", uiId);
 	ser.Insert("name", BytesToHexString(thread.uuid.GetAsByteVector())); // TEMP #MVP
+	ser.Insert("lastMsgAuthor", thread.lastMessageAuthor.ToStr());
+	ser.Insert("lastMsgText", thread.lastMessageText);
 
 	global->htmlUI->SendSignal("on_added_new_thread", ser.Generate());
 }
@@ -200,6 +202,7 @@ void RoomManager::LoadThreadsLists()
 
 			ASSERT(Uuid(row[1].GetByteArray()) == thread.roomUuid);
 
+			ApoapseThread::UpdateThreadLastMessagePreview(thread, *this);
 			room->threads.push_back(thread);
 		}
 	}
@@ -221,6 +224,8 @@ void RoomManager::UpdateThreadListUI() const
 
 		serThread.Insert("internal_id", i);
 		serThread.Insert("name", BytesToHexString(thread.uuid.GetAsByteVector())); // TEMP #MVP
+		serThread.Insert("lastMsgAuthor", thread.lastMessageAuthor.ToStr());
+		serThread.Insert("lastMsgText", thread.lastMessageText);
 
 		ser.Insert("threads", serThread);
 	}
