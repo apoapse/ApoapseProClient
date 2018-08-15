@@ -11,6 +11,11 @@
 #include "DatabaseIntegrityPatcher.h"
 #include "ClientDatabaseScheme.hpp"
 
+ApoapseClient::ApoapseClient()
+{
+
+}
+
 void ApoapseClient::Connect(const std::string& serverAddress, const std::string& username, const std::string& password)
 {
 	if (serverAddress.length() < 3)
@@ -53,16 +58,6 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 		m_IOService->run();
 	});
 	m_ioServiceThread.detach();
-}
-
-ApoapseClient::ApoapseClient()
-{
-
-}
-
-std::string ApoapseClient::OnReceivedSignal(const std::string& name, const std::string& data)
-{
-	return "";
 }
 
 ClientConnection* ApoapseClient::GetConnection() const

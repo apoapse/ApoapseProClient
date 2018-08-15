@@ -2,6 +2,7 @@
 #include "Uuid.h"
 #include "Username.h"
 #include "DateTimeUtils.h"
+#include "Json.hpp"
 struct SimpleApoapseThread;
 class RoomManager;
 

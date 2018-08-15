@@ -33,17 +33,20 @@ std::string HTMLUI::OnReceivedSignal(const std::string& name, const std::string&
 		{	
 			// Data is in json
 			JsonHelper jsonDeserializer(data);
-			return m_apoapseClient.OnReceivedSignal(name, jsonDeserializer);
+			std::string test = m_apoapseClient.OnReceivedSignal(name, jsonDeserializer);
+			return test;
 		}
 		else
 		{
-			return m_apoapseClient.OnReceivedSignal(name, data);
+			JsonHelper jsonDeserializer("{}");
+			std::string test = m_apoapseClient.OnReceivedSignal(name, jsonDeserializer);
+			return test;
 		}
 		
 	});
 
-	//return res.get();
-	return ""s;	// #TODO Temporary disabled return from signal to avoid stalls of the UI. In the future, add a specific "callback" json field to automatically callback the result.
+	return res.get();
+	//return ""s;	// #TODO Temporary disabled return from signal to avoid stalls of the UI. In the future, add a specific "callback" json field to automatically callback the result.
 }
 
 void HTMLUI::SendSignal(const std::string& name, const std::string& data)
