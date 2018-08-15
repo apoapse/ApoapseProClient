@@ -4,6 +4,7 @@
 #include "ApoapseThread.h"
 #include "RoomManager.h"
 #include "SQLUtils.hpp"
+#include "HTMLUI.h"
 
 ApoapseMessage::ApoapseMessage(SimpleApoapseThread& thread) : thread(thread)
 {
@@ -16,8 +17,8 @@ JsonHelper ApoapseMessage::GenerateJson(Int64 internalId) const
 
 	serMessage.Insert("internal_id", internalId);
 	serMessage.Insert("sent_time", sentTime.str());
-	serMessage.Insert("author", author.ToStr());
-	serMessage.Insert("content", content);
+	serMessage.Insert("author", HTMLUI::HtmlSpecialChars(author.ToStr()));
+	serMessage.Insert("content", HTMLUI::HtmlSpecialChars(content));
 
 	return serMessage;
 }

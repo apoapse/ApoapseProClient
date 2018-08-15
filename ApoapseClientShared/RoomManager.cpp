@@ -178,7 +178,7 @@ void RoomManager::OnNewThreadAddedToCurrentRoom(SimpleApoapseThread& thread, UII
 	JsonHelper ser;
 
 	ser.Insert("internal_id", uiId);
-	ser.Insert("name", BytesToHexString(thread.uuid.GetAsByteVector())); // TEMP #MVP
+	ser.Insert("name", HTMLUI::HtmlSpecialChars(BytesToHexString(thread.uuid.GetAsByteVector()))); // TEMP #MVP
 	ser.Insert("lastMsgAuthor", thread.lastMessageAuthor.ToStr());
 	ser.Insert("lastMsgText", thread.lastMessageText);
 
@@ -223,9 +223,9 @@ void RoomManager::UpdateThreadListUI() const
 		const auto& thread = selectedRoom->threads.at(i);
 
 		serThread.Insert("internal_id", i);
-		serThread.Insert("name", BytesToHexString(thread.uuid.GetAsByteVector())); // TEMP #MVP
-		serThread.Insert("lastMsgAuthor", thread.lastMessageAuthor.ToStr());
-		serThread.Insert("lastMsgText", thread.lastMessageText);
+		serThread.Insert("name", HTMLUI::HtmlSpecialChars(BytesToHexString(thread.uuid.GetAsByteVector()))); // TEMP #MVP
+		serThread.Insert("lastMsgAuthor", HTMLUI::HtmlSpecialChars(thread.lastMessageAuthor.ToStr()));
+		serThread.Insert("lastMsgText", HTMLUI::HtmlSpecialChars(thread.lastMessageText));
 
 		ser.Insert("threads", serThread);
 	}
@@ -244,7 +244,7 @@ void RoomManager::UpdateUI() const
 		{
 			JsonHelper serRoom;
 			serRoom.Insert("internal_id", i);
-			serRoom.Insert("name", BytesToHexString(room->uuid.GetAsByteVector())); // TEMP #MVP
+			serRoom.Insert("name", HTMLUI::HtmlSpecialChars(BytesToHexString(room->uuid.GetAsByteVector()))); // TEMP #MVP
 
 			if (room.get() == m_uiSelectedRoom)
 				serRoom.Insert("isSelected", true);
