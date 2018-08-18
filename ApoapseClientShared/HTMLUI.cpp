@@ -3,6 +3,7 @@
 #include "Common.h"
 #include <Json.hpp>
 #include "ApoapseClient.h"
+#include <regex>
 
 HTMLUI::HTMLUI(ApoapseClient& client) : m_apoapseClient(client)
 {
@@ -24,8 +25,6 @@ std::string HTMLUI::OnReceivedSignal(const std::string& name, const std::string&
 
 		return "";
 	}
-
-	LOG_DEBUG << "Received signal " << name << " data: " << data;
 
 	auto res = m_clientMainThread->PushTask([this, name, data]
 	{
@@ -61,4 +60,18 @@ void HTMLUI::UpdateStatusBar(const std::string& msg, bool isError /*= false*/)
 	writer.Insert<bool>("is_error", isError);
 
 	SendSignal("update_status_bar", writer.Generate());
+}
+
+std::string HTMLUI::HtmlSpecialChars(const std::string& str)
+{
+	std::string output = str;
+
+	output = std::regex_replace(output, std::regex("&"), "&amp;");
+	output = std::regex_replace(output, std::regex("\""), "&quot;");
+	output = std::regex_replace(output, std::regex("'"), "&apos;");
+	output = std::regex_replace(output, std::regex("<"), "&lt;");
+	output = std::regex_replace(output, std::regex(">"), "&gt;");
+	output = std::regex_replace(output, std::regex("\\\\"), "&bsol;");
+
+	return output;
 }

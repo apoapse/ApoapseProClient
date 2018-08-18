@@ -28,6 +28,8 @@ public:
 	std::string OnReceivedSignal(const std::string& name, const std::string& data);
 	void SendSignal(const std::string& name, const std::string& data);
 	void UpdateStatusBar(const std::string& msg, bool isError = false);
+
+	static std::string HtmlSpecialChars(const std::string& str);
 	
 private:
 

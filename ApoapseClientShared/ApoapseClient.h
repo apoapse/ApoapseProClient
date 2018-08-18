@@ -29,7 +29,7 @@ public:
 	ApoapseClient();
 	//virtual ~ApoapseClient();
 
-	std::string OnReceivedSignal(const std::string& name, const std::string& data);
+	//std::string OnReceivedSignal(const std::string& name, const std::string& data);
 	std::string OnReceivedSignal(const std::string& name, const JsonHelper& deserializer);
 
 	ClientConnection* GetConnection() const;
@@ -38,6 +38,7 @@ public:
 	void Connect(const std::string& serverAddress, const std::string& username, const std::string& password);
 	void OnConnectedToServer();
 	void OnSetupState();
+	void OnUserFirstConnection();
 	void OnDisconnect();
 	const Username& GetLastLoginTryUsername() const;
 

@@ -19,6 +19,7 @@ public:
 		info.fields =
 		{
 			CommandField{ "status", FieldRequirement::any_mendatory, FIELD_VALUE_VALIDATOR(std::string, CmdServerInfo::ValidateStatusField) },
+			CommandField{ "requirePasswordChange", FieldRequirement::any_optional, FIELD_VALUE(bool) },
 
 // 			CommandField{ "public_key", FieldRequirement::any_optional, FIELD_VALUE_VALIDATOR(ByteContainer, CommandField::ContainerIsNotEmpty<ByteContainer>) },
 // 			CommandField{ "private_key_encrypted", FieldRequirement::any_optional, FIELD_VALUE_VALIDATOR(ByteContainer, CommandField::ContainerIsNotEmpty<ByteContainer>) },
@@ -31,7 +32,8 @@ public:
 private:
 	void Process(ClientConnection& sender) override
 	{
-		auto status = GetFieldsData().GetValue<std::string>("status");
+		const auto status = GetFieldsData().GetValue<std::string>("status");
+		const auto requirePasswordChange = GetFieldsData().GetValueOptional<bool>("requirePasswordChange");
 
 		if (status == "setup_state")
 		{
@@ -39,14 +41,21 @@ private:
 		}
 		else if (status == "authenticated")
 		{
-			//const IV iv = VectorToArray<byte, 16>(GetFieldsData().GetValue<ByteContainer>("private_key_iv")); #MVP
+			if (requirePasswordChange.has_value() && requirePasswordChange.value() == true)
+			{
+				sender.client.OnUserFirstConnection();
+			}
+			else
+			{
+				//const IV iv = VectorToArray<byte, 16>(GetFieldsData().GetValue<ByteContainer>("private_key_iv")); #MVP
 
-			LocalUser user;
-			user.username = sender.client.GetLastLoginTryUsername();
-			//user.publicKey = GetFieldsData().GetValue<ByteContainer>("public_key");
-			//user.privateKey = User::DecryptIdentityPrivateKey(GetFieldsData().GetValue<ByteContainer>("private_key_encrypted"), iv, sender.client.GetIdentityPasswordHash());
+				LocalUser user;
+				user.username = sender.client.GetLastLoginTryUsername();
+				//user.publicKey = GetFieldsData().GetValue<ByteContainer>("public_key");
+				//user.privateKey = User::DecryptIdentityPrivateKey(GetFieldsData().GetValue<ByteContainer>("private_key_encrypted"), iv, sender.client.GetIdentityPasswordHash());
 
-			sender.client.Authenticate(user);
+				sender.client.Authenticate(user);
+			}
 		}
 		else
 		{

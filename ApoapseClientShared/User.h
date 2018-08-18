@@ -14,7 +14,7 @@ class User
 public:
 	static Username HashUsername(const std::string& username);
 	static std::vector<byte> HashPasswordForServer(const std::string& password);
-	static std::vector<byte> GenerateTemporaryPassword();
+	static std::string GenerateTemporaryRandomPassword();
 
 	static std::pair<PrivateKeyBytes, PublicKeyBytes> GenerateIdentityKey();
 	static hashSecBytes HashPasswordForIdentityPrivateKey(const std::string& password);

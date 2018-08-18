@@ -10,6 +10,8 @@
 #include "LibraryLoader.hpp"
 #include "DatabaseIntegrityPatcher.h"
 #include "ClientDatabaseScheme.hpp"
+#include "CmdApoapseInstall.h"
+#include "CmdFirstUserConnection.h"
 
 ApoapseClient::ApoapseClient()
 {
@@ -23,11 +25,6 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 		global->htmlUI->UpdateStatusBar("@invalid_server_address", true);
 		return;
 	}
-	/*else if (username.length() < 6 || password.length() < 8)// #TODO use values from the create user cmd
-	{
-	global->htmlUI->UpdateStatusBar("@invalid_login_input", true);
-	return;
-	}*/
 
 	global->htmlUI->UpdateStatusBar("@password_encryption_status");
 	{
@@ -77,28 +74,35 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 		Connect(json.ReadFieldValue<std::string>("server").get(), json.ReadFieldValue<std::string>("username").get(), json.ReadFieldValue<std::string>("password").get());
 	}
 
-	/*else if (name == "create_admin")
+	else if (name == "apoapse_install" && m_connected)
 	{
-		if (m_connected && !IsAuthenticated())
-		{
-			// #MVP Temporary, need to use a specific create_admin command in the future?
+		const auto username = User::HashUsername(json.ReadFieldValue<std::string>("username").get());
+		const auto password = User::HashPasswordForServer(json.ReadFieldValue<std::string>("password").get());
+		CmdApoapseInstall::SendInstallCommand(username, password, *this);
+	}
 
-		}
-		else
-		{
-			LOG << LogSeverity::error << "Trying to create an admin account but the the connection is not on setup state";
-		}
-	}*/
+	else if (name == "user_first_connection" && m_connected)
+	{
+		const auto password = User::HashPasswordForServer(json.ReadFieldValue<std::string>("password").get());
+		CmdFirstUserConnection::SetUserIdentity(password, *this);
+	}
+
+	else if (name == "request_random_password" && m_connected)
+	{
+		JsonHelper ser;
+		ser.Insert("randomPassword", User::GenerateTemporaryRandomPassword());
+
+		return ser.Generate();
+	}
 
 	else if (name == "register_user" && m_connected)
 	{
 		// #MVP Add permissions checks
-		global->htmlUI->UpdateStatusBar("@password_encryption_status");
+		global->htmlUI->SendSignal("clear_temporary_password", "");	// We make sure the UI do not keep the temporary password
 
 		const auto username = User::HashUsername(json.ReadFieldValue<std::string>("username").get());
 		const auto password = User::HashPasswordForServer(json.ReadFieldValue<std::string>("password").get());
 		CmdRegisterNewUser::SendRegisterCommand(username, password, *this);
-		m_connection->Close();
 	}
 
 	else if (name == "create_new_room" && m_connected && IsAuthenticated())
@@ -144,8 +148,20 @@ void ApoapseClient::OnConnectedToServer()
 
 void ApoapseClient::OnSetupState()
 {
-	global->htmlUI->SendSignal("show_setup_state", "test");
+	{
+		JsonHelper ser;
+		//ser.Insert("savedUsername", GetLastLoginTryUsername());
+
+		global->htmlUI->SendSignal("show_setup_state", ser.Generate());
+	}
+
 	global->htmlUI->UpdateStatusBar("@connected_in_setup_phase_status");
+}
+
+void ApoapseClient::OnUserFirstConnection()
+{
+	global->htmlUI->SendSignal("ShowFirstUserConnection", "");
+	global->htmlUI->UpdateStatusBar("@connected_first_user_connection_status");
 }
 
 void ApoapseClient::OnDisconnect()
@@ -162,7 +178,7 @@ void ApoapseClient::OnDisconnect()
 
 	global->htmlUI->UpdateStatusBar("@disconnected_status", true);
 
-	global->htmlUI->SendSignal("login_form_enable_back", "");
+	global->htmlUI->SendSignal("OnDisconnect", "");
 }
 
 const Username& ApoapseClient::GetLastLoginTryUsername() const
