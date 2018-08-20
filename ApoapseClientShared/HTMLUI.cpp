@@ -62,7 +62,7 @@ void HTMLUI::UpdateStatusBar(const std::string& msg, bool isError /*= false*/)
 	SendSignal("update_status_bar", writer.Generate());
 }
 
-std::string HTMLUI::HtmlSpecialChars(const std::string& str)
+std::string HTMLUI::HtmlSpecialChars(const std::string& str, bool convertNewLines)	// #TODO make unit tests for this function
 {
 	std::string output = str;
 
@@ -71,6 +71,19 @@ std::string HTMLUI::HtmlSpecialChars(const std::string& str)
 	output = std::regex_replace(output, std::regex("'"), "&apos;");
 	output = std::regex_replace(output, std::regex("<"), "&lt;");
 	output = std::regex_replace(output, std::regex(">"), "&gt;");
+
+	if (convertNewLines)
+	{
+		output = std::regex_replace(output, std::regex("\\n"), "<br/>");
+		output = std::regex_replace(output, std::regex("\\r\\n"), "<br/>");
+	}
+	else
+	{
+		output = std::regex_replace(output, std::regex("\\n"), "");
+		output = std::regex_replace(output, std::regex("\\r\\n"), "");
+	}
+
+	output = std::regex_replace(output, std::regex("\t"), "");
 	output = std::regex_replace(output, std::regex("\\\\"), "&bsol;");
 
 	return output;

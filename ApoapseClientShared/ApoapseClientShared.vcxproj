@@ -162,6 +162,7 @@
     <ClCompile Include="CmdFirstUserConnection.cpp" />
     <ClCompile Include="CmdRegisterNewUser.cpp" />
     <ClCompile Include="CmdServerInfo.cpp" />
+    <ClCompile Include="CmdSyncRequest.cpp" />
     <ClCompile Include="HTMLUI.cpp" />
     <ClCompile Include="RoomManager.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -185,6 +186,7 @@
     <ClInclude Include="CmdCreateThread.h" />
     <ClInclude Include="CmdFirstUserConnection.h" />
     <ClInclude Include="CmdRegisterNewUser.h" />
+    <ClInclude Include="CmdSyncRequest.h" />
     <ClInclude Include="HTMLUI.h" />
     <ClInclude Include="ISignalSender.hpp" />
     <ClInclude Include="LocalUser.h" />

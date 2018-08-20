@@ -22,6 +22,7 @@ public:
 
 	JsonHelper GenerateJson(Int64 internalId) const;
 	static void AddNewMessageFromServer(std::unique_ptr<ApoapseMessage> message, RoomManager& roomManager);
+	static bool DoesMessageExist(const Uuid& uuid);
 	//virtual ~ApoapseMessage();
 	
 private:

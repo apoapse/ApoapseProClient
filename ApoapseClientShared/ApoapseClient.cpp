@@ -12,6 +12,8 @@
 #include "ClientDatabaseScheme.hpp"
 #include "CmdApoapseInstall.h"
 #include "CmdFirstUserConnection.h"
+#include "CmdSyncRequest.h"
+#include "Operation.h"
 
 ApoapseClient::ApoapseClient()
 {
@@ -220,6 +222,9 @@ void ApoapseClient::OnAuthenticated(const LocalUser& localUser)
 	// UI
 	global->htmlUI->UpdateStatusBar("@connected_and_authenticated_status", false);
 	global->htmlUI->SendSignal("connected_and_authenticated", ""s);
+
+	// Apoapse sync
+	CmdSyncRequest::SendSyncRequest(Operation::GetMostRecentOperationTime(), *this);
 }
 
 bool ApoapseClient::LoadDatabase()

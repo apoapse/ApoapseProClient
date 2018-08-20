@@ -51,6 +51,9 @@
     <ClCompile Include="CmdFirstUserConnection.cpp">
       <Filter>Commands</Filter>
     </ClCompile>
+    <ClCompile Include="CmdSyncRequest.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientEntryPoint.h" />
@@ -106,6 +109,9 @@
       <Filter>Commands</Filter>
     </ClInclude>
     <ClInclude Include="CmdFirstUserConnection.h">
+      <Filter>Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="CmdSyncRequest.h">
       <Filter>Commands</Filter>
     </ClInclude>
   </ItemGroup>

@@ -29,7 +29,7 @@ public:
 	void SendSignal(const std::string& name, const std::string& data);
 	void UpdateStatusBar(const std::string& msg, bool isError = false);
 
-	static std::string HtmlSpecialChars(const std::string& str);
+	static std::string HtmlSpecialChars(const std::string& str, bool convertNewLines);
 	
 private:
 

@@ -5,6 +5,7 @@
 #include "ClientConnection.h"
 #include "ApoapseClient.h"
 #include "CommandsManager.h"
+#include "Operation.h"
 
 CommandInfo& CmdCreateRoom::GetInfo() const
 {
