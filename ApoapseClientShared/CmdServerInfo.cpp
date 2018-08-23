@@ -18,12 +18,12 @@ public:
 		info.onlyNonAuthenticated = true;
 		info.fields =
 		{
-			CommandField{ "status", FieldRequirement::any_mendatory, FIELD_VALUE_VALIDATOR(std::string, CmdServerInfo::ValidateStatusField) },
-			CommandField{ "requirePasswordChange", FieldRequirement::any_optional, FIELD_VALUE(bool) },
+			Field{ "status", FieldRequirement::any_mendatory, FIELD_VALUE_VALIDATOR(std::string, CmdServerInfo::ValidateStatusField) },
+			Field{ "requirePasswordChange", FieldRequirement::any_optional, FIELD_VALUE(bool) },
 
-// 			CommandField{ "public_key", FieldRequirement::any_optional, FIELD_VALUE_VALIDATOR(ByteContainer, CommandField::ContainerIsNotEmpty<ByteContainer>) },
-// 			CommandField{ "private_key_encrypted", FieldRequirement::any_optional, FIELD_VALUE_VALIDATOR(ByteContainer, CommandField::ContainerIsNotEmpty<ByteContainer>) },
-// 			CommandField{ "private_key_iv", FieldRequirement::any_optional, FIELD_VALUE_VALIDATOR(ByteContainer, CommandField::ContainerIsNotEmpty<ByteContainer>) },
+// 			Field{ "public_key", FieldRequirement::any_optional, FIELD_VALUE_VALIDATOR(ByteContainer, Field::ContainerIsNotEmpty<ByteContainer>) },
+// 			Field{ "private_key_encrypted", FieldRequirement::any_optional, FIELD_VALUE_VALIDATOR(ByteContainer, Field::ContainerIsNotEmpty<ByteContainer>) },
+// 			Field{ "private_key_iv", FieldRequirement::any_optional, FIELD_VALUE_VALIDATOR(ByteContainer, Field::ContainerIsNotEmpty<ByteContainer>) },
 		};
 
 		return info;

@@ -58,6 +58,10 @@ static std::string GetClientDbScheme()
 					"name": "uuid",
 					"type": "blob",
 					"unique": true
+				},		
+				{
+					"name": "name",
+					"type": "text"
 				}
 			]
 		},
@@ -78,6 +82,10 @@ static std::string GetClientDbScheme()
 					"name": "uuid",
 					"type": "blob",
 					"unique": true
+				},
+				{
+					"name": "name",
+					"type": "text"
 				}
 			]
 		},

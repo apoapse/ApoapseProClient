@@ -8,6 +8,7 @@ struct ApoapseRoom
 {
 	DbId dbId = -1;
 	Uuid uuid;
+	std::string name;
 	std::vector<SimpleApoapseThread> threads;
 };
 

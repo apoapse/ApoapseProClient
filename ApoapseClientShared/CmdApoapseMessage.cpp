@@ -16,11 +16,11 @@ CommandInfo& CmdApoapseMessage::GetInfo() const
 	info.requireAuthentication = true;
 	info.fields =
 	{
-		CommandField{ "uuid", FieldRequirement::any_mendatory, FIELD_VALUE_VALIDATOR(std::vector<byte>, Uuid::IsValid) },
-		CommandField{ "threadUuid", FieldRequirement::any_mendatory, FIELD_VALUE_VALIDATOR(std::vector<byte>, Uuid::IsValid) },
-		CommandField{ "sentTime", FieldRequirement::any_mendatory, FIELD_VALUE_VALIDATOR(std::string, DateTimeUtils::UTCDateTime::ValidateFormat) },
-		CommandField{ "author", FieldRequirement::any_mendatory, FIELD_VALUE_VALIDATOR(ByteContainer, Username::IsValid) },
-		CommandField{ "content", FieldRequirement::any_mendatory, FIELD_VALUE(std::vector<byte>) },
+		Field{ "uuid", FieldRequirement::any_mendatory, FIELD_VALUE_VALIDATOR(std::vector<byte>, Uuid::IsValid) },
+		Field{ "threadUuid", FieldRequirement::any_mendatory, FIELD_VALUE_VALIDATOR(std::vector<byte>, Uuid::IsValid) },
+		Field{ "sentTime", FieldRequirement::any_mendatory, FIELD_VALUE_VALIDATOR(std::string, DateTimeUtils::UTCDateTime::ValidateFormat) },
+		Field{ "author", FieldRequirement::any_mendatory, FIELD_VALUE_VALIDATOR(ByteContainer, Username::IsValid) },
+		Field{ "content", FieldRequirement::any_mendatory, FIELD_VALUE(std::vector<byte>) },
 	};
 
 	return info;

@@ -28,6 +28,7 @@ void RoomManager::Initialize()
 			auto room = std::make_unique<ApoapseRoom>();
 			room->dbId = row[0].GetInt64();
 			room->uuid = Uuid(row[1].GetByteArray());
+			room->name = row[2].GetText();
 
 			m_rooms.push_back(std::move(room));
 		}
@@ -46,6 +47,7 @@ void RoomManager::SendCreateNewRoom(const std::string& name)
 {
 	ApoapseRoom room;
 	room.uuid = Uuid::Generate();
+	room.name = name;
 
 	CmdCreateRoom::SendCreateRoom(room, apoapseClient);
 }
@@ -63,7 +65,7 @@ void RoomManager::AddNewRoomFromServer(std::unique_ptr<ApoapseRoom> room)
 		DbId newId = m_rooms.size();
 
 		SQLQuery query(*global->database);
-		query << INSERT_INTO << "rooms" << " (id, uuid)" << VALUES << "(" << newId << "," << room->uuid.GetInRawFormat() << ")";
+		query << INSERT_INTO << "rooms" << " (id, uuid, name)" << VALUES << "(" << newId << "," << room->uuid.GetInRawFormat() << "," << room->name << ")";
 		query.Exec();
 
 		Operation(OperationType::new_room, apoapseClient.GetLocalUser().username, newId).Save();
@@ -153,7 +155,7 @@ void RoomManager::AddNewThreadFromServer(const Uuid& uuid, const Uuid& roomUuid,
 	// SAVE
 	{
 		SQLQuery query(*global->database);
-		query << INSERT_INTO << "threads" << " (id, uuid, room_uuid)" << VALUES << "(" << thread.dbId << "," << thread.uuid.GetInRawFormat() << "," << thread.roomUuid.GetInRawFormat() << ")";
+		query << INSERT_INTO << "threads" << " (id, uuid, room_uuid, name)" << VALUES << "(" << thread.dbId << "," << thread.uuid.GetInRawFormat() << "," << thread.roomUuid.GetInRawFormat() << "," << thread.name << ")";
 		query.Exec();
 
 		Operation(OperationType::new_thread, apoapseClient.GetLocalUser().username, thread.dbId).Save();
@@ -194,7 +196,7 @@ void RoomManager::OnNewThreadAddedToCurrentRoom(SimpleApoapseThread& thread, UII
 	JsonHelper ser;
 
 	ser.Insert("internal_id", uiId);
-	ser.Insert("name", HTMLUI::HtmlSpecialChars(BytesToHexString(thread.uuid.GetAsByteVector()), false)); // TEMP #MVP
+	ser.Insert("name", HTMLUI::HtmlSpecialChars(thread.name, false));
 	ser.Insert("lastMsgAuthor", thread.lastMessageAuthor.ToStr());
 	ser.Insert("lastMsgText", thread.lastMessageText);
 
@@ -214,6 +216,7 @@ void RoomManager::LoadThreadsLists()
 			SimpleApoapseThread thread;
 			thread.dbId = row[0].GetInt64();
 			thread.uuid = Uuid(row[2].GetByteArray());
+			thread.name = row[3].GetText();
 			thread.roomUuid = room->uuid;
 
 			ASSERT(Uuid(row[1].GetByteArray()) == thread.roomUuid);
@@ -239,7 +242,7 @@ void RoomManager::UpdateThreadListUI() const
 		const auto& thread = selectedRoom->threads.at(i);
 
 		serThread.Insert("internal_id", i);
-		serThread.Insert("name", HTMLUI::HtmlSpecialChars(BytesToHexString(thread.uuid.GetAsByteVector()), false)); // TEMP #MVP
+		serThread.Insert("name", HTMLUI::HtmlSpecialChars(thread.name, false));
 		serThread.Insert("lastMsgAuthor", HTMLUI::HtmlSpecialChars(thread.lastMessageAuthor.ToStr(), false));
 		serThread.Insert("lastMsgText", HTMLUI::HtmlSpecialChars(thread.lastMessageText, false));
 
@@ -260,7 +263,7 @@ void RoomManager::UpdateUI() const
 		{
 			JsonHelper serRoom;
 			serRoom.Insert("internal_id", i);
-			serRoom.Insert("name", HTMLUI::HtmlSpecialChars(BytesToHexString(room->uuid.GetAsByteVector()), false)); // TEMP #MVP
+			serRoom.Insert("name", HTMLUI::HtmlSpecialChars(room->name, false));
 
 			if (room.get() == m_uiSelectedRoom)
 				serRoom.Insert("isSelected", true);

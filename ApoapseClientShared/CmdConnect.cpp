@@ -13,9 +13,9 @@ CommandInfo& CmdConnect::GetInfo() const
 	info.onlyNonAuthenticated = true;
 	info.fields =
 	{
-		CommandField{ "protocol_version", FieldRequirement::any_mendatory, FIELD_VALUE(int) },
-		CommandField{ "username", FieldRequirement::any_mendatory, FIELD_VALUE_VALIDATOR(std::vector<byte>, [&](const auto& hash) { return (hash.size() == sha256Length); }) },
-		CommandField{ "password", FieldRequirement::any_mendatory, FIELD_VALUE_VALIDATOR(std::vector<byte>, [&](const auto& hash) { return (hash.size() == sha256Length); }) },
+		Field{ "protocol_version", FieldRequirement::any_mendatory, FIELD_VALUE(int) },
+		Field{ "username", FieldRequirement::any_mendatory, FIELD_VALUE_VALIDATOR(std::vector<byte>, [&](const auto& hash) { return (hash.size() == sha256Length); }) },
+		Field{ "password", FieldRequirement::any_mendatory, FIELD_VALUE_VALIDATOR(std::vector<byte>, [&](const auto& hash) { return (hash.size() == sha256Length); }) },
 	};
 
 	return info;
