@@ -243,8 +243,18 @@ void RoomManager::UpdateThreadListUI() const
 
 		serThread.Insert("internal_id", i);
 		serThread.Insert("name", HTMLUI::HtmlSpecialChars(thread.name, false));
-		serThread.Insert("lastMsgAuthor", HTMLUI::HtmlSpecialChars(User::GetUserByUsername(thread.lastMessageAuthor).nickname, false));
-		serThread.Insert("lastMsgText", HTMLUI::HtmlSpecialChars(thread.lastMessageText, false));
+		
+		if (!thread.lastMessageText.empty())
+		{
+			serThread.Insert("lastMsgAuthor", HTMLUI::HtmlSpecialChars(User::GetUserByUsername(thread.lastMessageAuthor).nickname, false));
+			serThread.Insert("lastMsgText", HTMLUI::HtmlSpecialChars(thread.lastMessageText, false));
+		}
+		else
+		{
+			// In case there are no messages on the thread
+			serThread.Insert("lastMsgAuthor", "");
+			serThread.Insert("lastMsgText", "");
+		}
 
 		ser.Insert("threads", serThread);
 	}
