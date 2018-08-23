@@ -8,6 +8,26 @@ static std::string GetClientDbScheme()
 	"tables":
 	[
 		{
+			"name": "users",
+			"fields":
+			[
+				{
+					"name": "id",
+					"type": "integer",
+					"primary": true
+				},		
+				{
+					"name": "username",
+					"type": "blob",
+					"unique": true
+				},
+				{
+					"name": "nickname",
+					"type": "text"
+				}
+			]
+		},
+		{
 			"name": "operations",
 			"fields":
 			[

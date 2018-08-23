@@ -8,7 +8,7 @@ class CmdFirstUserConnection final : public Command
 
 public:
 	CommandInfo& GetInfo() const override;
-	static void SetUserIdentity(const std::vector<byte>& password, ApoapseClient& client);
+	static void SetUserIdentity(const std::vector<byte>& password, const std::string& nickname, ApoapseClient& client);
 
 private:
 

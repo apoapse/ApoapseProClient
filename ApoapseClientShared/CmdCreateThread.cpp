@@ -10,7 +10,6 @@ CommandInfo& CmdCreateThread::GetInfo() const
 {
 	static auto info = CommandInfo();
 	info.command = CommandId::create_thread;
-	info.metadataTypes = MetadataAcess::usergroup;
 	info.requireAuthentication = true;
 	info.fields =
 	{
@@ -18,6 +17,7 @@ CommandInfo& CmdCreateThread::GetInfo() const
 		Field{ "room_uuid", FieldRequirement::any_mendatory, FIELD_VALUE_VALIDATOR(ByteContainer, Uuid::IsValid) },
 	};
 
+	info.metadataTypes = MetadataAcess::usergroup;
 	info.metadataSelfFields =
 	{
 		Field{ "name", FieldRequirement::any_mendatory, FIELD_VALUE_VALIDATOR(std::string, [&](const auto& str) { return !str.empty(); }) },

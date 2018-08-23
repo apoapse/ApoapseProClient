@@ -160,6 +160,8 @@
     <ClCompile Include="CmdCreateRoom.cpp" />
     <ClCompile Include="CmdCreateThread.cpp" />
     <ClCompile Include="CmdFirstUserConnection.cpp" />
+    <ClCompile Include="CmdMarkMessageAsRead.cpp" />
+    <ClCompile Include="CmdNotifyNewUser.cpp" />
     <ClCompile Include="CmdRegisterNewUser.cpp" />
     <ClCompile Include="CmdServerInfo.cpp" />
     <ClCompile Include="CmdSyncRequest.cpp" />
@@ -185,6 +187,7 @@
     <ClInclude Include="CmdCreateRoom.h" />
     <ClInclude Include="CmdCreateThread.h" />
     <ClInclude Include="CmdFirstUserConnection.h" />
+    <ClInclude Include="CmdMarkMessageAsRead.h" />
     <ClInclude Include="CmdRegisterNewUser.h" />
     <ClInclude Include="CmdSyncRequest.h" />
     <ClInclude Include="HTMLUI.h" />

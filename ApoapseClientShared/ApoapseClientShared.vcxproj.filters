@@ -54,6 +54,12 @@
     <ClCompile Include="CmdSyncRequest.cpp">
       <Filter>Commands</Filter>
     </ClCompile>
+    <ClCompile Include="CmdMarkMessageAsRead.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="CmdNotifyNewUser.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientEntryPoint.h" />
@@ -112,6 +118,9 @@
       <Filter>Commands</Filter>
     </ClInclude>
     <ClInclude Include="CmdSyncRequest.h">
+      <Filter>Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="CmdMarkMessageAsRead.h">
       <Filter>Commands</Filter>
     </ClInclude>
   </ItemGroup>

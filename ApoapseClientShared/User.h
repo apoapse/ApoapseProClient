@@ -12,6 +12,11 @@ class User
 	static constexpr UInt32 identityDecryptionKeyHashIterations = 500'000;
 
 public:
+	Username username;
+	std::string nickname;
+
+	static User GetUserByUsername(const Username& username);
+
 	static Username HashUsername(const std::string& username);
 	static std::vector<byte> HashPasswordForServer(const std::string& password);
 	static std::string GenerateTemporaryRandomPassword();

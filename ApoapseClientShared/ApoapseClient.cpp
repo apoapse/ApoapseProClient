@@ -80,13 +80,13 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 	{
 		const auto username = User::HashUsername(json.ReadFieldValue<std::string>("username").get());
 		const auto password = User::HashPasswordForServer(json.ReadFieldValue<std::string>("password").get());
-		CmdApoapseInstall::SendInstallCommand(username, password, *this);
+		CmdApoapseInstall::SendInstallCommand(username, password, json.ReadFieldValue<std::string>("nickname").get(), *this);
 	}
 
 	else if (name == "user_first_connection" && m_connected)
 	{
 		const auto password = User::HashPasswordForServer(json.ReadFieldValue<std::string>("password").get());
-		CmdFirstUserConnection::SetUserIdentity(password, *this);
+		CmdFirstUserConnection::SetUserIdentity(password, json.ReadFieldValue<std::string>("nickname").get(), *this);
 	}
 
 	else if (name == "request_random_password" && m_connected)

@@ -6,6 +6,21 @@
 #include "AES.hpp"
 #include "Random.hpp"
 #include "Maths.hpp"
+#include "SQLQuery.h"
+
+User User::GetUserByUsername(const Username& username)
+{
+	User user;
+
+	SQLQuery query(*global->database);
+	query << SELECT << "nickname" << FROM << "users" << WHERE "username" << EQUALS << username.GetRaw();
+	auto res = query.Exec();
+
+	user.username = username;
+	user.nickname = res[0][0].GetText();
+
+	return user;
+}
 
 Username User::HashUsername(const std::string& username)
 {

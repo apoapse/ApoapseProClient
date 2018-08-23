@@ -243,7 +243,7 @@ void RoomManager::UpdateThreadListUI() const
 
 		serThread.Insert("internal_id", i);
 		serThread.Insert("name", HTMLUI::HtmlSpecialChars(thread.name, false));
-		serThread.Insert("lastMsgAuthor", HTMLUI::HtmlSpecialChars(thread.lastMessageAuthor.ToStr(), false));
+		serThread.Insert("lastMsgAuthor", HTMLUI::HtmlSpecialChars(User::GetUserByUsername(thread.lastMessageAuthor).nickname, false));
 		serThread.Insert("lastMsgText", HTMLUI::HtmlSpecialChars(thread.lastMessageText, false));
 
 		ser.Insert("threads", serThread);

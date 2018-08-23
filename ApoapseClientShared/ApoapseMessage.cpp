@@ -16,10 +16,10 @@ ApoapseMessage::ApoapseMessage(SimpleApoapseThread& thread) : thread(thread)
 JsonHelper ApoapseMessage::GenerateJson(Int64 internalId) const
 {
 	JsonHelper serMessage;
-
+	
 	serMessage.Insert("internal_id", internalId);
 	serMessage.Insert("sent_time", sentTime.str());
-	serMessage.Insert("author", HTMLUI::HtmlSpecialChars(author.ToStr(), false));
+	serMessage.Insert("author", HTMLUI::HtmlSpecialChars(User::GetUserByUsername(author).nickname, false));
 	serMessage.Insert("content", HTMLUI::HtmlSpecialChars(content, true));
 
 	return serMessage;
