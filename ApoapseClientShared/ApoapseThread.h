@@ -31,6 +31,7 @@ public:
 
 	ApoapseMessage* GetMostRecentMessage() const;
 	static void UpdateThreadLastMessagePreview(SimpleApoapseThread& thread, RoomManager& roomManager);
+	static void UpdateUIThreadMsgPreview(const SimpleApoapseThread& thread);
 // 	virtual ~ApoapseThread();
 	
 private:

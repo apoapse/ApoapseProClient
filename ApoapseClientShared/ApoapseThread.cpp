@@ -89,7 +89,22 @@ void ApoapseThread::UpdateThreadLastMessagePreview(SimpleApoapseThread& thread, 
 	{
 		thread.lastMessageAuthor = author;
 		thread.lastMessageText = messageContent;
+
+		if (roomManager.GetSelectedRoom()->uuid == thread.roomUuid)
+		{
+			UpdateUIThreadMsgPreview(thread);
+		}
 	}
+}
+
+void ApoapseThread::UpdateUIThreadMsgPreview(const SimpleApoapseThread& thread)
+{
+	JsonHelper ser;
+	ser.Insert("dbid", thread.dbId);
+	ser.Insert("lastMsgAuthor", User::GetUserByUsername(thread.lastMessageAuthor).nickname);
+	ser.Insert("lastMsgText", HTMLUI::HtmlSpecialChars(thread.lastMessageText, false));
+
+	global->htmlUI->SendSignal("updateThreadMsgPreview", ser.Generate());
 }
 
 void ApoapseThread::LoadMessages()

@@ -196,6 +196,7 @@ void RoomManager::OnNewThreadAddedToCurrentRoom(SimpleApoapseThread& thread, UII
 	JsonHelper ser;
 
 	ser.Insert("internal_id", uiId);
+	ser.Insert("dbid", thread.dbId);
 	ser.Insert("name", HTMLUI::HtmlSpecialChars(thread.name, false));
 	ser.Insert("lastMsgAuthor", thread.lastMessageAuthor.ToStr());
 	ser.Insert("lastMsgText", thread.lastMessageText);
@@ -242,6 +243,7 @@ void RoomManager::UpdateThreadListUI() const
 		const auto& thread = selectedRoom->threads.at(i);
 
 		serThread.Insert("internal_id", i);
+		serThread.Insert("dbid", thread.dbId);
 		serThread.Insert("name", HTMLUI::HtmlSpecialChars(thread.name, false));
 		
 		if (!thread.lastMessageText.empty())
