@@ -79,8 +79,8 @@ std::string HTMLUI::HtmlSpecialChars(const std::string& str, bool convertNewLine
 	}
 	else
 	{
-		output = std::regex_replace(output, std::regex("\\n"), "");
-		output = std::regex_replace(output, std::regex("\\r\\n"), "");
+		output = std::regex_replace(output, std::regex("\\n"), " ");
+		output = std::regex_replace(output, std::regex("\\r\\n"), " ");
 	}
 
 	output = std::regex_replace(output, std::regex("\t"), "");

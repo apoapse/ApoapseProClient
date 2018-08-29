@@ -29,6 +29,7 @@ void RoomManager::Initialize()
 			room->dbId = row[0].GetInt64();
 			room->uuid = Uuid(row[1].GetByteArray());
 			room->name = row[2].GetText();
+			room->uiId = m_rooms.size();
 
 			m_rooms.push_back(std::move(room));
 		}
@@ -71,6 +72,7 @@ void RoomManager::AddNewRoomFromServer(std::unique_ptr<ApoapseRoom> room)
 		Operation(OperationType::new_room, apoapseClient.GetLocalUser().username, newId).Save();
 	}
 
+	room->uiId = m_rooms.size();
 	m_rooms.push_back(std::move(room));
 
 	if (m_rooms.size() == 1)
@@ -236,6 +238,11 @@ void RoomManager::UpdateThreadListUI() const
 	const auto* selectedRoom = GetSelectedRoom();
 	JsonHelper ser;
 
+	{
+		ser.Insert("room.name", HTMLUI::HtmlSpecialChars(selectedRoom->name, false));
+		ser.Insert("room.internal_id", selectedRoom->uiId);
+	}
+
 	// Reverse loop
 	for (size_t i = selectedRoom->threads.size(); i-- > 0;)
 	{
@@ -261,7 +268,7 @@ void RoomManager::UpdateThreadListUI() const
 		ser.Insert("threads", serThread);
 	}
 
-	global->htmlUI->SendSignal("threads_list_update", ser.Generate());
+	global->htmlUI->SendSignal("OnOpenRoom", ser.Generate());
 }
 
 void RoomManager::UpdateUI() const
@@ -270,11 +277,10 @@ void RoomManager::UpdateUI() const
 	{
 		JsonHelper ser;
 
-		int i = 0;
 		for (const auto& room : m_rooms)
 		{
 			JsonHelper serRoom;
-			serRoom.Insert("internal_id", i);
+			serRoom.Insert("internal_id", room->uiId);
 			serRoom.Insert("name", HTMLUI::HtmlSpecialChars(room->name, false));
 
 			if (room.get() == m_uiSelectedRoom)
@@ -284,7 +290,6 @@ void RoomManager::UpdateUI() const
 
 
 			ser.Insert("rooms", serRoom);
-			i++;
 		}
 
 		global->htmlUI->SendSignal("rooms_update", ser.Generate());

@@ -135,6 +135,10 @@ void ApoapseThread::UpdateMessagesListUI() const
 {
 	JsonHelper ser;
 
+	{
+		ser.Insert("info.name", HTMLUI::HtmlSpecialChars(name, false));
+	}
+
 	// Reverse loop
 	for (size_t i = m_messages.size(); i-- > 0;)
 	{
