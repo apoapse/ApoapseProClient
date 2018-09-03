@@ -22,12 +22,18 @@ CommandInfo& CmdMarkMessageAsRead::GetInfo() const
 
 void CmdMarkMessageAsRead::SendMarkMessageAsRead(const Uuid& messageUuid, ApoapseClient& client)
 {
+	MessagePackSerializer ser;
+	ser.UnorderedAppend("messageUuid", messageUuid.GetInRawFormat());
 
+	CmdMarkMessageAsRead cmd;
+	cmd.Send(ser, *client.GetConnection());
 }
 
 void CmdMarkMessageAsRead::Process(ClientConnection& sender)
 {
+	const auto msgUuid = Uuid(GetFieldsData().GetValue<ByteContainer>("messageUuid"));
 
+	ApoapseMessage::MarkMessageAsReadFromServer(msgUuid, sender.client);
 }
 
 APOAPSE_COMMAND_REGISTER(CmdMarkMessageAsRead, CommandId::mark_message_as_read);

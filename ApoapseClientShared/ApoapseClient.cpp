@@ -14,6 +14,7 @@
 #include "CmdFirstUserConnection.h"
 #include "CmdSyncRequest.h"
 #include "Operation.h"
+#include "CmdMarkMessageAsRead.h"
 
 ApoapseClient::ApoapseClient()
 {
@@ -134,6 +135,17 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 		ASSERT(activeThread != nullptr);
 
 		activeThread->SendNewMessage(json.ReadFieldValue<std::string>("msg_content").get());
+	}
+
+	else if (name == "mark_message_as_read" && m_connected && IsAuthenticated())
+	{
+		auto* activeThread = m_roomManager->GetActiveThread();
+		ASSERT(activeThread != nullptr);
+
+		auto* message = activeThread->GetMessageByDbid(json.ReadFieldValue<Int64>("dbid").get());
+		ASSERT(message != nullptr);
+
+		CmdMarkMessageAsRead::SendMarkMessageAsRead(message->uuid, *this);
 	}
 
 	return "";

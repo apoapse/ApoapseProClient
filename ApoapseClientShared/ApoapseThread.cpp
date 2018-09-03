@@ -14,10 +14,14 @@ ApoapseThread::ApoapseThread(const SimpleApoapseThread& simpleThread, RoomManage
 {
 	dbId = simpleThread.dbId;
 	uuid = simpleThread.uuid;
+	uiId = simpleThread.uiId;
 	roomUuid = simpleThread.roomUuid;
 	name = simpleThread.name;
 	lastMessageAuthor = simpleThread.lastMessageAuthor;
 	lastMessageText = simpleThread.lastMessageText;
+
+	ASSERT(dbId >= 0);
+	ASSERT(uiId >= 0);
 }
 
 void ApoapseThread::OnUIDisplay()
@@ -47,12 +51,37 @@ void ApoapseThread::OnAddedNewMessageFromServer(std::unique_ptr<ApoapseMessage> 
 	}
 }
 
+Int64 ApoapseThread::CountUnreadMessages(SimpleApoapseThread& thread)
+{
+	SQLQuery query(*global->database);
+	query << "SELECT Count(*) FROM messages WHERE thread_uuid " << EQUALS << thread.uuid.GetInRawFormat() << AND << "is_read" << EQUALS << 0;
+	auto res = query.Exec();
+
+	return res[0][0].GetInt64();
+}
+
 ApoapseMessage* ApoapseThread::GetMostRecentMessage() const
 {
 	if (m_messages.size() == 0)
 		return nullptr;
 
 	return (&*m_messages[m_messages.size() - 1]);
+}
+
+ApoapseMessage* ApoapseThread::GetMessageByDbid(DbId dbid) const
+{
+	for (const auto& message : m_messages)
+	{
+		const auto res = std::find_if(m_messages.begin(), m_messages.end(), [&](const auto& msg)
+		{
+			return (msg->dbId == dbid);
+		});
+
+		if (res != m_messages.end())
+			return res->get();
+	}
+
+	return nullptr;
 }
 
 void ApoapseThread::UpdateThreadLastMessagePreview(SimpleApoapseThread& thread, RoomManager& roomManager) // #TODO This function is not aware of any messages cache and do not use the Message class utils to get the data
@@ -121,6 +150,7 @@ void ApoapseThread::LoadMessages()
 		message->author = Username(row[3].GetByteArray());
 		message->sentTime = DateTimeUtils::UTCDateTime(row[4].GetText());
 		message->thread = *this;
+		message->isRead = static_cast<bool>(row[6].GetInt32());
 
 		{
 			const auto contentRaw = row[5].GetByteArray();
@@ -137,6 +167,8 @@ void ApoapseThread::UpdateMessagesListUI() const
 
 	{
 		ser.Insert("info.name", HTMLUI::HtmlSpecialChars(name, false));
+		ser.Insert("info.uiId", uiId);
+		ser.Insert("info.dbId", dbId);
 	}
 
 	// Reverse loop

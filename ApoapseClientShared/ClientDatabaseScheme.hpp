@@ -82,6 +82,12 @@ static std::string GetClientDbScheme()
 				{
 					"name": "name",
 					"type": "text"
+				},
+				{
+					"name": "unread_msg_count",
+					"type": "integer",
+					"defaultValue": 0,
+					"canBeNull": true
 				}
 			]
 		},
@@ -138,6 +144,10 @@ static std::string GetClientDbScheme()
 				{
 					"name": "content",
 					"type": "blob"
+				},
+				{
+					"name": "is_read",
+					"type": "integer"
 				}
 			]
 		}

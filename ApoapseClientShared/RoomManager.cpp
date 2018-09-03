@@ -30,6 +30,7 @@ void RoomManager::Initialize()
 			room->uuid = Uuid(row[1].GetByteArray());
 			room->name = row[2].GetText();
 			room->uiId = m_rooms.size();
+			room->unreadMessagesCount = row[3].GetInt64();
 
 			m_rooms.push_back(std::move(room));
 		}
@@ -63,13 +64,13 @@ void RoomManager::AddNewRoomFromServer(std::unique_ptr<ApoapseRoom> room)
 
 	// SAVE
 	{
-		DbId newId = m_rooms.size();
+		room->dbId = m_rooms.size();
 
 		SQLQuery query(*global->database);
-		query << INSERT_INTO << "rooms" << " (id, uuid, name)" << VALUES << "(" << newId << "," << room->uuid.GetInRawFormat() << "," << room->name << ")";
+		query << INSERT_INTO << "rooms" << " (id, uuid, name)" << VALUES << "(" << room->dbId << "," << room->uuid.GetInRawFormat() << "," << room->name << ")";
 		query.Exec();
 
-		Operation(OperationType::new_room, apoapseClient.GetLocalUser().username, newId).Save();
+		Operation(OperationType::new_room, apoapseClient.GetLocalUser().username, room->dbId).Save();
 	}
 
 	room->uiId = m_rooms.size();
@@ -150,6 +151,7 @@ void RoomManager::AddNewThreadFromServer(const Uuid& uuid, const Uuid& roomUuid,
 
 	SimpleApoapseThread thread;
 	thread.dbId = SQLUtils::CountRows("threads");
+	thread.uiId = relatedRoomUuid->threads.size();
 	thread.uuid = uuid;
 	thread.roomUuid = roomUuid;
 	thread.name = name;
@@ -167,8 +169,7 @@ void RoomManager::AddNewThreadFromServer(const Uuid& uuid, const Uuid& roomUuid,
 
 	if (relatedRoomUuid == GetSelectedRoom())
 	{
-		const UIId uiId = (relatedRoomUuid->threads.size() - 1);
-		OnNewThreadAddedToCurrentRoom(thread, uiId);
+		OnNewThreadAddedToCurrentRoom(thread);
 	}
 }
 
@@ -193,15 +194,48 @@ SimpleApoapseThread* RoomManager::GetThreadByUuid(const Uuid& uuid)
 	return nullptr;
 }
 
-void RoomManager::OnNewThreadAddedToCurrentRoom(SimpleApoapseThread& thread, UIId uiId)
+void RoomManager::OnMarkMessageAsRead(SimpleApoapseThread& relatedThread)
+{
+	auto* room = GetRoomByUuid(relatedThread.roomUuid);
+	ASSERT(room != nullptr);
+	ASSERT(relatedThread.unreadMessagesCount > 0);
+	ASSERT(room->unreadMessagesCount > 0);
+
+	relatedThread.unreadMessagesCount--;
+	room->unreadMessagesCount--;
+
+	{
+		SQLQuery query(*global->database);
+		query << UPDATE << "rooms" << SET << "unread_msg_count=" << room->unreadMessagesCount << WHERE "id" << EQUALS << room->dbId;
+		query.Exec();
+	}
+}
+
+void RoomManager::OnAddedUnreadMessage(SimpleApoapseThread& relatedThread)
+{
+	auto* room = GetRoomByUuid(relatedThread.roomUuid);
+	ASSERT(room != nullptr);
+
+	relatedThread.unreadMessagesCount++;
+	room->unreadMessagesCount++;
+
+	{
+		SQLQuery query(*global->database);
+		query << UPDATE << "rooms" << SET << "unread_msg_count=" << room->unreadMessagesCount << WHERE "id" << EQUALS << room->dbId;
+		query.Exec();
+	}
+}
+
+void RoomManager::OnNewThreadAddedToCurrentRoom(SimpleApoapseThread& thread)
 {
 	JsonHelper ser;
 
-	ser.Insert("internal_id", uiId);
+	ser.Insert("internal_id", thread.uiId);
 	ser.Insert("dbid", thread.dbId);
 	ser.Insert("name", HTMLUI::HtmlSpecialChars(thread.name, false));
 	ser.Insert("lastMsgAuthor", thread.lastMessageAuthor.ToStr());
 	ser.Insert("lastMsgText", thread.lastMessageText);
+	ser.Insert("unreadMessagesCount", thread.unreadMessagesCount);
 
 	global->htmlUI->SendSignal("on_added_new_thread", ser.Generate());
 }
@@ -218,9 +252,12 @@ void RoomManager::LoadThreadsLists()
 		{
 			SimpleApoapseThread thread;
 			thread.dbId = row[0].GetInt64();
+			thread.uiId = room->threads.size();
 			thread.uuid = Uuid(row[2].GetByteArray());
 			thread.name = row[3].GetText();
 			thread.roomUuid = room->uuid;
+
+			thread.unreadMessagesCount = ApoapseThread::CountUnreadMessages(thread);
 
 			ASSERT(Uuid(row[1].GetByteArray()) == thread.roomUuid);
 
@@ -241,6 +278,7 @@ void RoomManager::UpdateThreadListUI() const
 	{
 		ser.Insert("room.name", HTMLUI::HtmlSpecialChars(selectedRoom->name, false));
 		ser.Insert("room.internal_id", selectedRoom->uiId);
+		ser.Insert("room.dbid", selectedRoom->dbId);
 	}
 
 	// Reverse loop
@@ -251,6 +289,7 @@ void RoomManager::UpdateThreadListUI() const
 
 		serThread.Insert("internal_id", i);
 		serThread.Insert("dbid", thread.dbId);
+		serThread.Insert("unreadMessagesCount", thread.unreadMessagesCount);
 		serThread.Insert("name", HTMLUI::HtmlSpecialChars(thread.name, false));
 		
 		if (!thread.lastMessageText.empty())
@@ -281,7 +320,9 @@ void RoomManager::UpdateUI() const
 		{
 			JsonHelper serRoom;
 			serRoom.Insert("internal_id", room->uiId);
+			serRoom.Insert("dbid", room->dbId);
 			serRoom.Insert("name", HTMLUI::HtmlSpecialChars(room->name, false));
+			serRoom.Insert("unreadMessagesCount", room->unreadMessagesCount);
 
 			if (room.get() == m_uiSelectedRoom)
 				serRoom.Insert("isSelected", true);

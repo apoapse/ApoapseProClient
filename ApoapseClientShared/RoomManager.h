@@ -11,6 +11,7 @@ struct ApoapseRoom
 	UIId uiId = -1;
 	std::string name;
 	std::vector<SimpleApoapseThread> threads;
+	Int64 unreadMessagesCount = 0;
 };
 
 class RoomManager
@@ -35,10 +36,12 @@ public:
 	void AddNewThreadFromServer(const Uuid& uuid, const Uuid& roomUuid, const std::string& name);
 	ApoapseThread* GetActiveThread();
 	SimpleApoapseThread* GetThreadByUuid(const Uuid& uuid);
+	void OnMarkMessageAsRead(SimpleApoapseThread& relatedThread);
+	void OnAddedUnreadMessage(SimpleApoapseThread& relatedThread);
 	//virtual ~RoomManager();
 	
 private:
-	void OnNewThreadAddedToCurrentRoom(SimpleApoapseThread& thread, UIId uiId);
+	void OnNewThreadAddedToCurrentRoom(SimpleApoapseThread& thread);
 	void LoadThreadsLists();
 
 	void UpdateThreadListUI() const;

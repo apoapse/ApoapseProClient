@@ -60,6 +60,9 @@
     <ClCompile Include="CmdNotifyNewUser.cpp">
       <Filter>Commands</Filter>
     </ClCompile>
+    <ClCompile Include="LocalSettings.cpp">
+      <Filter>Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientEntryPoint.h" />
@@ -122,6 +125,9 @@
     </ClInclude>
     <ClInclude Include="CmdMarkMessageAsRead.h">
       <Filter>Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="LocalSettings.h">
+      <Filter>Systems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
