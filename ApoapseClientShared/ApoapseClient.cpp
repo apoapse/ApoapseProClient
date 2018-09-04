@@ -236,7 +236,7 @@ void ApoapseClient::OnAuthenticated(const LocalUser& localUser)
 	global->htmlUI->SendSignal("connected_and_authenticated", ""s);
 
 	// Apoapse sync
-	CmdSyncRequest::SendSyncRequest(Operation::GetMostRecentOperationTime(), *this);
+	CmdSyncRequest::SendSyncRequest(Operation::GetMostRecentOperationTime(GetLocalUser().username), *this);
 }
 
 bool ApoapseClient::LoadDatabase()

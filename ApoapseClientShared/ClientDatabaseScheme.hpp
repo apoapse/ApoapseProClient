@@ -47,6 +47,14 @@ static std::string GetClientDbScheme()
 				{
 					"name": "item_dbid",
 					"type": "integer"
+				},
+				{
+					"name": "ownership",
+					"type": "blob"
+				},
+				{
+					"name": "related_user",
+					"type": "blob"
 				}
 			]
 		},
