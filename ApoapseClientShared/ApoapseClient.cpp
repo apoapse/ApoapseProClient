@@ -72,6 +72,12 @@ bool ApoapseClient::IsConnectedToServer() const
 
 std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonHelper& json)
 {
+	if (name == "disconnect" && m_connected)
+	{
+		LOG << "User requested disconnection";
+		m_connection->Close();
+	}
+
 	if (name == "login" && !m_connected)
 	{
 		Connect(json.ReadFieldValue<std::string>("server").get(), json.ReadFieldValue<std::string>("username").get(), json.ReadFieldValue<std::string>("password").get());
