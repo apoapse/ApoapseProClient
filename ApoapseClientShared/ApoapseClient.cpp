@@ -46,7 +46,9 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 
 		global->htmlUI->UpdateStatusBar("@connecting_status");
 		const UInt16 port = defaultServerPort;
-		auto connection = std::make_shared<ClientConnection>(*m_IOService, *this);
+		ssl::context tlsContext(ssl::context::sslv23);
+
+		auto connection = std::make_shared<ClientConnection>(*m_IOService, tlsContext, *this);
 		connection->Connect(serverAddress, port);
 
 		m_connection = connection.get();

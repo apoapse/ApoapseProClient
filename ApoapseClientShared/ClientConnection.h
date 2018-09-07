@@ -9,7 +9,7 @@ class ClientConnection : public GenericConnection
 public:
 	ApoapseClient& client;
 
-	ClientConnection(boost::asio::io_service& ioService, ApoapseClient& client);
+	ClientConnection(boost::asio::io_service& ioService, ssl::context& context, ApoapseClient& client);
 	virtual ~ClientConnection() override;
 
 private:

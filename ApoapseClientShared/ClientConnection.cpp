@@ -5,8 +5,8 @@
 #include "HTMLUI.h"
 #include "SecurityAlert.h"
 
-ClientConnection::ClientConnection(boost::asio::io_service& ioService, ApoapseClient& client)
-	: GenericConnection(ioService)
+ClientConnection::ClientConnection(boost::asio::io_service& ioService, ssl::context& context, ApoapseClient& client)
+	: GenericConnection(ioService, context)
 	, client(client)
 {
 
