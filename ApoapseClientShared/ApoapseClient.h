@@ -42,7 +42,7 @@ public:
 	void OnDisconnect();
 	const Username& GetLastLoginTryUsername() const;
 
-	void Authenticate(const LocalUser& localUser);
+	void Authenticate();
 	bool IsAuthenticated() const;
 	const hashSecBytes& GetIdentityPasswordHash() const;
 	const LocalUser& GetLocalUser() const;
@@ -50,7 +50,7 @@ public:
 	RoomManager& GetRoomManager() const;
 private:
 
-	void OnAuthenticated(const LocalUser& localUser);
+	void OnAuthenticated();
 	bool LoadDatabase();
 	void UnloadDatabase();
 };

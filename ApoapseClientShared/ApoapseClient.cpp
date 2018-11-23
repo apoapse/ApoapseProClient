@@ -208,15 +208,12 @@ const Username& ApoapseClient::GetLastLoginTryUsername() const
 	return m_lastLoginTryUsername;
 }
 
-void ApoapseClient::Authenticate(const LocalUser& localUser)
+void ApoapseClient::Authenticate()
 {
-	m_authenticatedUser = localUser;
-	LOG << "User " << localUser.username.ToStr() << " authenticated.";
-
-	OnAuthenticated(localUser);
+	OnAuthenticated();
 }
 
-void ApoapseClient::OnAuthenticated(const LocalUser& localUser)
+void ApoapseClient::OnAuthenticated()
 {
 	// Database
 	{
@@ -235,6 +232,14 @@ void ApoapseClient::OnAuthenticated(const LocalUser& localUser)
 		}
 	}
 
+	// Local user
+	{
+		LocalUser localUser = User::GetUserByUsername(GetLastLoginTryUsername());
+		m_authenticatedUser = localUser;
+
+		LOG << "User " << localUser.username.ToStr() << " authenticated.";
+	}
+	
 	// Systems
 	m_roomManager = std::make_unique<RoomManager>(*this);
 	m_roomManager->Initialize();
@@ -243,8 +248,8 @@ void ApoapseClient::OnAuthenticated(const LocalUser& localUser)
 	global->htmlUI->UpdateStatusBar("@connected_and_authenticated_status", false);
 	{
 		JsonHelper json;
-		json.Insert("localUser.username", localUser.username.ToStr());
-		json.Insert("localUser.nickname", localUser.nickname);
+		json.Insert("localUser.username", m_authenticatedUser->username.ToStr());
+		json.Insert("localUser.nickname", m_authenticatedUser->nickname);
 
 		global->htmlUI->SendSignal("connected_and_authenticated", json.Generate());
 	}
@@ -258,7 +263,7 @@ bool ApoapseClient::LoadDatabase()
 	m_databaseSharedPtr = LibraryLoader::LoadLibrary<IDatabase>("DatabaseImpl.sqlite");
 	global->database = m_databaseSharedPtr.get();
 	const char* dbParams[1];
-	std::string dbFileName = "user_" + GetLocalUser().username.ToStr() + ".db";
+	std::string dbFileName = "user_" + GetLastLoginTryUsername().ToStr() + ".db";
 	dbParams[0] = dbFileName.c_str();
 	if (m_databaseSharedPtr->Open(dbParams, 1))
 	{

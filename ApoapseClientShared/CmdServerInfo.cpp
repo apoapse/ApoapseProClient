@@ -49,12 +49,10 @@ private:
 			{
 				//const IV iv = VectorToArray<byte, 16>(GetFieldsData().GetValue<ByteContainer>("private_key_iv")); #MVP
 
-				LocalUser user;
-				user.username = sender.client.GetLastLoginTryUsername();
 				//user.publicKey = GetFieldsData().GetValue<ByteContainer>("public_key");
 				//user.privateKey = User::DecryptIdentityPrivateKey(GetFieldsData().GetValue<ByteContainer>("private_key_encrypted"), iv, sender.client.GetIdentityPasswordHash());
 
-				sender.client.Authenticate(user);
+				sender.client.Authenticate();// #TODO #MVP Get username from cmd/server
 			}
 		}
 		else

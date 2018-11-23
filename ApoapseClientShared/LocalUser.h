@@ -5,6 +5,11 @@
 
 struct LocalUser : public User
 {
+	LocalUser(User& user)
+	{
+		username = user.username;
+		nickname = user.nickname;
+	}
 	
 //	PublicKeyBytes publicKey;
 //	PrivateKeyBytes privateKey;
