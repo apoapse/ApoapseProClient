@@ -31,7 +31,7 @@ int main(int argcount, char* argv[])
 	settings.log_severity = LOGSEVERITY_ERROR;
 
 #ifdef DEBUG
-	settings.single_process = true;
+	//settings.single_process = true;
 	settings.remote_debugging_port = 8080;
 #endif // DEBUG
 

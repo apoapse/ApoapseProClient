@@ -59,7 +59,7 @@ void HTMLUI::UpdateStatusBar(const std::string& msg, bool isError /*= false*/)
 	writer.Insert<std::string>("msg", msg);
 	writer.Insert<bool>("is_error", isError);
 
-	SendSignal("update_status_bar", writer.Generate());
+//	SendSignal("update_status_bar", writer.Generate());
 }
 
 std::string HTMLUI::HtmlSpecialChars(const std::string& str, bool convertNewLines)	// #TODO make unit tests for this function

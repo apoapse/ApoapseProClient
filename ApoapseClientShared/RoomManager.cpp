@@ -333,6 +333,6 @@ void RoomManager::UpdateUI() const
 			ser.Insert("rooms", serRoom);
 		}
 
-		global->htmlUI->SendSignal("rooms_update", ser.Generate());
+		global->htmlUI->SendSignal("listed_rooms_update", ser.Generate());
 	}
 }

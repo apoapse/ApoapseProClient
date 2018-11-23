@@ -241,7 +241,13 @@ void ApoapseClient::OnAuthenticated(const LocalUser& localUser)
 
 	// UI
 	global->htmlUI->UpdateStatusBar("@connected_and_authenticated_status", false);
-	global->htmlUI->SendSignal("connected_and_authenticated", ""s);
+	{
+		JsonHelper json;
+		json.Insert("localUser.username", localUser.username.ToStr());
+		json.Insert("localUser.nickname", localUser.nickname);
+
+		global->htmlUI->SendSignal("connected_and_authenticated", json.Generate());
+	}
 
 	// Apoapse sync
 	CmdSyncRequest::SendSyncRequest(Operation::GetMostRecentOperationTime(GetLocalUser().username), *this);

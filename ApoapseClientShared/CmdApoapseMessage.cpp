@@ -58,6 +58,12 @@ void CmdApoapseMessage::SendMessage(const ApoapseMessage& message, ApoapseThread
 {
 	const auto formatedContent = std::vector<byte>(message.content.begin(), message.content.end());
 
+	if (formatedContent.empty())
+	{
+		LOG << LogSeverity::warning << "Trying to send an empty message";
+ 		return;
+	}
+
 	MessagePackSerializer ser;
 	ser.UnorderedAppend("uuid", message.uuid.GetInRawFormat());
 	ser.UnorderedAppend("threadUuid", thread.uuid.GetInRawFormat());
