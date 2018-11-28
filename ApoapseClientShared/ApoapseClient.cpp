@@ -87,9 +87,10 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 
 	else if (name == "apoapse_install" && m_connected)
 	{
-		const auto username = User::HashUsername(json.ReadFieldValue<std::string>("username").get());
-		const auto password = User::HashPasswordForServer(json.ReadFieldValue<std::string>("password").get());
-		CmdApoapseInstall::SendInstallCommand(username, password, json.ReadFieldValue<std::string>("nickname").get(), *this);
+		const auto username = User::HashUsername(json.ReadFieldValue<std::string>("admin_username").get());
+		const auto password = User::HashPasswordForServer(json.ReadFieldValue<std::string>("admin_password").get());
+
+		CmdApoapseInstall::SendInstallCommand(username, password, json.ReadFieldValue<std::string>("admin_nickname").get(), *this);
 	}
 
 	else if (name == "user_first_connection" && m_connected)
@@ -172,9 +173,9 @@ void ApoapseClient::OnSetupState()
 {
 	{
 		JsonHelper ser;
-		//ser.Insert("savedUsername", GetLastLoginTryUsername());
+		ser.Insert("previousUsername", GetLastLoginTryUsername());
 
-		global->htmlUI->SendSignal("show_setup_state", ser.Generate());
+		global->htmlUI->SendSignal("show_install", ser.Generate());
 	}
 
 	global->htmlUI->UpdateStatusBar("@connected_in_setup_phase_status");
