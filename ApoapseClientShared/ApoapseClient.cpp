@@ -110,11 +110,19 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 	else if (name == "register_user" && m_connected)
 	{
 		// #MVP Add permissions checks
-		global->htmlUI->SendSignal("clear_temporary_password", "");	// We make sure the UI do not keep the temporary password
+		const auto tempPassword = User::GenerateTemporaryRandomPassword();
+		const auto username = json.ReadFieldValue<std::string>("username").get();
 
-		const auto username = User::HashUsername(json.ReadFieldValue<std::string>("username").get());
-		const auto password = User::HashPasswordForServer(json.ReadFieldValue<std::string>("password").get());
-		CmdRegisterNewUser::SendRegisterCommand(username, password, *this);
+		{
+			JsonHelper json;
+			json.Insert("username", username);
+			json.Insert("temp_password", tempPassword);
+
+			global->htmlUI->SendSignal("OnAddedNewUser", json.Generate());
+		}
+
+		const auto password = User::HashPasswordForServer(tempPassword);
+		CmdRegisterNewUser::SendRegisterCommand(User::HashUsername(username), password, *this);
 	}
 
 	else if (name == "create_new_room" && m_connected && IsAuthenticated())
