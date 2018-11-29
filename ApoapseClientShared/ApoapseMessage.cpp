@@ -17,11 +17,24 @@ void ApoapseMessage::MarkMessageAsReadFromServer(const Uuid& uuid, ApoapseClient
 {
 	if (!DoesMessageExist(uuid))
 	{
-		LOG << LogSeverity::error << "Trying to mark a message as read that does not exist";
+		LOG << LogSeverity::error << "Trying to mark a message as read that does not exist: " << uuid.GetAsByteVector();
 		return;
 	}
 
 	// #TODO Make sure the message is not already marked as read
+	{
+		SQLQuery query(*global->database);
+		query << SELECT << "is_read" << FROM << "messages" << WHERE << "uuid" << EQUALS << uuid.GetInRawFormat();
+		auto res = query.Exec();
+
+		const bool isAlreadyRead = res[0][0].GetBoolean();
+
+		if (isAlreadyRead)
+		{
+			LOG << LogSeverity::error << "Trying to mark a message as read that is already read: " << uuid.GetAsByteVector();
+			return;
+		}
+	}
 
 	ApoapseMessage message = ApoapseMessage::GetMessageByUuid(uuid, client.GetRoomManager());
 
