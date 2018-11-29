@@ -20,10 +20,17 @@ public:
 		{
 			Field{ "status", FieldRequirement::any_mendatory, FIELD_VALUE_VALIDATOR(std::string, CmdServerInfo::ValidateStatusField) },
 			Field{ "requirePasswordChange", FieldRequirement::any_optional, FIELD_VALUE(bool) },
+			Field{ "username", FieldRequirement::any_mendatory, FIELD_VALUE_VALIDATOR(std::vector<byte>, Username::IsValid) },
 
 // 			Field{ "public_key", FieldRequirement::any_optional, FIELD_VALUE_VALIDATOR(ByteContainer, Field::ContainerIsNotEmpty<ByteContainer>) },
 // 			Field{ "private_key_encrypted", FieldRequirement::any_optional, FIELD_VALUE_VALIDATOR(ByteContainer, Field::ContainerIsNotEmpty<ByteContainer>) },
 // 			Field{ "private_key_iv", FieldRequirement::any_optional, FIELD_VALUE_VALIDATOR(ByteContainer, Field::ContainerIsNotEmpty<ByteContainer>) },
+		};
+
+		info.metadataTypes = MetadataAcess::all;
+		info.metadataSelfFields =
+		{
+			Field{ "nickname", FieldRequirement::any_optional, FIELD_VALUE_VALIDATOR(std::string, [&](const auto& str) { return !str.empty(); }) },
 		};
 
 		return info;
@@ -52,7 +59,15 @@ private:
 				//user.publicKey = GetFieldsData().GetValue<ByteContainer>("public_key");
 				//user.privateKey = User::DecryptIdentityPrivateKey(GetFieldsData().GetValue<ByteContainer>("private_key_encrypted"), iv, sender.client.GetIdentityPasswordHash());
 
-				sender.client.Authenticate();// #TODO #MVP Get username from cmd/server
+				auto metaAll = GetMetadataField(MetadataAcess::all);
+				auto metadataAll = metaAll.ReadData();
+
+
+				User user;
+				user.nickname = metadataAll.GetValue<std::string>("nickname");
+				user.username = Username(GetFieldsData().GetValue<ByteContainer>("username"));
+
+				sender.client.Authenticate(user);
 			}
 		}
 		else

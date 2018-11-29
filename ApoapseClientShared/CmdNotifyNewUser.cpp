@@ -35,8 +35,8 @@ public:
 private:
 	void Process(ClientConnection& sender) override
 	{
-		auto metadataAll = GetMetadataField(MetadataAcess::all);
-		MessagePackDeserializer allData = metadataAll.ReadData();
+		auto metaAll = GetMetadataField(MetadataAcess::all);
+		MessagePackDeserializer allData = metaAll.ReadData();
 
 		DbId dbId = SQLUtils::CountRows("users");
 		const auto username = Username(GetFieldsData().GetValue<ByteContainer>("username"));

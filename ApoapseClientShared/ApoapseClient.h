@@ -42,7 +42,7 @@ public:
 	void OnDisconnect();
 	const Username& GetLastLoginTryUsername() const;
 
-	void Authenticate();
+	void Authenticate(const LocalUser& user);
 	bool IsAuthenticated() const;
 	const hashSecBytes& GetIdentityPasswordHash() const;
 	const LocalUser& GetLocalUser() const;

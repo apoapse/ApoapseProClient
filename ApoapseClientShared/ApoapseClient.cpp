@@ -217,8 +217,12 @@ const Username& ApoapseClient::GetLastLoginTryUsername() const
 	return m_lastLoginTryUsername;
 }
 
-void ApoapseClient::Authenticate()
+void ApoapseClient::Authenticate(const LocalUser& user)
 {
+	m_authenticatedUser = user;
+
+	LOG << "User " << m_authenticatedUser->username.ToStr() << " authenticated.";
+
 	OnAuthenticated();
 }
 
@@ -239,14 +243,6 @@ void ApoapseClient::OnAuthenticated()
 			m_connection->Close();
 			return;
 		}
-	}
-
-	// Local user
-	{
-		LocalUser localUser = User::GetUserByUsername(GetLastLoginTryUsername());
-		m_authenticatedUser = localUser;
-
-		LOG << "User " << localUser.username.ToStr() << " authenticated.";
 	}
 	
 	// Systems
