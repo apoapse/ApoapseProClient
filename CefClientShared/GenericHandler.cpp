@@ -9,6 +9,7 @@
 #include "include/views/cef_window.h"
 #include "include/wrapper/cef_closure_task.h"
 #include "include/wrapper/cef_helpers.h"
+#include "../CefClientWindows/resource.h"
 
 namespace {
 
@@ -66,6 +67,11 @@ void GenericHandler::OnTitleChange(CefRefPtr<CefBrowser> browser, const CefStrin
 void GenericHandler::OnAfterCreated(CefRefPtr<CefBrowser> browser)
 {
 	CEF_REQUIRE_UI_THREAD();
+
+#ifdef WIN32
+	auto icon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON_BIG));
+	SendMessage(GetActiveWindow(), WM_SETICON, ICON_BIG, (LPARAM)icon);
+#endif // WINDOWS
 
 	// Add to the list of existing browsers.
 	m_browserList.push_back(browser);

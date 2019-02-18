@@ -20,7 +20,7 @@ public:
 		{
 			Field{ "status", FieldRequirement::any_mendatory, FIELD_VALUE_VALIDATOR(std::string, CmdServerInfo::ValidateStatusField) },
 			Field{ "requirePasswordChange", FieldRequirement::any_optional, FIELD_VALUE(bool) },
-			Field{ "username", FieldRequirement::any_mendatory, FIELD_VALUE_VALIDATOR(std::vector<byte>, Username::IsValid) },
+			Field{ "username", FieldRequirement::any_optional, FIELD_VALUE_VALIDATOR(std::vector<byte>, Username::IsValid) },
 
 // 			Field{ "public_key", FieldRequirement::any_optional, FIELD_VALUE_VALIDATOR(ByteContainer, Field::ContainerIsNotEmpty<ByteContainer>) },
 // 			Field{ "private_key_encrypted", FieldRequirement::any_optional, FIELD_VALUE_VALIDATOR(ByteContainer, Field::ContainerIsNotEmpty<ByteContainer>) },

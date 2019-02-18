@@ -1,3 +1,4 @@
 #include "Resource.h"
 
-IDI_MAIN_ICON ICON "apoapse_pro.ico" 
+IDI_MAIN_ICON ICON "apoapse_pro.ico"
+IDI_ICON_BIG ICON "apoapse_pro.ico"
