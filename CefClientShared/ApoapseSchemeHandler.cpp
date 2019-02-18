@@ -113,8 +113,11 @@ void ApoapseSchemeHandler::SetMimeFromExtension(const std::string fileExtension)
 	else if (fileExtension == "js")
 		m_mime = "application/javascript";
 
-	if (fileExtension == "jpg")
+	else if (fileExtension == "jpg")
 		m_mime = "image/jpeg";
+
+	else if (fileExtension == "svg")
+		m_mime = "image/svg+xml";
 }
 
 std::string ApoapseSchemeHandler::ReadFileExtension(const std::string& path)
