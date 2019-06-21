@@ -64,7 +64,7 @@ std::string User::GenerateTemporaryRandomPassword()
 		return output;
 }
 
-std::pair<PrivateKeyBytes, PublicKeyBytes> User::GenerateIdentityKey()
+/*std::pair<PrivateKeyBytes, PublicKeyBytes> User::GenerateIdentityKey()
 {
 	return Cryptography::RSA::GenerateKeyPair(identityKeySize);
 }
@@ -92,3 +92,4 @@ PrivateKeyBytes User::DecryptIdentityPrivateKey(const EncryptedPrivateKeyBytes& 
 
 	return PrivateKeyBytes(res.data(), res.size());
 }
+*/
