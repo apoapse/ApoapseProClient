@@ -15,6 +15,7 @@
 #include "CmdSyncRequest.h"
 #include "Operation.h"
 #include "CmdMarkMessageAsRead.h"
+#include "Hash.hpp"
 
 ApoapseClient::ApoapseClient()
 {
@@ -36,6 +37,7 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 		LOG << "Starting login hashing";
 		//m_identityPasswordHash = User::HashPasswordForIdentityPrivateKey(password); // #MVP
 		m_lastLoginTryUsername = User::HashUsername(username);
+		m_dbPassword = GenerateDbPassword(password);
 		m_loginCmd.value()->PrepareLoginCmd(m_lastLoginTryUsername, password);
 
 		LOG << "Login hashing complete";
@@ -226,6 +228,15 @@ void ApoapseClient::Authenticate(const LocalUser& user)
 	OnAuthenticated();
 }
 
+std::string ApoapseClient::GenerateDbPassword(const std::string& password)
+{
+	std::vector<byte> output;
+	auto digest = Cryptography::PBKDF2_SHA256(std::vector<byte>(password.begin(), password.end()), std::vector<byte>(), 3000);
+	output.insert(output.begin(), digest.begin(), digest.end());
+
+	return BytesToHexString(output);
+}
+
 void ApoapseClient::OnAuthenticated()
 {
 	// Database
@@ -265,19 +276,34 @@ void ApoapseClient::OnAuthenticated()
 
 bool ApoapseClient::LoadDatabase()
 {
+#ifdef DO_NOT_ENCRYPT_DATABASE
 	m_databaseSharedPtr = LibraryLoader::LoadLibrary<IDatabase>("DatabaseImpl.sqlite");
+#else
+	m_databaseSharedPtr = LibraryLoader::LoadLibrary<IDatabase>("DatabaseImpl.sqlcipher");
+#endif
+
 	global->database = m_databaseSharedPtr.get();
-	const char* dbParams[1];
-	std::string dbFileName = "user_" + GetLastLoginTryUsername().ToStr() + ".db";
-	dbParams[0] = dbFileName.c_str();
-	if (m_databaseSharedPtr->Open(dbParams, 1))
+
+	std::vector<const char*> dbParams;
+
+	std::string dbFileName = "user_" + m_authenticatedUser->username.ToStr() + ".db";
+	dbParams.push_back(dbFileName.c_str());
+
+#ifndef DO_NOT_ENCRYPT_DATABASE
+	const std::string dbPassword = m_dbPassword.value();
+	dbParams.push_back(dbPassword.c_str());
+
+	m_dbPassword.reset();
+#endif
+
+	if (m_databaseSharedPtr->Open(dbParams.data(), dbParams.size()))
 	{
-		LOG << "Database accessed successfully. Params: " << *dbParams;
+		LOG << "Database accessed successfully.";
 		return true;
 	}
 	else
 	{
-		LOG << "Unable to access the database. Params: " << *dbParams << LogSeverity::error;
+		LOG << "Unable to access the database." << LogSeverity::error;
 		return false;
 	}
 }
@@ -294,11 +320,11 @@ bool ApoapseClient::IsAuthenticated() const
 	return m_authenticatedUser.has_value();
 }
 
-const hashSecBytes& ApoapseClient::GetIdentityPasswordHash() const
+/*const hashSecBytes& ApoapseClient::GetIdentityPasswordHash() const
 {
 	ASSERT(!m_identityPasswordHash.empty());
 	return m_identityPasswordHash;
-}
+}*/
 
 const LocalUser& ApoapseClient::GetLocalUser() const
 {

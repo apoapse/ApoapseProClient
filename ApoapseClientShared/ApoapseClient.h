@@ -19,8 +19,9 @@ class ApoapseClient
 	ClientConnection* m_connection;
 	bool m_connected;
 	std::optional<std::unique_ptr<CmdConnect>> m_loginCmd;
-	hashSecBytes m_identityPasswordHash;
+	//hashSecBytes m_identityPasswordHash;
 	Username m_lastLoginTryUsername;
+	std::optional<std::string> m_dbPassword;
 	std::optional<LocalUser> m_authenticatedUser;
 
 	std::unique_ptr<RoomManager> m_roomManager;
@@ -44,12 +45,12 @@ public:
 
 	void Authenticate(const LocalUser& user);
 	bool IsAuthenticated() const;
-	const hashSecBytes& GetIdentityPasswordHash() const;
+//	const hashSecBytes& GetIdentityPasswordHash() const;
 	const LocalUser& GetLocalUser() const;
 
 	RoomManager& GetRoomManager() const;
 private:
-
+	static std::string GenerateDbPassword(const std::string& password);
 	void OnAuthenticated();
 	bool LoadDatabase();
 	void UnloadDatabase();
