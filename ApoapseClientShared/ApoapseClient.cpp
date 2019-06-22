@@ -278,6 +278,7 @@ bool ApoapseClient::LoadDatabase()
 {
 #ifdef DO_NOT_ENCRYPT_DATABASE
 	m_databaseSharedPtr = LibraryLoader::LoadLibrary<IDatabase>("DatabaseImpl.sqlite");
+	LOG << "WARNING: THE DATABASE ENCRYPTION IS DISABLED" << LogSeverity::security_alert;
 #else
 	m_databaseSharedPtr = LibraryLoader::LoadLibrary<IDatabase>("DatabaseImpl.sqlcipher");
 #endif
