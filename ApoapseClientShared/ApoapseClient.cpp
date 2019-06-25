@@ -247,7 +247,7 @@ void ApoapseClient::OnAuthenticated()
 			return;
 		}
 
-		DatabaseIntegrityPatcher dbIntegrity(GetClientDbScheme());
+		DatabaseIntegrityPatcher dbIntegrity;
 		if (!dbIntegrity.CheckAndResolve())
 		{
 			LOG << LogSeverity::error << "The database integrity patcher has failed";
