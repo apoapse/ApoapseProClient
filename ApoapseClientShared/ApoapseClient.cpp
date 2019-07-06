@@ -16,6 +16,8 @@
 #include "Operation.h"
 #include "CmdMarkMessageAsRead.h"
 #include "Hash.hpp"
+#include "CommandsManagerV2.h"
+#include <Random.hpp>
 
 ApoapseClient::ApoapseClient()
 {
@@ -176,6 +178,7 @@ void ApoapseClient::OnConnectedToServer()
 	global->htmlUI->UpdateStatusBar("@connected_waiting_authentication");
 
 	m_loginCmd.value()->Send(*m_connection);
+	global->cmdManager->CreateCommand("login", data).Send(*m_connection);
 	m_loginCmd.reset();
 }
 
