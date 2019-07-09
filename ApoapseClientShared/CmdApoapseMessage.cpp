@@ -34,7 +34,7 @@ void CmdApoapseMessage::Process(ClientConnection& sender)
 	auto* relatedThread = sender.client.GetRoomManager().GetThreadByUuid(threadUuid);
 	if (relatedThread == nullptr)
 	{
-		LOG << LogSeverity::error << "The thread " << threadUuid.GetAsByteVector() << " where this message is stored does not exist";
+		LOG << LogSeverity::error << "The thread " << threadUuid.GetBytes() << " where this message is stored does not exist";
 		return;
 	}
 
@@ -68,7 +68,7 @@ void CmdApoapseMessage::SendMessage(const ApoapseMessage& message, ApoapseThread
 	ser.UnorderedAppend("uuid", message.uuid.GetInRawFormat());
 	ser.UnorderedAppend("threadUuid", thread.uuid.GetInRawFormat());
 	
-	ser.UnorderedAppend("sentTime", message.sentTime.str());
+	ser.UnorderedAppend("sentTime", message.sentTime.GetStr());
 	ser.UnorderedAppend("content", formatedContent);
 
 	CmdApoapseMessage cmd;

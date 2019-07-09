@@ -17,7 +17,7 @@ void ApoapseMessage::MarkMessageAsReadFromServer(const Uuid& uuid, ApoapseClient
 {
 	if (!DoesMessageExist(uuid))
 	{
-		LOG << LogSeverity::error << "Trying to mark a message as read that does not exist: " << uuid.GetAsByteVector();
+		LOG << LogSeverity::error << "Trying to mark a message as read that does not exist: " << uuid.GetBytes();
 		return;
 	}
 
@@ -31,7 +31,7 @@ void ApoapseMessage::MarkMessageAsReadFromServer(const Uuid& uuid, ApoapseClient
 
 		if (isAlreadyRead)
 		{
-			LOG << LogSeverity::error << "Trying to mark a message as read that is already read: " << uuid.GetAsByteVector();
+			LOG << LogSeverity::error << "Trying to mark a message as read that is already read: " << uuid.GetBytes();
 			return;
 		}
 	}
@@ -96,7 +96,7 @@ JsonHelper ApoapseMessage::GenerateJson(Int64 internalId) const
 	
 	serMessage.Insert("internal_id", internalId);
 	serMessage.Insert("dbid", dbId);
-	serMessage.Insert("sent_time", sentTime.str());
+	serMessage.Insert("sent_time", sentTime.GetStr());
 	serMessage.Insert("author", HTMLUI::HtmlSpecialChars(User::GetUserByUsername(author).nickname, false));
 	serMessage.Insert<bool>("isRead", isRead);
 	serMessage.Insert("content", HTMLUI::HtmlSpecialChars(content, true));
@@ -124,7 +124,7 @@ void ApoapseMessage::AddNewMessageFromServer(std::unique_ptr<ApoapseMessage> mes
 		SQLQuery query(*global->database);
 		query << INSERT_INTO << "messages" << " (id, uuid, thread_uuid, author, sent_time, content, is_read)"
 			<< VALUES << "(" << message->dbId << "," << message->uuid.GetInRawFormat() << "," << message->thread.uuid.GetInRawFormat() << "," << message->author.GetRaw() << ","
-			<< message->sentTime.str() << "," << formatedContent << "," << isRead << ")";
+			<< message->sentTime.GetStr() << "," << formatedContent << "," << isRead << ")";
 		query.Exec();
 
 		Operation(OperationType::new_message, roomManager.apoapseClient.GetLocalUser().username, message->dbId).Save();

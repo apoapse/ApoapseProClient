@@ -87,7 +87,7 @@ void RoomManager::SetUISelectedRoom(UInt64 internalRoomId)
 	if (internalRoomId <= (m_rooms.size() - 1))
 	{
 		m_uiSelectedRoom = m_rooms[internalRoomId].get();
-		LOG << "Selected room " << m_uiSelectedRoom->uuid.GetAsByteVector();
+		LOG << "Selected room " << m_uiSelectedRoom->uuid.GetBytes();
 
 		UpdateThreadListUI();
 	}
@@ -118,7 +118,7 @@ void RoomManager::SetActiveThread(Int64 id)
 	const auto& thread = GetSelectedRoom()->threads.at(id);
 
 	m_selectedThread = ApoapseThread(thread, this); // #TODO cache the Apoapse threads?
-	//LOG << "Apoapse thread " << thread.uuid.GetAsByteVector() << " set to active";
+	//LOG << "Apoapse thread " << thread.uuid.GetBytes() << " set to active";
 
 	m_selectedThread->LoadMessages();
 	m_selectedThread->OnUIDisplay();
@@ -139,7 +139,7 @@ void RoomManager::AddNewThreadFromServer(const Uuid& uuid, const Uuid& roomUuid,
 
 	if (relatedRoomUuid == nullptr)
 	{
-		LOG << LogSeverity::error << "Trying to add the thread " << uuid.GetAsByteVector() << " to a room that does not exist";
+		LOG << LogSeverity::error << "Trying to add the thread " << uuid.GetBytes() << " to a room that does not exist";
 		return;
 	}
 
