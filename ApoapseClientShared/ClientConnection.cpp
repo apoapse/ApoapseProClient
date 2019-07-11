@@ -26,6 +26,11 @@ bool ClientConnection::OnReceivedError(const boost::system::error_code& error)
 	return true;
 }
 
+bool ClientConnection::IsAuthenticated() const
+{
+	return client.IsAuthenticated();
+}
+
 bool ClientConnection::OnConnectedToServer()
 {
 	LOG_DEBUG << "OnConnectedToServer";
@@ -34,42 +39,7 @@ bool ClientConnection::OnConnectedToServer()
 	return true;
 }
 
-void ClientConnection::OnReceivedValidCommand(std::unique_ptr<Command> cmd)
+void ClientConnection::OnReceivedValidCommand(CommandV2& cmd)
 {
-	const bool authenticated = client.IsAuthenticated();
-
-	if (cmd->GetInfo().serverOnly)
-	{
-		SecurityLog::LogAlert(ApoapseErrorCode::cannot_processs_cmd_from_this_connection_type, *this);
-		return;
-	}
-
-#ifndef DEBUG
-	try
-	{
-#endif
-		if (cmd->GetInfo().requireAuthentication && authenticated)
-		{
-			cmd->Process(*this);
-		}
-		else if (cmd->GetInfo().onlyNonAuthenticated && !authenticated)
-		{
-			cmd->Process(*this);
-		}
-		else if (!cmd->GetInfo().requireAuthentication && !authenticated)
-		{
-			cmd->Process(*this);
-		}
-		else
-		{
-			SecurityLog::LogAlert(ApoapseErrorCode::cannot_processs_cmd_from_this_connection_type, *this);
-		}
-#ifndef DEBUG
-	}
-	catch (const std::exception& e)
-	{
-		LOG << LogSeverity::error << "Exception trigged while processing a command of type " << static_cast<UInt16>(cmd->GetInfo().command) << ": " << e;
-		Close();
-	}
-#endif
+	global->cmdManager->OnReceivedCmdInternal(cmd, *this);
 }

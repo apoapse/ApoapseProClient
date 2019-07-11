@@ -63,6 +63,9 @@
     <ClCompile Include="LocalSettings.cpp">
       <Filter>Systems</Filter>
     </ClCompile>
+    <ClCompile Include="ClientCmdManager.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientEntryPoint.h" />
@@ -128,6 +131,9 @@
     </ClInclude>
     <ClInclude Include="LocalSettings.h">
       <Filter>Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientCmdManager.h">
+      <Filter>Commands</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

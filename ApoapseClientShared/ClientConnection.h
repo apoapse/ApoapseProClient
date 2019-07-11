@@ -14,7 +14,7 @@ public:
 
 private:
 	bool OnConnectedToServer() override;
-	void OnReceivedValidCommand(std::unique_ptr<Command> cmd) override;
+	void OnReceivedValidCommand(CommandV2& cmd) override;
 	virtual bool OnReceivedError(const boost::system::error_code& error) override;
-
+	bool IsAuthenticated() const;
 };

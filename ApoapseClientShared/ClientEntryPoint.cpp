@@ -4,8 +4,7 @@
 #include "HTMLUI.h"
 #include "ApoapseClient.h"
 #include "DataStructures.hpp"
-#include <CommandsManagerV2.h>
-#include <CommandsDef.hpp>
+#include "ClientCmdManager.h"
 
 #ifdef UNIT_TESTS
 #include "UnitTestsManager.h"
@@ -22,7 +21,7 @@ int ApoapseClientEntry::ClientMain(const std::vector<std::string>& launchArgs)
 		global->isClient = true;
 
 		global->apoapseData = std::make_unique<ApoapseData>(GetDataStructures());
-		global->cmdManager = std::make_unique<CommandsManagerV2>(GetCommandDef());
+		global->cmdManager = std::make_unique<ClientCmdManager>();
 
 		global->logger = std::make_unique<Logger>("log_client.txt");
 		global->threadPool = std::make_unique<ThreadPool>("Global thread pool", 8); // #TODO dynamically choose the number of threads into the global thread pool

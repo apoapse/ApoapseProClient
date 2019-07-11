@@ -177,8 +177,14 @@ void ApoapseClient::OnConnectedToServer()
 	m_connected = true;
 	global->htmlUI->UpdateStatusBar("@connected_waiting_authentication");
 
-	m_loginCmd.value()->Send(*m_connection);
+	DataStructure data = global->apoapseData->GetStructure("client_login");
+	data.GetField("protocol_version").SetValue((Int64)2);
+	data.GetField("username").SetValue(Username(Cryptography::GenerateRandomBytes(sha256Length)));
+	data.GetField("password").SetValue(Cryptography::GenerateRandomBytes(sha256Length));
+
 	global->cmdManager->CreateCommand("login", data).Send(*m_connection);
+
+	//m_loginCmd.value()->Send(*m_connection);
 	m_loginCmd.reset();
 }
 
