@@ -51,15 +51,15 @@ void ApoapseClientEntry::Shutdown()
 
 std::vector<byte> ApoapseClientEntry::ReadFile(const std::string& filename, const std::string& fileExtension)
 {
-	return global->htmlUI->GetWebResourcesManager().ReadFile(filename, fileExtension);
+	return static_cast<HTMLUI*>(global->htmlUI)->GetWebResourcesManager().ReadFile(filename, fileExtension);
 }
 
 void ApoapseClientEntry::RegisterSignalSender(ISignalSender* signalSender)
 {
-	global->htmlUI->RegisterSignalSender(signalSender);
+	static_cast<HTMLUI*>(global->htmlUI)->RegisterSignalSender(signalSender);
 }
 
 std::string ApoapseClientEntry::OnReceivedSignal(const std::string& name, const std::string& data)
 {
-	return global->htmlUI->OnReceivedSignal(name, data);
+	return static_cast<HTMLUI*>(global->htmlUI)->OnReceivedSignal(name, data);
 }

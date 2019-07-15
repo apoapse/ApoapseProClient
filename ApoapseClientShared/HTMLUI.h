@@ -3,9 +3,10 @@
 #include <memory>
 #include "ThreadPool.h"
 #include "ISignalSender.hpp"
+#include "IHtmlUI.hpp"
 class ApoapseClient;
 
-class HTMLUI
+class HTMLUI : public IHtmlUI
 {
 	ApoapseClient& m_apoapseClient;
 	std::unique_ptr<WebResourcesManager> m_webResourcesManager;
@@ -26,8 +27,8 @@ public:
 	void RegisterSignalSender(ISignalSender* signalSender);
 
 	std::string OnReceivedSignal(const std::string& name, const std::string& data);
-	void SendSignal(const std::string& name, const std::string& data);
-	void UpdateStatusBar(const std::string& msg, bool isError = false);
+	void SendSignal(const std::string& name, const std::string& data) override;
+	void UpdateStatusBar(const std::string& msg, bool isError = false) override;
 
 	static std::string HtmlSpecialChars(const std::string& str, bool convertNewLines);
 	
