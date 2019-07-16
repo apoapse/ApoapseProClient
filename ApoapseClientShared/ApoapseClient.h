@@ -1,7 +1,6 @@
 #pragma once
 #include "Json.hpp"
 #include <optional>
-#include "CmdConnect.h"
 #include "CryptographyTypes.hpp"
 #include "LocalUser.h"
 #include <optional>
@@ -9,6 +8,7 @@
 #include "RoomManager.h"
 #include <boost/shared_ptr.hpp>
 #include "Database.hpp"
+#include "CommandV2.h"
 class ClientConnection;
 
 class ApoapseClient
@@ -18,7 +18,7 @@ class ApoapseClient
 	std::thread m_ioServiceThread;
 	ClientConnection* m_connection;
 	bool m_connected;
-	std::optional<std::unique_ptr<CmdConnect>> m_loginCmd;
+	std::optional<CommandV2> m_loginCmd;
 	//hashSecBytes m_identityPasswordHash;
 	Username m_lastLoginTryUsername;
 	std::optional<std::string> m_dbPassword;

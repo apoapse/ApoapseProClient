@@ -10,7 +10,6 @@
 #include "LibraryLoader.hpp"
 #include "DatabaseIntegrityPatcher.h"
 #include "ClientDatabaseScheme.hpp"
-#include "CmdApoapseInstall.h"
 #include "CmdFirstUserConnection.h"
 #include "CmdSyncRequest.h"
 #include "Operation.h"
@@ -33,14 +32,19 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 	}
 
 	global->htmlUI->UpdateStatusBar("@password_encryption_status");
-	{
-		m_loginCmd = std::make_unique<CmdConnect>();
 
+	{
 		LOG << "Starting login hashing";
 		//m_identityPasswordHash = User::HashPasswordForIdentityPrivateKey(password); // #MVP
 		m_lastLoginTryUsername = User::HashUsername(username);
 		m_dbPassword = GenerateDbPassword(password);
-		m_loginCmd.value()->PrepareLoginCmd(m_lastLoginTryUsername, password);
+
+		DataStructure data = global->apoapseData->GetStructure("client_login");
+		data.GetField("protocol_version").SetValue((Int64)protocolVersion);
+		data.GetField("username").SetValue(m_lastLoginTryUsername);
+		data.GetField("password").SetValue(User::HashPasswordForServer(password));
+
+		m_loginCmd = global->cmdManager->CreateCommand("login", data);
 
 		LOG << "Login hashing complete";
 	}
@@ -78,23 +82,26 @@ bool ApoapseClient::IsConnectedToServer() const
 
 std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonHelper& json)
 {
-	if (name == "disconnect" && m_connected)
+	if (name.substr(0, 4) == "cmd_")
+	{
+		const std::string cmdName = name.substr(4, name.length());
+		const auto cmdDef = global->cmdManager->GetCmdDefByFullName(cmdName);
+		auto dataStructure = global->apoapseData->FromJSON(cmdDef.relatedDataStructure, json);
+
+		auto test = dataStructure.GetField("admin_nickname").GetValue < std::string>();
+
+		global->cmdManager->CreateCommand(cmdName, dataStructure).Send(*m_connection);
+	}
+
+	else if (name == "disconnect" && m_connected)
 	{
 		LOG << "User requested disconnection";
 		m_connection->Close();
 	}
 
-	if (name == "login" && !m_connected)
+	else if (name == "login" && !m_connected)
 	{
 		Connect(json.ReadFieldValue<std::string>("server").get(), json.ReadFieldValue<std::string>("username").get(), json.ReadFieldValue<std::string>("password").get());
-	}
-
-	else if (name == "apoapse_install" && m_connected)
-	{
-		const auto username = User::HashUsername(json.ReadFieldValue<std::string>("admin_username").get());
-		const auto password = User::HashPasswordForServer(json.ReadFieldValue<std::string>("admin_password").get());
-
-		CmdApoapseInstall::SendInstallCommand(username, password, json.ReadFieldValue<std::string>("admin_nickname").get(), *this);
 	}
 
 	else if (name == "user_first_connection" && m_connected)
@@ -177,20 +184,13 @@ void ApoapseClient::OnConnectedToServer()
 	m_connected = true;
 	global->htmlUI->UpdateStatusBar("@connected_waiting_authentication");
 
-	DataStructure data = global->apoapseData->GetStructure("client_login");
-	data.GetField("protocol_version").SetValue((Int64)2);
-	data.GetField("username").SetValue(Username(Cryptography::GenerateRandomBytes(sha256Length)));
-	data.GetField("password").SetValue(Cryptography::GenerateRandomBytes(sha256Length));
-
-	global->cmdManager->CreateCommand("login", data).Send(*m_connection);
-
-	//m_loginCmd.value()->Send(*m_connection);
+	m_loginCmd->Send(*m_connection);
 	m_loginCmd.reset();
 }
 
 void ApoapseClient::OnSetupState()
 {
-	{
+/*	{
 		JsonHelper ser;
 		ser.Insert("previousUsername", GetLastLoginTryUsername());
 
@@ -198,12 +198,13 @@ void ApoapseClient::OnSetupState()
 	}
 
 	global->htmlUI->UpdateStatusBar("@connected_in_setup_phase_status");
+*/
 }
 
 void ApoapseClient::OnUserFirstConnection()
 {
-	global->htmlUI->SendSignal("ShowFirstUserConnection", "");
-	global->htmlUI->UpdateStatusBar("@connected_first_user_connection_status");
+//	global->htmlUI->SendSignal("ShowFirstUserConnection", "");
+//	global->htmlUI->UpdateStatusBar("@connected_first_user_connection_status");
 }
 
 void ApoapseClient::OnDisconnect()
@@ -270,14 +271,14 @@ void ApoapseClient::OnAuthenticated()
 	m_roomManager->Initialize();
 
 	// UI
-	global->htmlUI->UpdateStatusBar("@connected_and_authenticated_status", false);
+	/*global->htmlUI->UpdateStatusBar("@connected_and_authenticated_status", false);
 	{
 		JsonHelper json;
 		json.Insert("localUser.username", m_authenticatedUser->username.ToStr());
 		json.Insert("localUser.nickname", m_authenticatedUser->nickname);
 
 		global->htmlUI->SendSignal("connected_and_authenticated", json.Generate());
-	}
+	}*/
 
 	// Apoapse sync
 	CmdSyncRequest::SendSyncRequest(Operation::GetMostRecentOperationTime(GetLocalUser().username), *this);

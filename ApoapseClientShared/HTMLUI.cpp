@@ -44,8 +44,8 @@ std::string HTMLUI::OnReceivedSignal(const std::string& name, const std::string&
 		
 	});
 
-	return res.get();
-	//return ""s;	// #TODO Temporary disabled return from signal to avoid stalls of the UI. In the future, add a specific "callback" json field to automatically callback the result.
+	//return res.get();
+	return ""s;	// #TODO Temporary disabled return from signal to avoid stalls of the UI. In the future, add a specific "callback" json field to automatically callback the result.
 }
 
 void HTMLUI::SendSignal(const std::string& name, const std::string& data)

@@ -155,16 +155,13 @@
     <ClCompile Include="ApoapseThread.cpp" />
     <ClCompile Include="ClientCmdManager.cpp" />
     <ClCompile Include="ClientConnection.cpp" />
-    <ClCompile Include="CmdApoapseInstall.cpp" />
     <ClCompile Include="CmdApoapseMessage.cpp" />
-    <ClCompile Include="CmdConnect.cpp" />
     <ClCompile Include="CmdCreateRoom.cpp" />
     <ClCompile Include="CmdCreateThread.cpp" />
     <ClCompile Include="CmdFirstUserConnection.cpp" />
     <ClCompile Include="CmdMarkMessageAsRead.cpp" />
     <ClCompile Include="CmdNotifyNewUser.cpp" />
     <ClCompile Include="CmdRegisterNewUser.cpp" />
-    <ClCompile Include="CmdServerInfo.cpp" />
     <ClCompile Include="CmdSyncRequest.cpp" />
     <ClCompile Include="HTMLUI.cpp" />
     <ClCompile Include="LocalSettings.cpp" />
@@ -184,9 +181,7 @@
     <ClInclude Include="ClientConnection.h" />
     <ClInclude Include="ClientDatabaseScheme.hpp" />
     <ClInclude Include="ClientEntryPoint.h" />
-    <ClInclude Include="CmdApoapseInstall.h" />
     <ClInclude Include="CmdApoapseMessage.h" />
-    <ClInclude Include="CmdConnect.h" />
     <ClInclude Include="CmdCreateRoom.h" />
     <ClInclude Include="CmdCreateThread.h" />
     <ClInclude Include="CmdFirstUserConnection.h" />

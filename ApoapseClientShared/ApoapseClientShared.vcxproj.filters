@@ -15,12 +15,6 @@
     <ClCompile Include="ClientConnection.cpp">
       <Filter>Network</Filter>
     </ClCompile>
-    <ClCompile Include="CmdConnect.cpp">
-      <Filter>Commands</Filter>
-    </ClCompile>
-    <ClCompile Include="CmdServerInfo.cpp">
-      <Filter>Commands</Filter>
-    </ClCompile>
     <ClCompile Include="CmdRegisterNewUser.cpp">
       <Filter>Commands</Filter>
     </ClCompile>
@@ -44,9 +38,6 @@
     </ClCompile>
     <ClCompile Include="ApoapseMessage.cpp">
       <Filter>Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="CmdApoapseInstall.cpp">
-      <Filter>Commands</Filter>
     </ClCompile>
     <ClCompile Include="CmdFirstUserConnection.cpp">
       <Filter>Commands</Filter>
@@ -84,9 +75,6 @@
     <ClInclude Include="ClientConnection.h">
       <Filter>Network</Filter>
     </ClInclude>
-    <ClInclude Include="CmdConnect.h">
-      <Filter>Commands</Filter>
-    </ClInclude>
     <ClInclude Include="User.h">
       <Filter>UsersSystem</Filter>
     </ClInclude>
@@ -115,9 +103,6 @@
       <Filter>Systems</Filter>
     </ClInclude>
     <ClInclude Include="CmdApoapseMessage.h">
-      <Filter>Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="CmdApoapseInstall.h">
       <Filter>Commands</Filter>
     </ClInclude>
     <ClInclude Include="CmdFirstUserConnection.h">
