@@ -88,8 +88,6 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 		const auto cmdDef = global->cmdManager->GetCmdDefByFullName(cmdName);
 		auto dataStructure = global->apoapseData->FromJSON(cmdDef.relatedDataStructure, json);
 
-		auto test = dataStructure.GetField("admin_nickname").GetValue < std::string>();
-
 		global->cmdManager->CreateCommand(cmdName, dataStructure).Send(*m_connection);
 	}
 
