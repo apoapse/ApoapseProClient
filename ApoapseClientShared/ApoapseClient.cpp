@@ -134,46 +134,6 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 		CmdRegisterNewUser::SendRegisterCommand(User::HashUsername(username), password, *this);
 	}
 
-	else if (name == "create_new_room" && m_connected && IsAuthenticated())
-	{
-		// #MVP Add permissions checks
-		m_roomManager->SendCreateNewRoom(json.ReadFieldValue<std::string>("name").get());
-	}
-
-	else if (name == "create_new_thread" && m_connected && IsAuthenticated())
-	{
-		m_roomManager->SendAddNewThread(json.ReadFieldValue<std::string>("name").get());
-	}
-
-	else if (name == "loadRoomUI" && m_connected && IsAuthenticated())
-	{
-		m_roomManager->SetUISelectedRoom(json.ReadFieldValue<Int64>("internalId").get());
-	}
-
-	else if (name == "loadThread" && m_connected && IsAuthenticated())
-	{
-		m_roomManager->SetActiveThread(json.ReadFieldValue<Int64>("internalId").get());
-	}
-
-	else if (name == "send_new_message" && m_connected && IsAuthenticated())
-	{
-		auto* activeThread = m_roomManager->GetActiveThread();
-		ASSERT(activeThread != nullptr);
-
-		activeThread->SendNewMessage(json.ReadFieldValue<std::string>("msg_content").get());
-	}
-
-	else if (name == "mark_message_as_read" && m_connected && IsAuthenticated())
-	{
-		auto* activeThread = m_roomManager->GetActiveThread();
-		ASSERT(activeThread != nullptr);
-
-		auto* message = activeThread->GetMessageByDbid(json.ReadFieldValue<Int64>("dbid").get());
-		ASSERT(message != nullptr);
-
-		CmdMarkMessageAsRead::SendMarkMessageAsRead(message->uuid, *this);
-	}
-
 	return "";
 }
 
@@ -265,8 +225,7 @@ void ApoapseClient::OnAuthenticated()
 	}
 	
 	// Systems
-	m_roomManager = std::make_unique<RoomManager>(*this);
-	m_roomManager->Initialize();
+	m_contentManager = std::make_unique<ContentManager>(*this);
 
 	// UI
 	/*global->htmlUI->UpdateStatusBar("@connected_and_authenticated_status", false);
@@ -342,9 +301,9 @@ const LocalUser& ApoapseClient::GetLocalUser() const
 	return m_authenticatedUser.value();
 }
 
-RoomManager& ApoapseClient::GetRoomManager() const
+ContentManager& ApoapseClient::GetContentManager() const
 {
 	ASSERT(IsAuthenticated());
 
-	return *m_roomManager;
+	return *m_contentManager;
 }

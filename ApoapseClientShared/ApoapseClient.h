@@ -5,10 +5,10 @@
 #include "LocalUser.h"
 #include <optional>
 #include <thread>
-#include "RoomManager.h"
 #include <boost/shared_ptr.hpp>
 #include "Database.hpp"
 #include "CommandV2.h"
+#include "ContentManager.h"
 class ClientConnection;
 
 class ApoapseClient
@@ -24,7 +24,7 @@ class ApoapseClient
 	std::optional<std::string> m_dbPassword;
 	std::optional<LocalUser> m_authenticatedUser;
 
-	std::unique_ptr<RoomManager> m_roomManager;
+	std::unique_ptr<ContentManager> m_contentManager;
 
 public:
 	ApoapseClient();
@@ -48,7 +48,7 @@ public:
 //	const hashSecBytes& GetIdentityPasswordHash() const;
 	const LocalUser& GetLocalUser() const;
 
-	RoomManager& GetRoomManager() const;
+	ContentManager& GetContentManager() const;
 private:
 	static std::string GenerateDbPassword(const std::string& password);
 	void OnAuthenticated();

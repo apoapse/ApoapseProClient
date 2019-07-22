@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "CmdCreateThread.h"
 #include "Common.h"
-#include "RoomManager.h"
 #include "ClientConnection.h"
 #include "ApoapseClient.h"
 #include "CommandsManager.h"
@@ -34,7 +33,7 @@ void CmdCreateThread::Process(ClientConnection& sender)
 	const auto uuid = Uuid(GetFieldsData().GetValue<ByteContainer>("uuid"));
 	const auto roomUuid = Uuid(GetFieldsData().GetValue<ByteContainer>("room_uuid"));
 
-	sender.client.GetRoomManager().AddNewThreadFromServer(uuid, roomUuid, usergroupData.GetValue<std::string>("name"));
+	//sender.client.GetRoomManager().AddNewThreadFromServer(uuid, roomUuid, usergroupData.GetValue<std::string>("name"));
 }
 
 void CmdCreateThread::SendCreateThread(const Uuid& threadUuid, const Uuid& roomUuid, const std::string& name, ApoapseClient& client)

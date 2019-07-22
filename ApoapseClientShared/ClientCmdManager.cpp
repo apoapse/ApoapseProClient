@@ -49,6 +49,11 @@ void ClientCmdManager::OnReceivedCommand(CommandV2& cmd, GenericConnection& netC
 			}
 		}
 	}
+	
+	else if (cmd.name == "create_room")
+	{
+
+	}
 
 	LOG_DEBUG << "RECEIVED!";
 }

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "CmdCreateThread.h"
 #include "Common.h"
-#include "RoomManager.h"
 #include "ClientConnection.h"
 #include "ApoapseClient.h"
 #include "CommandsManager.h"
@@ -33,7 +32,7 @@ void CmdMarkMessageAsRead::Process(ClientConnection& sender)
 {
 	const auto msgUuid = Uuid(GetFieldsData().GetValue<ByteContainer>("messageUuid"));
 
-	ApoapseMessage::MarkMessageAsReadFromServer(msgUuid, sender.client);
+	//ApoapseMessage::MarkMessageAsReadFromServer(msgUuid, sender.client);
 }
 
 APOAPSE_COMMAND_REGISTER(CmdMarkMessageAsRead, CommandId::mark_message_as_read);

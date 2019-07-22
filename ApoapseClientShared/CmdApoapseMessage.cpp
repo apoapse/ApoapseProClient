@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "CmdApoapseMessage.h"
 #include "Common.h"
-#include "RoomManager.h"
-#include "ApoapseThread.h"
 #include "ClientConnection.h"
 #include "ApoapseClient.h"
 #include "CommandsManager.h"
@@ -31,7 +29,7 @@ void CmdApoapseMessage::Process(ClientConnection& sender)
 	const auto formatedContent = GetFieldsData().GetValue<ByteContainer>("content");
 	const auto threadUuid = Uuid(GetFieldsData().GetValue<ByteContainer>("threadUuid"));
 
-	auto* relatedThread = sender.client.GetRoomManager().GetThreadByUuid(threadUuid);
+	/*auto* relatedThread = sender.client.GetRoomManager().GetThreadByUuid(threadUuid);
 	if (relatedThread == nullptr)
 	{
 		LOG << LogSeverity::error << "The thread " << threadUuid.GetBytes() << " where this message is stored does not exist";
@@ -45,7 +43,7 @@ void CmdApoapseMessage::Process(ClientConnection& sender)
 	message->content = std::string(formatedContent.begin(), formatedContent.end());
 	message->thread = *relatedThread;
 
-	ApoapseMessage::AddNewMessageFromServer(std::move(message), sender.client.GetRoomManager());
+	ApoapseMessage::AddNewMessageFromServer(std::move(message), sender.client.GetRoomManager());*/
 
 // 	if (message.sentTime > DateTimeUtils::UTCDateTime::CurrentTime())
 // 	{
@@ -56,7 +54,7 @@ void CmdApoapseMessage::Process(ClientConnection& sender)
 
 void CmdApoapseMessage::SendMessage(const ApoapseMessage& message, ApoapseThread& thread, ApoapseClient& client)
 {
-	const auto formatedContent = std::vector<byte>(message.content.begin(), message.content.end());
+	/*const auto formatedContent = std::vector<byte>(message.content.begin(), message.content.end());
 
 	if (formatedContent.empty())
 	{
@@ -72,7 +70,7 @@ void CmdApoapseMessage::SendMessage(const ApoapseMessage& message, ApoapseThread
 	ser.UnorderedAppend("content", formatedContent);
 
 	CmdApoapseMessage cmd;
-	cmd.Send(ser, *client.GetConnection());
+	cmd.Send(ser, *client.GetConnection());*/
 }
 
 APOAPSE_COMMAND_REGISTER(CmdApoapseMessage, CommandId::apoapse_message);
