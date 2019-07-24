@@ -134,6 +134,12 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 		CmdRegisterNewUser::SendRegisterCommand(User::HashUsername(username), password, *this);
 	}
 
+	else
+	{
+		if (IsAuthenticated())
+			m_contentManager->OnReceivedSignal(name, json);
+	}
+
 	return "";
 }
 
@@ -226,6 +232,7 @@ void ApoapseClient::OnAuthenticated()
 	
 	// Systems
 	m_contentManager = std::make_unique<ContentManager>(*this);
+	m_contentManager->Init();
 
 	// UI
 	/*global->htmlUI->UpdateStatusBar("@connected_and_authenticated_status", false);
