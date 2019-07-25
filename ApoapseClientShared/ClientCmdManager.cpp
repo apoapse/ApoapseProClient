@@ -6,7 +6,7 @@
 #include "LocalUser.h"
 #include "ApoapseClient.h"
 
-ClientCmdManager::ClientCmdManager() : CommandsManagerV2(GetCommandDef())
+ClientCmdManager::ClientCmdManager(ApoapseClient& client) : CommandsManagerV2(GetCommandDef()), apoapseClient(client)
 {
 }
 
@@ -19,6 +19,11 @@ bool ClientCmdManager::OnSendCommandPre(CommandV2& cmd)
 
 		cmd.GetData().GetField("admin_username").SetValue(username);
 		cmd.GetData().GetField("admin_password").SetValue(password);
+	}
+	
+	else if (cmd.name == "create_thread")
+	{
+		cmd.GetData().GetField("parent_room").SetValue(apoapseClient.GetContentManager().GetCurrentRoom().uuid);
 	}
 
 	return true;
@@ -45,14 +50,19 @@ void ClientCmdManager::OnReceivedCommand(CommandV2& cmd, GenericConnection& netC
 				user.nickname = cmd.GetData().GetField("nickname").GetValue<std::string>();
 				user.username = cmd.GetData().GetField("username").GetValue<Username>();
 
-				connection.client.Authenticate(user);
+				apoapseClient.Authenticate(user);
 			}
 		}
 	}
 	
 	else if (cmd.name == "create_room")
 	{
-		connection.client.GetContentManager().OnAddNewRoom(cmd.GetData());
+		apoapseClient.GetContentManager().OnAddNewRoom(cmd.GetData());
+	}
+
+	else if (cmd.name == "create_thread")
+	{
+		apoapseClient.GetContentManager().OnAddNewThread(cmd.GetData());
 	}
 
 	LOG_DEBUG << "RECEIVED!";

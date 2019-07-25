@@ -1,6 +1,7 @@
 #pragma once
 #include "TypeDefs.hpp"
 #include "Uuid.h"
+#include "ApoapseThread.h"
 class ApoapseClient;
 
 struct Room
@@ -15,6 +16,8 @@ struct Room
 	Uuid uuid;
 	ThreadsLayout threadsLayout = ThreadsLayout::multiple;
 	DbId id = -1;
+
+	std::vector<ApoapseThread> threads;
 
 	Room(DataStructure& data);
 	bool operator==(const Room& other) const;
@@ -34,12 +37,16 @@ public:
 	void Init();
 
 	void OnAddNewRoom(DataStructure& data);
+	void OnAddNewThread(DataStructure& data);
+
 	void OnReceivedSignal(const std::string& name, const JsonHelper& json);
 	
 	Room& GetRoomById(DbId id);
+	Room& GetRoomByUuid(Uuid uuid);
 	void OpenRoom(Room& room);
+
+	Room& GetCurrentRoom();
 
 private:
 	void UIRoomsUpdate() const;
-
 };

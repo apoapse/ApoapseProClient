@@ -21,12 +21,13 @@ int ApoapseClientEntry::ClientMain(const std::vector<std::string>& launchArgs)
 		global->isClient = true;
 
 		global->apoapseData = std::make_unique<ApoapseData>(GetDataStructures());
-		global->cmdManager = std::make_unique<ClientCmdManager>();
 
 		global->logger = std::make_unique<Logger>("log_client.txt");
 		global->threadPool = std::make_unique<ThreadPool>("Global thread pool", 8); // #TODO dynamically choose the number of threads into the global thread pool
 
 		m_apoapseClient = new ApoapseClient;
+		global->cmdManager = std::make_unique<ClientCmdManager>(*m_apoapseClient);
+
 		global->htmlUI = new HTMLUI(*m_apoapseClient);
 	}
 

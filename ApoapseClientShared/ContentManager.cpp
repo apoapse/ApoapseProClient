@@ -39,12 +39,11 @@ void ContentManager::Init()
 		m_rooms.push_back(Room(roomData));
 	}
 
+	// Open room if any
 	if (!m_rooms.empty())
 	{
 		OpenRoom(m_rooms[0]);
 	}
-
-	UIRoomsUpdate();
 }
 
 void ContentManager::OnAddNewRoom(DataStructure& data)
@@ -53,7 +52,25 @@ void ContentManager::OnAddNewRoom(DataStructure& data)
 	m_rooms.push_back(room);
 
 	LOG << "Added new room " << room.name;
-	UIRoomsUpdate();
+
+	if (m_rooms.size() == 1)
+		OpenRoom(m_rooms[0]);	//If this is the first room created, open it directly
+	else
+		UIRoomsUpdate();
+}
+
+void ContentManager::OnAddNewThread(DataStructure& data)
+{
+	auto& parrentRoom = GetRoomByUuid(data.GetField("parent_room").GetValue<Uuid>());
+	auto thread = ApoapseThread(data, parrentRoom, *this);
+	parrentRoom.threads.push_back(thread);
+
+	LOG << "Added new thread " << thread.name;
+
+	if (parrentRoom == *m_selectedRoom)
+	{
+		global->htmlUI->SendSignal("OnNewThreadOnCurrentRoom", thread.GetJson().Generate());
+	}
 }
 
 void ContentManager::OnReceivedSignal(const std::string& name, const JsonHelper& json)
@@ -78,6 +95,19 @@ Room& ContentManager::GetRoomById(DbId id)
 	return *res;
 }
 
+Room& ContentManager::GetRoomByUuid(Uuid uuid)
+{
+	auto res = std::find_if(m_rooms.begin(), m_rooms.end(), [&uuid](const Room& room)
+	{
+		return (room.uuid == uuid);
+	});
+
+	if (res == m_rooms.end())
+		throw std::exception("Unable to find the room with the provided uuid");
+
+	return *res;
+}
+
 void ContentManager::OpenRoom(Room& room)
 {
 	m_selectedRoom = &room;
@@ -85,7 +115,23 @@ void ContentManager::OpenRoom(Room& room)
 	LOG << "Selected room " << room.name;
 	UIRoomsUpdate();
 
-	global->htmlUI->SendSignal("OnOpenRoom", "{}");
+	ApoapseThread::LoadAllThreads(*m_selectedRoom, *this);
+
+	JsonHelper ser;
+	for (const auto& thread : m_selectedRoom->threads)
+	{
+		ser.Insert("threads", thread.GetJson());
+	}
+
+	global->htmlUI->SendSignal("OnOpenRoom", ser.Generate());
+}
+
+Room& ContentManager::GetCurrentRoom()
+{
+	if (!m_selectedRoom)
+		throw std::exception("There is no room currently selected");
+
+	return *m_selectedRoom;
 }
 
 void ContentManager::UIRoomsUpdate() const

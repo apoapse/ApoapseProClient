@@ -1,11 +1,14 @@
 #pragma once
 #include "TypeDefs.hpp"
 #include "CommandsManagerV2.h"
+class ApoapseClient;
 
 class ClientCmdManager : public CommandsManagerV2
 {
+	ApoapseClient& apoapseClient;
+
 public:
-	ClientCmdManager();
+	ClientCmdManager(ApoapseClient& client);
 
 	// Inherited via CommandsManagerV2
 	virtual bool OnSendCommandPre(CommandV2& cmd) override;
