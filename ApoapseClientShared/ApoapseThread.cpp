@@ -82,8 +82,11 @@ JsonHelper ApoapseThread::GetMessageListJson() const
 
 void ApoapseThread::LoadMessages()
 {
-	if (m_totalMessagesCount > 0 || m_messages.size() != m_totalMessagesCount)
+	if (m_messages.size() != m_totalMessagesCount)
 	{
+		m_messages.clear();
+		m_messages.reserve(m_totalMessagesCount);
+
 		auto messages = global->apoapseData->ReadListFromDatabase("message", "parent_thread", uuid);
 		for (auto& messageDat : messages)
 		{
@@ -91,6 +94,7 @@ void ApoapseThread::LoadMessages()
 		}
 	}
 
+	ASSERT(m_messages.size() == m_totalMessagesCount);
 	LOG << "Loaded " << m_messages.size() << " messages on thread " << name;
 }
 
