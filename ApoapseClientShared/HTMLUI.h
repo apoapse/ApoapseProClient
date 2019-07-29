@@ -30,7 +30,7 @@ public:
 	void SendSignal(const std::string& name, const std::string& data) override;
 	void UpdateStatusBar(const std::string& msg, bool isError = false) override;
 
-	static std::string HtmlSpecialChars(const std::string& str, bool convertNewLines);
+	static std::string HtmlSpecialChars(const std::string& str, bool convertNewLines = false);
 	
 private:
 

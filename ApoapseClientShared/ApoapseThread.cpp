@@ -5,6 +5,7 @@
 #include "Json.hpp"
 #include <SQLQuery.h>
 #include "Username.h"
+#include "HTMLUI.h"
 
 ApoapseMessage::ApoapseMessage(DataStructure& data)
 {
@@ -21,7 +22,7 @@ JsonHelper ApoapseMessage::GetJson() const
 {
 	JsonHelper ser;
 	ser.Insert("id", id);
-	ser.Insert("message", message);
+	ser.Insert("message", HTMLUI::HtmlSpecialChars(message));
 	ser.Insert("sent_time", sentTime.GetStr());
 	ser.Insert("author", "TODO");
 	ser.Insert("author_id", -1);
@@ -46,6 +47,11 @@ ApoapseThread::ApoapseThread(DataStructure& data, Room& parrentRoom, ContentMana
 		m_totalMessagesCount = res[0][0].GetInt64();
 	}
 
+	if (m_totalMessagesCount > 0)
+	{
+		LoadLastMessage();
+	}
+
 	ASSERT(parrentRoom.uuid == parrentRoomUuid);
 }
 
@@ -59,11 +65,13 @@ JsonHelper ApoapseThread::GetJson() const
 	JsonHelper ser;
 	ser.Insert("id", id);
 	ser.Insert("name", name);
+	ser.Insert("msg_count", m_totalMessagesCount);
 
 	if (!m_messages.empty())
 	{
 		auto& mostRecentMsg = m_messages.at(m_messages.size() - 1);
-		ser.Insert("msg_preview.msg", mostRecentMsg.message);
+		ser.Insert("msg_preview.msg", HTMLUI::HtmlSpecialChars(mostRecentMsg.message, true));
+		ser.Insert("msg_preview.author", "todo");
 	}
 
 	return ser;
@@ -129,5 +137,16 @@ void ApoapseThread::LoadAllThreads(Room& room, ContentManager& cManager)
 		}
 
 		LOG << "Loaded " << room.threads.size() << " threads on room " << room.name;
+	}
+}
+
+void ApoapseThread::LoadLastMessage()
+{
+	auto messages = global->apoapseData->ReadListFromDatabase("message", "parent_thread", uuid, "id", ResultOrder::desc, 1);
+	ASSERT(messages.size() == 1);
+
+	for (auto& messageDat : messages)
+	{
+		m_messages.push_back(ApoapseMessage(messageDat));
 	}
 }

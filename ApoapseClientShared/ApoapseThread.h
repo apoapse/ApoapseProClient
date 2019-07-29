@@ -41,4 +41,7 @@ public:
 	void AddNewMessage(ApoapseMessage& message);
 
 	static void LoadAllThreads(Room& room, ContentManager& cManager);
+
+private:
+	void LoadLastMessage();
 };

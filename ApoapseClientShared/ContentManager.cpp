@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "ContentManager.h"
 #include "Json.hpp"
+#include "HTMLUI.h"
 
 Room::Room(DataStructure& data)
 {
@@ -20,7 +21,7 @@ JsonHelper Room::GetJson() const
 {
 	JsonHelper ser;
 	ser.Insert("id", id);
-	ser.Insert("name", name);
+	ser.Insert("name", HTMLUI::HtmlSpecialChars(name));
 
 	return ser;
 }
