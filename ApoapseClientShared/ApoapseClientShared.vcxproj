@@ -154,8 +154,6 @@
     <ClCompile Include="ApoapseThread.cpp" />
     <ClCompile Include="ClientCmdManager.cpp" />
     <ClCompile Include="ClientConnection.cpp" />
-    <ClCompile Include="CmdApoapseMessage.cpp" />
-    <ClCompile Include="CmdCreateThread.cpp" />
     <ClCompile Include="CmdFirstUserConnection.cpp" />
     <ClCompile Include="CmdMarkMessageAsRead.cpp" />
     <ClCompile Include="CmdNotifyNewUser.cpp" />
@@ -178,8 +176,6 @@
     <ClInclude Include="ClientConnection.h" />
     <ClInclude Include="ClientDatabaseScheme.hpp" />
     <ClInclude Include="ClientEntryPoint.h" />
-    <ClInclude Include="CmdApoapseMessage.h" />
-    <ClInclude Include="CmdCreateThread.h" />
     <ClInclude Include="CmdFirstUserConnection.h" />
     <ClInclude Include="CmdMarkMessageAsRead.h" />
     <ClInclude Include="CmdRegisterNewUser.h" />

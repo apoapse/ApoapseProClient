@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "CmdCreateThread.h"
 #include "Common.h"
 #include "ClientConnection.h"
 #include "ApoapseClient.h"

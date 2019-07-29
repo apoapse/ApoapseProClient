@@ -25,6 +25,19 @@ JsonHelper Room::GetJson() const
 	return ser;
 }
 
+ApoapseThread& Room::GetThread(DbId id)
+{
+	auto res = std::find_if(threads.begin(), threads.end(), [id](const ApoapseThread& thread)
+		{
+			return (thread.id == id);
+		});
+
+	if (res == threads.end())
+		throw std::exception("Unable to find the thread with the provided id in this room");
+
+	return *res;
+}
+
 ContentManager::ContentManager(ApoapseClient& apoapseClient) : client(apoapseClient)
 {
 	//global content cache system (nothing todo with signaks)
@@ -43,6 +56,21 @@ void ContentManager::Init()
 	if (!m_rooms.empty())
 	{
 		OpenRoom(m_rooms[0]);
+	}
+}
+
+void ContentManager::OnReceivedSignal(const std::string& name, const JsonHelper& json)
+{
+	if (name == "loadRoomUI")
+	{
+		Room& room = GetRoomById(json.ReadFieldValue<Int64>("id").value());
+		OpenRoom(room);
+	}
+
+	else if (name == "loadThread")
+	{
+		ApoapseThread& thread = m_selectedRoom->GetThread(json.ReadFieldValue<Int64>("id").value());
+		OpenThread(thread);
 	}
 }
 
@@ -73,13 +101,12 @@ void ContentManager::OnAddNewThread(DataStructure& data)
 	}
 }
 
-void ContentManager::OnReceivedSignal(const std::string& name, const JsonHelper& json)
+void ContentManager::OnAddNewMessage(DataStructure& data)
 {
-	if (name == "loadRoomUI")
-	{
-		Room& room = GetRoomById(json.ReadFieldValue<Int64>("id").value());
-		OpenRoom(room);
-	}
+	auto message = ApoapseMessage(data);
+	auto& parentThread = GetThreadByUuid(message.threadUuid);
+
+	parentThread.AddNewMessage(message);
 }
 
 Room& ContentManager::GetRoomById(DbId id)
@@ -108,9 +135,24 @@ Room& ContentManager::GetRoomByUuid(Uuid uuid)
 	return *res;
 }
 
+ApoapseThread& ContentManager::GetThreadByUuid(Uuid uuid)
+{
+	for (auto& room : m_rooms)
+	{
+		for (auto& thread : room.threads)
+		{
+			if (thread.uuid == uuid)
+				return thread;
+		}
+	}
+
+	throw std::exception("The requested thread cannot be found");
+}
+
 void ContentManager::OpenRoom(Room& room)
 {
 	m_selectedRoom = &room;
+	m_selectedThread = nullptr;
 
 	LOG << "Selected room " << room.name;
 	UIRoomsUpdate();
@@ -126,12 +168,33 @@ void ContentManager::OpenRoom(Room& room)
 	global->htmlUI->SendSignal("OnOpenRoom", ser.Generate());
 }
 
+void ContentManager::OpenThread(ApoapseThread& thread)
+{
+	m_selectedThread = &thread;
+	m_selectedThread->LoadMessages();
+
+	global->htmlUI->SendSignal("OnOpenThread", m_selectedThread->GetMessageListJson().Generate());
+}
+
 Room& ContentManager::GetCurrentRoom()
 {
 	if (!m_selectedRoom)
 		throw std::exception("There is no room currently selected");
 
 	return *m_selectedRoom;
+}
+
+bool ContentManager::IsThreadDisplayed() const
+{
+	return (m_selectedThread != nullptr);
+}
+
+ApoapseThread& ContentManager::GetCurrentThread()
+{
+	if (!m_selectedThread)
+		throw std::exception("No thread selected");
+
+	return *m_selectedThread;
 }
 
 void ContentManager::UIRoomsUpdate() const

@@ -26,6 +26,13 @@ bool ClientCmdManager::OnSendCommandPre(CommandV2& cmd)
 		cmd.GetData().GetField("parent_room").SetValue(apoapseClient.GetContentManager().GetCurrentRoom().uuid);
 	}
 
+	else if (cmd.name == "new_message")
+	{
+		cmd.GetData().GetField("parent_thread").SetValue(apoapseClient.GetContentManager().GetCurrentThread().uuid);
+		cmd.GetData().GetField("sent_time").SetValue(DateTimeUtils::UTCDateTime::CurrentTime());
+		cmd.GetData().GetField("author").SetValue(apoapseClient.GetLocalUser().username);
+	}
+
 	return true;
 }
 
@@ -63,6 +70,11 @@ void ClientCmdManager::OnReceivedCommand(CommandV2& cmd, GenericConnection& netC
 	else if (cmd.name == "create_thread")
 	{
 		apoapseClient.GetContentManager().OnAddNewThread(cmd.GetData());
+	}
+
+	else if (cmd.name == "new_message")
+	{
+		apoapseClient.GetContentManager().OnAddNewMessage(cmd.GetData());
 	}
 
 	LOG_DEBUG << "RECEIVED!";

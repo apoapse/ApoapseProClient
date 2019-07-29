@@ -23,6 +23,7 @@ struct Room
 	bool operator==(const Room& other) const;
 
 	JsonHelper GetJson() const;
+	ApoapseThread& GetThread(DbId id);
 };
 
 class ContentManager
@@ -31,6 +32,7 @@ class ContentManager
 	std::vector<Room> m_rooms;
 
 	Room* m_selectedRoom = nullptr;
+	ApoapseThread* m_selectedThread = nullptr;
 
 public:
 	ContentManager(ApoapseClient& apoapseClient);
@@ -38,14 +40,19 @@ public:
 
 	void OnAddNewRoom(DataStructure& data);
 	void OnAddNewThread(DataStructure& data);
+	void OnAddNewMessage(DataStructure& data);
 
 	void OnReceivedSignal(const std::string& name, const JsonHelper& json);
 	
 	Room& GetRoomById(DbId id);
 	Room& GetRoomByUuid(Uuid uuid);
+	ApoapseThread& GetThreadByUuid(Uuid uuid);
 	void OpenRoom(Room& room);
+	void OpenThread(ApoapseThread& thread);
 
 	Room& GetCurrentRoom();
+	bool IsThreadDisplayed() const;
+	ApoapseThread& GetCurrentThread();
 
 private:
 	void UIRoomsUpdate() const;
