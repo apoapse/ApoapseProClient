@@ -233,6 +233,8 @@ void ApoapseClient::OnAuthenticated()
 	m_contentManager = std::make_unique<ContentManager>(*this);
 	m_contentManager->Init();
 
+	m_clientOperations = std::make_unique<ClientOperations>();
+
 	// UI
 	/*global->htmlUI->UpdateStatusBar("@connected_and_authenticated_status", false);
 	{
@@ -244,7 +246,7 @@ void ApoapseClient::OnAuthenticated()
 	}*/
 
 	// Apoapse sync
-	//CmdSyncRequest::SendSyncRequest(Operation::GetMostRecentOperationTime(GetLocalUser().username), *this);
+	m_clientOperations->SendSyncRequest(*m_connection);
 }
 
 bool ApoapseClient::LoadDatabase()
@@ -312,4 +314,9 @@ ContentManager& ApoapseClient::GetContentManager() const
 	ASSERT(IsAuthenticated());
 
 	return *m_contentManager;
+}
+
+ClientOperations& ApoapseClient::GetClientOperations() const
+{
+	return *m_clientOperations;
 }

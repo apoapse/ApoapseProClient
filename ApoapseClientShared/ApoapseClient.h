@@ -9,6 +9,7 @@
 #include "Database.hpp"
 #include "CommandV2.h"
 #include "ContentManager.h"
+#include "ClientOperations.h"
 class ClientConnection;
 
 class ApoapseClient
@@ -25,6 +26,7 @@ class ApoapseClient
 	std::optional<LocalUser> m_authenticatedUser;
 
 	std::unique_ptr<ContentManager> m_contentManager;
+	std::unique_ptr<ClientOperations> m_clientOperations;
 
 public:
 	ApoapseClient();
@@ -49,6 +51,7 @@ public:
 	const LocalUser& GetLocalUser() const;
 
 	ContentManager& GetContentManager() const;
+	ClientOperations& GetClientOperations() const;
 private:
 	static std::string GenerateDbPassword(const std::string& password);
 	void OnAuthenticated();

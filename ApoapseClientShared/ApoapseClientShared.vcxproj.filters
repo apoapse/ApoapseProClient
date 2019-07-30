@@ -45,6 +45,9 @@
     <ClCompile Include="ApoapseThread.cpp">
       <Filter>Systems</Filter>
     </ClCompile>
+    <ClCompile Include="ClientOperations.cpp">
+      <Filter>Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientEntryPoint.h" />
@@ -94,6 +97,9 @@
       <Filter>Systems</Filter>
     </ClInclude>
     <ClInclude Include="ApoapseThread.h">
+      <Filter>Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientOperations.h">
       <Filter>Systems</Filter>
     </ClInclude>
   </ItemGroup>

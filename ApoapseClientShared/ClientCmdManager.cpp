@@ -38,6 +38,22 @@ bool ClientCmdManager::OnSendCommandPre(CommandV2& cmd)
 
 bool ClientCmdManager::OnReceivedCommandPre(CommandV2& cmd, GenericConnection& netConnection)
 {
+	// Checks if the operation/item is not already registered
+	if (cmd.operationRegister)
+	{
+		const Uuid operationUuid = cmd.GetData().GetField("operation_uuid").GetValue<Uuid>();
+
+		if (!apoapseClient.GetClientOperations().IsAlreadyRegistered(operationUuid))
+		{
+			apoapseClient.GetClientOperations().RegisterOperationUuid(operationUuid);
+		}
+		else
+		{
+			LOG << LogSeverity::error << "Rejecting the command " << cmd.name << " because the operation " << operationUuid.GetBytes() << " is aready registered";
+			return false;
+		}
+	}
+
 	return true;
 }
 
