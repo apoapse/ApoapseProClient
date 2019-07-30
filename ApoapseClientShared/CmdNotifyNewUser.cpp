@@ -7,7 +7,6 @@
 #include "User.h"
 #include "SQLQuery.h"
 #include "SQLUtils.hpp"
-#include "Operation.h"
 
 class CmdNotifyNewUser : public Command
 {
@@ -45,7 +44,7 @@ private:
 		query << INSERT_INTO << "users" << "(id, username, nickname)" << VALUES << "(" << dbId << "," << GetFieldsData().GetValue<ByteContainer>("username") << "," << allData.GetValue<std::string>("nickname") << ")";
 		query.Exec();
 
-		Operation(OperationType::new_user, username, dbId).Save();
+		//Operation(OperationType::new_user, username, dbId).Save();
 		// TODO ADD to some sort of manager?
 	}
 };

@@ -12,9 +12,11 @@ public:
 	ClientConnection(boost::asio::io_service& ioService, ssl::context& context, ApoapseClient& client);
 	virtual ~ClientConnection() override;
 
+	bool IsAuthenticated() const override;
+	virtual std::optional<Username> GetConnectedUser() const override;
+
 private:
 	bool OnConnectedToServer() override;
 	void OnReceivedValidCommand(CommandV2& cmd) override;
 	virtual bool OnReceivedError(const boost::system::error_code& error) override;
-	bool IsAuthenticated() const;
 };

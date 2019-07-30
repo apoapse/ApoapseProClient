@@ -12,7 +12,6 @@
 #include "ClientDatabaseScheme.hpp"
 #include "CmdFirstUserConnection.h"
 #include "CmdSyncRequest.h"
-#include "Operation.h"
 #include "CmdMarkMessageAsRead.h"
 #include "Hash.hpp"
 #include "CommandsManagerV2.h"
@@ -245,7 +244,7 @@ void ApoapseClient::OnAuthenticated()
 	}*/
 
 	// Apoapse sync
-	CmdSyncRequest::SendSyncRequest(Operation::GetMostRecentOperationTime(GetLocalUser().username), *this);
+	//CmdSyncRequest::SendSyncRequest(Operation::GetMostRecentOperationTime(GetLocalUser().username), *this);
 }
 
 bool ApoapseClient::LoadDatabase()

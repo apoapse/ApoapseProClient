@@ -31,6 +31,14 @@ bool ClientConnection::IsAuthenticated() const
 	return client.IsAuthenticated();
 }
 
+std::optional<Username> ClientConnection::GetConnectedUser() const
+{
+	if (IsAuthenticated())
+		return client.GetLocalUser().username;
+	else
+		return std::optional<Username>();
+}
+
 bool ClientConnection::OnConnectedToServer()
 {
 	LOG_DEBUG << "OnConnectedToServer";
