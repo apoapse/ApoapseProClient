@@ -166,6 +166,8 @@ void ContentManager::OpenRoom(Room& room)
 		ser.Insert("threads", thread.GetJson());
 	}
 
+	ser.Insert("room", room.GetJson());
+
 	global->htmlUI->SendSignal("OnOpenRoom", ser.Generate());
 }
 
@@ -174,7 +176,10 @@ void ContentManager::OpenThread(ApoapseThread& thread)
 	m_selectedThread = &thread;
 	m_selectedThread->LoadMessages();
 
-	global->htmlUI->SendSignal("OnOpenThread", m_selectedThread->GetMessageListJson().Generate());
+	JsonHelper ser = m_selectedThread->GetMessageListJson();
+	ser.Insert("thread", thread.GetJson());
+
+	global->htmlUI->SendSignal("OnOpenThread", ser.Generate());
 }
 
 Room& ContentManager::GetCurrentRoom()
