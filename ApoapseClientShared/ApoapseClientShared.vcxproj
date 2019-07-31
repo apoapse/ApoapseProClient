@@ -157,9 +157,7 @@
     <ClCompile Include="ClientOperations.cpp" />
     <ClCompile Include="CmdFirstUserConnection.cpp" />
     <ClCompile Include="CmdMarkMessageAsRead.cpp" />
-    <ClCompile Include="CmdNotifyNewUser.cpp" />
     <ClCompile Include="CmdRegisterNewUser.cpp" />
-    <ClCompile Include="CmdSyncRequest.cpp" />
     <ClCompile Include="ContentManager.cpp" />
     <ClCompile Include="HTMLUI.cpp" />
     <ClCompile Include="LocalSettings.cpp" />
@@ -181,7 +179,6 @@
     <ClInclude Include="CmdFirstUserConnection.h" />
     <ClInclude Include="CmdMarkMessageAsRead.h" />
     <ClInclude Include="CmdRegisterNewUser.h" />
-    <ClInclude Include="CmdSyncRequest.h" />
     <ClInclude Include="ContentManager.h" />
     <ClInclude Include="HTMLUI.h" />
     <ClInclude Include="ISignalSender.hpp" />

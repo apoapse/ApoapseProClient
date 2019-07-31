@@ -24,13 +24,7 @@
     <ClCompile Include="CmdFirstUserConnection.cpp">
       <Filter>Commands</Filter>
     </ClCompile>
-    <ClCompile Include="CmdSyncRequest.cpp">
-      <Filter>Commands</Filter>
-    </ClCompile>
     <ClCompile Include="CmdMarkMessageAsRead.cpp">
-      <Filter>Commands</Filter>
-    </ClCompile>
-    <ClCompile Include="CmdNotifyNewUser.cpp">
       <Filter>Commands</Filter>
     </ClCompile>
     <ClCompile Include="LocalSettings.cpp">
@@ -79,9 +73,6 @@
       <Filter>Systems</Filter>
     </ClInclude>
     <ClInclude Include="CmdFirstUserConnection.h">
-      <Filter>Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="CmdSyncRequest.h">
       <Filter>Commands</Filter>
     </ClInclude>
     <ClInclude Include="CmdMarkMessageAsRead.h">

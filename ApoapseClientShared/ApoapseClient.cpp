@@ -11,7 +11,6 @@
 #include "DatabaseIntegrityPatcher.h"
 #include "ClientDatabaseScheme.hpp"
 #include "CmdFirstUserConnection.h"
-#include "CmdSyncRequest.h"
 #include "CmdMarkMessageAsRead.h"
 #include "Hash.hpp"
 #include "CommandsManagerV2.h"
