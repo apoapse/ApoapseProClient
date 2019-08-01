@@ -130,6 +130,21 @@ void GenericHandler::OnLoadError(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFra
 	frame->LoadString(ss.str(), failedUrl);
 }
 
+bool GenericHandler::OnDragEnter(CefRefPtr<CefBrowser> browser, CefRefPtr<CefDragData> dragData, DragOperationsMask mask)
+{
+	if (dragData->IsFile())
+	{
+		std::vector<CefString> filePaths;
+		dragData->GetFileNames(filePaths);
+
+		//TODO
+
+		return true;
+	}
+
+	return false;
+}
+
 void GenericHandler::CloseAllBrowsers(bool forceClose)
 {
 	if (!CefCurrentlyOn(TID_UI)) {

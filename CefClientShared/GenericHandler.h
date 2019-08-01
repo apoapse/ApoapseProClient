@@ -2,7 +2,7 @@
 #include "include/cef_client.h"
 #include <list>
 
-class GenericHandler : public CefClient, public CefDisplayHandler, public CefLifeSpanHandler, public CefLoadHandler, public CefContextMenuHandler, public CefRequestHandler
+class GenericHandler : public CefClient, public CefDisplayHandler, public CefLifeSpanHandler, public CefLoadHandler, public CefContextMenuHandler, public CefRequestHandler, public CefDragHandler
 {
 	// List of existing browser windows. Only accessed on the CEF UI thread.
 	using BrowserList = std::list<CefRefPtr<CefBrowser>>;
@@ -43,6 +43,11 @@ public:
 		return this;
 	}
 
+	virtual CefRefPtr<CefDragHandler> GetDragHandler() override
+	{
+		return this;
+	}
+
 	// Context menu
 	virtual void OnBeforeContextMenu(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefContextMenuParams> params, CefRefPtr<CefMenuModel> model) override;
 	virtual bool OnContextMenuCommand(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefContextMenuParams> params, int command_id, EventFlags event_flags) override;
@@ -60,6 +65,9 @@ public:
 
 	// CefLoadHandler
 	virtual void OnLoadError(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, ErrorCode errorCode, const CefString& errorText, const CefString& failedUrl) override;
+
+	// CefDragHandler
+	virtual bool OnDragEnter(CefRefPtr<CefBrowser> browser, CefRefPtr<CefDragData> dragData, DragOperationsMask mask) override;
 
 	// Request that all existing browser windows close.
 	void CloseAllBrowsers(bool force_close);
