@@ -10,6 +10,7 @@
 #include "CommandV2.h"
 #include "ContentManager.h"
 #include "ClientOperations.h"
+#include "User.h"
 class ClientConnection;
 
 class ApoapseClient
@@ -27,6 +28,7 @@ class ApoapseClient
 
 	std::unique_ptr<ContentManager> m_contentManager;
 	std::unique_ptr<ClientOperations> m_clientOperations;
+	std::unique_ptr<ClientUsers> m_clientUsers;
 
 public:
 	ApoapseClient();
@@ -52,6 +54,7 @@ public:
 
 	ContentManager& GetContentManager() const;
 	ClientOperations& GetClientOperations() const;
+	ClientUsers& GetClientUsers() const;
 private:
 	static std::string GenerateDbPassword(const std::string& password);
 	void OnAuthenticated();

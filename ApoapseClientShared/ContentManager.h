@@ -28,13 +28,14 @@ struct Room
 
 class ContentManager
 {
-	ApoapseClient& client;
 	std::vector<Room> m_rooms;
 
 	Room* m_selectedRoom = nullptr;
 	ApoapseThread* m_selectedThread = nullptr;
 
 public:
+	ApoapseClient& client;
+
 	ContentManager(ApoapseClient& apoapseClient);
 	void Init();
 

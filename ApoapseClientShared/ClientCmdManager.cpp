@@ -5,6 +5,7 @@
 #include "CommandsDef.hpp"
 #include "LocalUser.h"
 #include "ApoapseClient.h"
+#include "HTMLUI.h"
 
 ClientCmdManager::ClientCmdManager(ApoapseClient& client) : CommandsManagerV2(GetCommandDef()), apoapseClient(client)
 {
@@ -69,13 +70,18 @@ void ClientCmdManager::OnReceivedCommand(CommandV2& cmd, GenericConnection& netC
 		{
 			if (!cmd.GetData().GetField("requirePasswordChange").GetValue<bool>())
 			{
-				User user;
-				user.nickname = cmd.GetData().GetField("nickname").GetValue<std::string>();
+				LocalUser user;
+				user.nickname = HTMLUI::HtmlSpecialChars(cmd.GetData().GetField("nickname").GetValue<std::string>(), true);
 				user.username = cmd.GetData().GetField("username").GetValue<Username>();
 
 				apoapseClient.Authenticate(user);
 			}
 		}
+	}
+
+	if (cmd.name == "user")
+	{
+		apoapseClient.GetClientUsers().OnAddNewUser(User(cmd.GetData(), apoapseClient));
 	}
 	
 	else if (cmd.name == "create_room")

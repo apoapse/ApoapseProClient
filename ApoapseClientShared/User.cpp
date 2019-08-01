@@ -7,19 +7,31 @@
 #include "Random.hpp"
 #include "Maths.hpp"
 #include "SQLQuery.h"
+#include "Json.hpp"
+#include "HTMLUI.h"
+#include "ApoapseClient.h"
 
-User User::GetUserByUsername(const Username& username)
+User::User(DataStructure& data, ApoapseClient& client) : apoapseClient(&client)
 {
-	User user;
+	username = data.GetField("username").GetValue<Username>();
+	nickname = HTMLUI::HtmlSpecialChars(data.GetField("nickname").GetValue<std::string>(), true);
+	id = data.GetDbId();
 
-	SQLQuery query(*global->database);
-	query << SELECT << "nickname" << FROM << "users" << WHERE "username" << EQUALS << username.GetRaw();
-	auto res = query.Exec();
+	if (username == apoapseClient->GetLocalUser().username)
+	{
+		isLocalUser = true;
+		isOnline = true;
+	}
+}
 
-	user.username = username;
-	user.nickname = res[0][0].GetText();
+JsonHelper User::GetJson() const
+{
+	JsonHelper ser;
+	ser.Insert("id", id);
+	ser.Insert("nickname", nickname);
+	ser.Insert("isOnline", isOnline);
 
-	return user;
+	return ser;
 }
 
 Username User::HashUsername(const std::string& username)
@@ -93,3 +105,40 @@ PrivateKeyBytes User::DecryptIdentityPrivateKey(const EncryptedPrivateKeyBytes& 
 	return PrivateKeyBytes(res.data(), res.size());
 }
 */
+
+ClientUsers::ClientUsers(ApoapseClient& client): apoapseClient(client)
+{
+	auto usersData = global->apoapseData->ReadListFromDatabase("user", "", "");
+
+	for (auto& userDat : usersData)
+	{
+		auto user = User(userDat, apoapseClient);
+		m_registeredUsers[user.username] = user;
+	}
+
+	LOG << "Loaded " << m_registeredUsers.size() << " users";
+	UpdateUI();
+}
+
+void ClientUsers::OnAddNewUser(User& user)
+{
+	m_registeredUsers[user.username] = user;
+	UpdateUI();
+}
+
+const User& ClientUsers::GetUserByUsername(const Username& username) const
+{
+	return m_registeredUsers.at(username);
+}
+
+void ClientUsers::UpdateUI() const
+{
+	JsonHelper ser;
+
+	for (const auto& user : m_registeredUsers)
+	{
+		ser.Insert("users", user.second.GetJson());
+	}
+
+	global->htmlUI->SendSignal("OnUpdateUserList", ser.Generate());
+}

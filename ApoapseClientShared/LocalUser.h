@@ -1,15 +1,11 @@
 #pragma once
 #include "CryptographyTypes.hpp"
 #include "Username.h"
-#include "User.h"
 
-struct LocalUser : public User
+struct LocalUser
 {
-	LocalUser(User& user)
-	{
-		username = user.username;
-		nickname = user.nickname;
-	}
+	Username username;
+	std::string nickname;
 	
 //	PublicKeyBytes publicKey;
 //	PrivateKeyBytes privateKey;

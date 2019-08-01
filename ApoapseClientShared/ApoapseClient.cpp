@@ -229,10 +229,11 @@ void ApoapseClient::OnAuthenticated()
 	}
 	
 	// Systems
+	m_clientUsers = std::make_unique<ClientUsers>(*this);
+	m_clientOperations = std::make_unique<ClientOperations>();
+
 	m_contentManager = std::make_unique<ContentManager>(*this);
 	m_contentManager->Init();
-
-	m_clientOperations = std::make_unique<ClientOperations>();
 
 	// UI
 	/*global->htmlUI->UpdateStatusBar("@connected_and_authenticated_status", false);
@@ -318,4 +319,9 @@ ContentManager& ApoapseClient::GetContentManager() const
 ClientOperations& ApoapseClient::GetClientOperations() const
 {
 	return *m_clientOperations;
+}
+
+ClientUsers& ApoapseClient::GetClientUsers() const
+{
+	return *m_clientUsers;
 }

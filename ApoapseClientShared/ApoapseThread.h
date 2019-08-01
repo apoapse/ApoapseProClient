@@ -3,18 +3,22 @@
 #include "Uuid.h"
 #include "DateTimeUtils.h"
 class ContentManager;
+class ApoapseClient;
+class User;
 struct Room;
 
 struct ApoapseMessage
 {
+	ApoapseClient& apoapseClient;
+
 	DbId id = -1;
 	Uuid uuid;
 	Uuid threadUuid;
-	//User author;
+	const User* author;
 	std::string message;
 	DateTimeUtils::UTCDateTime sentTime;
 
-	ApoapseMessage(DataStructure& data);
+	ApoapseMessage(DataStructure& data, ApoapseClient& client);
 	JsonHelper GetJson() const;
 };
 

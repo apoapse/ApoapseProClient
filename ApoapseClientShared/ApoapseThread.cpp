@@ -6,16 +6,16 @@
 #include <SQLQuery.h>
 #include "Username.h"
 #include "HTMLUI.h"
+#include "ApoapseClient.h"
 
-ApoapseMessage::ApoapseMessage(DataStructure& data)
+ApoapseMessage::ApoapseMessage(DataStructure& data, ApoapseClient& client) : apoapseClient(client)
 {
 	id = data.GetDbId();
 	uuid = data.GetField("uuid").GetValue<Uuid>();
 	threadUuid = data.GetField("parent_thread").GetValue<Uuid>();
 	message = data.GetField("message").GetValue<std::string>();
 	sentTime = data.GetField("sent_time").GetValue<DateTimeUtils::UTCDateTime>();
-
-	auto username = data.GetField("author").GetValue<Username>();	//TODO
+	author = &apoapseClient.GetClientUsers().GetUserByUsername(data.GetField("author").GetValue<Username>());
 }
 
 JsonHelper ApoapseMessage::GetJson() const
@@ -24,8 +24,8 @@ JsonHelper ApoapseMessage::GetJson() const
 	ser.Insert("id", id);
 	ser.Insert("message", HTMLUI::HtmlSpecialChars(message));
 	ser.Insert("sent_time", sentTime.GetStr());
-	ser.Insert("author", "TODO");
-	ser.Insert("author_id", -1);
+	ser.Insert("author", author->nickname);
+	ser.Insert("author_id", author->id);
 
 	return ser;
 }
@@ -70,8 +70,7 @@ JsonHelper ApoapseThread::GetJson() const
 	if (!m_messages.empty())
 	{
 		auto& mostRecentMsg = m_messages.at(m_messages.size() - 1);
-		ser.Insert("msg_preview.msg", HTMLUI::HtmlSpecialChars(mostRecentMsg.message, true));
-		ser.Insert("msg_preview.author", "todo");
+		ser.Insert("msg_preview", mostRecentMsg.GetJson());
 	}
 
 	return ser;
@@ -98,7 +97,7 @@ void ApoapseThread::LoadMessages()
 		auto messages = global->apoapseData->ReadListFromDatabase("message", "parent_thread", uuid);
 		for (auto& messageDat : messages)
 		{
-			m_messages.push_back(ApoapseMessage(messageDat));
+			m_messages.push_back(ApoapseMessage(messageDat, contentManager.client));
 		}
 	}
 
@@ -147,6 +146,6 @@ void ApoapseThread::LoadLastMessage()
 
 	for (auto& messageDat : messages)
 	{
-		m_messages.push_back(ApoapseMessage(messageDat));
+		m_messages.push_back(ApoapseMessage(messageDat, contentManager.client));
 	}
 }

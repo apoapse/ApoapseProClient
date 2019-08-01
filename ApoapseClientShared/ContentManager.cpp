@@ -3,6 +3,7 @@
 #include "ContentManager.h"
 #include "Json.hpp"
 #include "HTMLUI.h"
+#include "ApoapseClient.h"
 
 Room::Room(DataStructure& data)
 {
@@ -104,7 +105,7 @@ void ContentManager::OnAddNewThread(DataStructure& data)
 
 void ContentManager::OnAddNewMessage(DataStructure& data)
 {
-	auto message = ApoapseMessage(data);
+	auto message = ApoapseMessage(data, client);
 	auto& parentThread = GetThreadByUuid(message.threadUuid);
 
 	parentThread.AddNewMessage(message);
