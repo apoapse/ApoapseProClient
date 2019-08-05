@@ -17,6 +17,7 @@ struct ApoapseMessage
 	const User* author;
 	std::string message;
 	DateTimeUtils::UTCDateTime sentTime;
+	std::vector<std::string> tags;
 
 	ApoapseMessage(DataStructure& data, ApoapseClient& client);
 	JsonHelper GetJson() const;
@@ -40,6 +41,8 @@ public:
 
 	JsonHelper GetJson() const;
 	JsonHelper GetMessageListJson() const;
+	ApoapseMessage& GetMessageById(DbId id);
+	ApoapseMessage* GetMessageByUuid(const Uuid& uuid);
 
 	void LoadMessages();
 	void AddNewMessage(ApoapseMessage& message);

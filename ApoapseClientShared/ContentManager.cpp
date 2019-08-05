@@ -111,6 +111,34 @@ void ContentManager::OnAddNewMessage(DataStructure& data)
 	parentThread.AddNewMessage(message);
 }
 
+void ContentManager::OnAddNewTag(DataStructure& data)
+{
+	if (data.GetField("item_type").GetValue<std::string>() == "msg")
+	{
+		ApoapseThread* thread = nullptr;
+
+		{
+			auto dat = global->apoapseData->ReadItemFromDatabase("message", "uuid", data.GetField("item_uuid").GetValue<Uuid>());
+			thread = &GetThreadByUuid(dat.GetField("parent_thread").GetValue<Uuid>());
+		}
+		auto* message = thread->GetMessageByUuid(data.GetField("item_uuid").GetValue<Uuid>());
+
+		if (message)
+		{
+			const std::string tag = data.GetField("name").GetValue<std::string>();
+			message->tags.push_back(tag);
+
+			if (m_selectedThread && *m_selectedThread == *thread)
+			{
+				JsonHelper ser;
+				ser.Insert("name", HTMLUI::HtmlSpecialChars(tag, true));
+				ser.Insert("msgId", message->id);
+				global->htmlUI->SendSignal("AddTag", ser.Generate());
+			}
+		}
+	}
+}
+
 Room& ContentManager::GetRoomById(DbId id)
 {
 	auto res = std::find_if(m_rooms.begin(), m_rooms.end(), [id](const Room& room)

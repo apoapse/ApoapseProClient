@@ -42,6 +42,7 @@ public:
 	void OnAddNewRoom(DataStructure& data);
 	void OnAddNewThread(DataStructure& data);
 	void OnAddNewMessage(DataStructure& data);
+	void OnAddNewTag(DataStructure& data);
 
 	void OnReceivedSignal(const std::string& name, const JsonHelper& json);
 	

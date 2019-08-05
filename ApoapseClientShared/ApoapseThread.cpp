@@ -16,6 +16,17 @@ ApoapseMessage::ApoapseMessage(DataStructure& data, ApoapseClient& client) : apo
 	message = data.GetField("message").GetValue<std::string>();
 	sentTime = data.GetField("sent_time").GetValue<DateTimeUtils::UTCDateTime>();
 	author = &apoapseClient.GetClientUsers().GetUserByUsername(data.GetField("author").GetValue<Username>());
+
+	// tags
+	{
+		auto res = global->apoapseData->ReadListFromDatabase("tag", "item_uuid", uuid);
+		tags.reserve(res.size());
+
+		for (DataStructure& dat : res)
+		{
+			tags.push_back(dat.GetField("name").GetValue<std::string>());
+		}
+	}
 }
 
 JsonHelper ApoapseMessage::GetJson() const
@@ -26,6 +37,7 @@ JsonHelper ApoapseMessage::GetJson() const
 	ser.Insert("sent_time", sentTime.GetStr());
 	ser.Insert("author", author->nickname);
 	ser.Insert("author_id", author->id);
+	ser.InsertArray("tags", tags);
 
 	return ser;
 }
@@ -85,6 +97,32 @@ JsonHelper ApoapseThread::GetMessageListJson() const
 	}
 
 	return ser;
+}
+
+ApoapseMessage& ApoapseThread::GetMessageById(DbId id)
+{
+	auto res = std::find_if(m_messages.begin(), m_messages.end(), [id](ApoapseMessage& msg)
+	{
+		return (msg.id == id);
+	});
+
+	if (res == m_messages.end())
+		throw std::exception("The message with the provided id do not exist on this thread");
+
+	return *res;
+}
+
+ApoapseMessage* ApoapseThread::GetMessageByUuid(const Uuid& uuid)
+{
+	auto res = std::find_if(m_messages.begin(), m_messages.end(), [&uuid](ApoapseMessage& msg)
+	{
+		return (msg.uuid == uuid);
+	});
+
+	if (res != m_messages.end())
+		return &*res;
+
+	return nullptr;
 }
 
 void ApoapseThread::LoadMessages()

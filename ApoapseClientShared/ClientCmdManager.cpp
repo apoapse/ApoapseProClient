@@ -99,5 +99,10 @@ void ClientCmdManager::OnReceivedCommand(CommandV2& cmd, GenericConnection& netC
 		apoapseClient.GetContentManager().OnAddNewMessage(cmd.GetData());
 	}
 
+	else if (cmd.name == "add_tag")
+	{
+		apoapseClient.GetContentManager().OnAddNewTag(cmd.GetData());
+	}
+
 	LOG_DEBUG << "RECEIVED!";
 }

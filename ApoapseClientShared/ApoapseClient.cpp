@@ -132,6 +132,23 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 		CmdRegisterNewUser::SendRegisterCommand(User::HashUsername(username), password, *this);
 	}
 
+	else if (name == "AddTag")
+	{
+		const std::string itemType = json.ReadFieldValue<std::string>("item_type").get();
+
+		auto dat = global->apoapseData->GetStructure("tag");
+		dat.GetField("name").SetValue(json.ReadFieldValue<std::string>("name").get());
+		dat.GetField("item_type").SetValue(itemType);
+
+		if (itemType == "msg")
+		{
+			auto& relatedMsg = GetContentManager().GetCurrentThread().GetMessageById(json.ReadFieldValue<Int64>("msg_id").get());
+			dat.GetField("item_uuid").SetValue(relatedMsg.uuid);
+		}
+
+		global->cmdManager->CreateCommand("add_tag", dat).Send(*m_connection);
+	}
+
 	else
 	{
 		if (IsAuthenticated())
