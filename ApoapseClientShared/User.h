@@ -7,6 +7,7 @@
 class DataStructure;
 class JsonHelper;
 class ApoapseClient;
+class Usergroup;
 
 class User
 {
@@ -22,6 +23,7 @@ public:
 
 	DbId id = -1;
 	Username username;
+	const Usergroup* usergroup;
 	std::string nickname;
 	bool isOnline = false;
 	bool isLocalUser = false;

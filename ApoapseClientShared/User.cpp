@@ -22,6 +22,8 @@ User::User(DataStructure& data, ApoapseClient& client) : apoapseClient(&client)
 		isLocalUser = true;
 		isOnline = true;
 	}
+
+	usergroup = &apoapseClient->GetUsergroupManager().GetUsergroup(data.GetField("usergroup").GetValue<Uuid>());
 }
 
 JsonHelper User::GetJson() const

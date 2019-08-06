@@ -70,9 +70,13 @@ void ClientCmdManager::OnReceivedCommand(CommandV2& cmd, GenericConnection& netC
 		{
 			if (!cmd.GetData().GetField("requirePasswordChange").GetValue<bool>())
 			{
+				auto usergroupsDat = cmd.GetData().GetField("usergroups").GetDataArray();
+				apoapseClient.InitUsergroupManager(usergroupsDat);
+
 				LocalUser user;
 				user.nickname = HTMLUI::HtmlSpecialChars(cmd.GetData().GetField("nickname").GetValue<std::string>(), true);
 				user.username = cmd.GetData().GetField("username").GetValue<Username>();
+				user.usergroup = &apoapseClient.GetUsergroupManager().GetUsergroup(cmd.GetData().GetField("usergroup").GetValue<Uuid>());
 
 				apoapseClient.Authenticate(user);
 			}

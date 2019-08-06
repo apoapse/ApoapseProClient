@@ -14,7 +14,8 @@
 #include "CmdMarkMessageAsRead.h"
 #include "Hash.hpp"
 #include "CommandsManagerV2.h"
-#include <Random.hpp>
+//#include <Random.hpp>
+
 
 ApoapseClient::ApoapseClient()
 {
@@ -212,7 +213,7 @@ void ApoapseClient::Authenticate(const LocalUser& user)
 {
 	m_authenticatedUser = user;
 
-	LOG << "User " << m_authenticatedUser->username.ToStr() << " authenticated.";
+	LOG << "User " << m_authenticatedUser->nickname << " of usergroup " << m_authenticatedUser->usergroup->GetName() << " authenticated successfuly";
 
 	OnAuthenticated();
 }
@@ -341,4 +342,14 @@ ClientOperations& ApoapseClient::GetClientOperations() const
 ClientUsers& ApoapseClient::GetClientUsers() const
 {
 	return *m_clientUsers;
+}
+
+void ApoapseClient::InitUsergroupManager(std::vector<DataStructure>& usergroupsDat)
+{
+	m_usergroupManager = std::make_unique<UsergroupManager>(usergroupsDat);
+}
+
+UsergroupManager& ApoapseClient::GetUsergroupManager() const
+{
+	return *m_usergroupManager;
 }

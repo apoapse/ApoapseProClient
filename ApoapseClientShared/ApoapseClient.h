@@ -11,6 +11,7 @@
 #include "ContentManager.h"
 #include "ClientOperations.h"
 #include "User.h"
+#include "UsergroupManager.h"
 class ClientConnection;
 
 class ApoapseClient
@@ -26,9 +27,10 @@ class ApoapseClient
 	std::optional<std::string> m_dbPassword;
 	std::optional<LocalUser> m_authenticatedUser;
 
+	std::unique_ptr<UsergroupManager> m_usergroupManager;
+	std::unique_ptr<ClientUsers> m_clientUsers;
 	std::unique_ptr<ContentManager> m_contentManager;
 	std::unique_ptr<ClientOperations> m_clientOperations;
-	std::unique_ptr<ClientUsers> m_clientUsers;
 
 public:
 	ApoapseClient();
@@ -55,6 +57,9 @@ public:
 	ContentManager& GetContentManager() const;
 	ClientOperations& GetClientOperations() const;
 	ClientUsers& GetClientUsers() const;
+
+	void InitUsergroupManager(std::vector<DataStructure>& usergroupsDat);
+	UsergroupManager& GetUsergroupManager() const;
 private:
 	static std::string GenerateDbPassword(const std::string& password);
 	void OnAuthenticated();
