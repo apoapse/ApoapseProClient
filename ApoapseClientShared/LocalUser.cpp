@@ -12,3 +12,13 @@ JsonHelper LocalUser::GetJson() const
 
 	return ser;
 }
+
+const Username& LocalUser::GetUsername() const
+{
+	return username;
+}
+
+const Usergroup& LocalUser::GetUsergroup() const
+{
+	return *usergroup;
+}

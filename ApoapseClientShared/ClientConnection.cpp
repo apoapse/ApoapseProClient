@@ -47,7 +47,12 @@ bool ClientConnection::OnConnectedToServer()
 	return true;
 }
 
-void ClientConnection::OnReceivedValidCommand(CommandV2& cmd)
+void ClientConnection::OnReceivedCommand(CommandV2& cmd)
 {
-	global->cmdManager->OnReceivedCmdInternal(cmd, *this);
+	const IUser* relatedUser = (IsAuthenticated() ? &client.GetLocalUser() : nullptr);
+
+	if (cmd.IsValid(relatedUser))
+		global->cmdManager->OnReceivedCmdInternal(cmd, *this);
+	else
+		SecurityLog::LogAlert(ApoapseErrorCode::invalid_cmd, *this);
 }
