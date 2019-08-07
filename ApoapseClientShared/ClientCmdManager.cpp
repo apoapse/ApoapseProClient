@@ -60,7 +60,7 @@ bool ClientCmdManager::OnReceivedCommandPre(CommandV2& cmd, GenericConnection& n
 
 void ClientCmdManager::OnReceivedCommand(CommandV2& cmd, GenericConnection& netConnection)
 {
-	auto& connection = static_cast<ClientConnection&>(netConnection);
+	auto& connection = dynamic_cast<ClientConnection&>(netConnection);
 
 	if (cmd.name == "server_info")
 	{
@@ -85,7 +85,8 @@ void ClientCmdManager::OnReceivedCommand(CommandV2& cmd, GenericConnection& netC
 
 	if (cmd.name == "user")
 	{
-		apoapseClient.GetClientUsers().OnAddNewUser(User(cmd.GetData(), apoapseClient));
+		auto user = User(cmd.GetData(), apoapseClient);
+		apoapseClient.GetClientUsers().OnAddNewUser(user);
 	}
 	
 	else if (cmd.name == "create_room")

@@ -57,10 +57,10 @@ std::vector<byte> ApoapseClientEntry::ReadFile(const std::string& filename, cons
 
 void ApoapseClientEntry::RegisterSignalSender(ISignalSender* signalSender)
 {
-	static_cast<HTMLUI*>(global->htmlUI)->RegisterSignalSender(signalSender);
+	dynamic_cast<HTMLUI*>(global->htmlUI)->RegisterSignalSender(signalSender);
 }
 
 std::string ApoapseClientEntry::OnReceivedSignal(const std::string& name, const std::string& data)
 {
-	return static_cast<HTMLUI*>(global->htmlUI)->OnReceivedSignal(name, data);
+	return dynamic_cast<HTMLUI*>(global->htmlUI)->OnReceivedSignal(name, data);
 }
