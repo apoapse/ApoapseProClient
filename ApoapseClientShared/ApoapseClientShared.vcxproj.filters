@@ -42,6 +42,9 @@
     <ClCompile Include="ClientOperations.cpp">
       <Filter>Systems</Filter>
     </ClCompile>
+    <ClCompile Include="LocalUser.cpp">
+      <Filter>UsersSystem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientEntryPoint.h" />

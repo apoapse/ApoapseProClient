@@ -65,4 +65,5 @@ private:
 	void OnAuthenticated();
 	bool LoadDatabase();
 	void UnloadDatabase();
+	void RefreshUserInfo() const;
 };

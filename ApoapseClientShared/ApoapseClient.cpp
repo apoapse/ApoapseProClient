@@ -265,6 +265,8 @@ void ApoapseClient::OnAuthenticated()
 
 	// Apoapse sync
 	m_clientOperations->SendSyncRequest(*m_connection);
+
+	RefreshUserInfo();
 }
 
 bool ApoapseClient::LoadDatabase()
@@ -307,6 +309,11 @@ void ApoapseClient::UnloadDatabase()
 	m_databaseSharedPtr->Close();
 	m_databaseSharedPtr.reset();
 	global->database = nullptr;
+}
+
+void ApoapseClient::RefreshUserInfo() const
+{
+	global->htmlUI->SendSignal("UpdateUserInfo", GetLocalUser().GetJson().Generate());
 }
 
 bool ApoapseClient::IsAuthenticated() const
