@@ -8,7 +8,6 @@
 #include "GlobalVarDefines.hpp"
 #include "LibraryLoader.hpp"
 #include "DatabaseIntegrityPatcher.h"
-#include "CmdMarkMessageAsRead.h"
 #include "Hash.hpp"
 #include "CommandsManagerV2.h"
 //#include <Random.hpp>

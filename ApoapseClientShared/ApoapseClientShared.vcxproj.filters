@@ -18,9 +18,6 @@
     <ClCompile Include="User.cpp">
       <Filter>UsersSystem</Filter>
     </ClCompile>
-    <ClCompile Include="CmdMarkMessageAsRead.cpp">
-      <Filter>Commands</Filter>
-    </ClCompile>
     <ClCompile Include="LocalSettings.cpp">
       <Filter>Systems</Filter>
     </ClCompile>
@@ -65,9 +62,6 @@
     </ClInclude>
     <ClInclude Include="ClientDatabaseScheme.hpp">
       <Filter>Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="CmdMarkMessageAsRead.h">
-      <Filter>Commands</Filter>
     </ClInclude>
     <ClInclude Include="LocalSettings.h">
       <Filter>Systems</Filter>

@@ -155,7 +155,6 @@
     <ClCompile Include="ClientCmdManager.cpp" />
     <ClCompile Include="ClientConnection.cpp" />
     <ClCompile Include="ClientOperations.cpp" />
-    <ClCompile Include="CmdMarkMessageAsRead.cpp" />
     <ClCompile Include="ContentManager.cpp" />
     <ClCompile Include="HTMLUI.cpp" />
     <ClCompile Include="LocalSettings.cpp" />
@@ -175,7 +174,6 @@
     <ClInclude Include="ClientDatabaseScheme.hpp" />
     <ClInclude Include="ClientEntryPoint.h" />
     <ClInclude Include="ClientOperations.h" />
-    <ClInclude Include="CmdMarkMessageAsRead.h" />
     <ClInclude Include="ContentManager.h" />
     <ClInclude Include="HTMLUI.h" />
     <ClInclude Include="ISignalSender.hpp" />
