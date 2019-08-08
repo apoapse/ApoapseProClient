@@ -17,7 +17,7 @@ struct Room
 	ThreadsLayout threadsLayout = ThreadsLayout::multiple;
 	DbId id = -1;
 
-	std::vector<ApoapseThread> threads;
+	std::vector<std::unique_ptr<ApoapseThread>> threads;
 
 	Room(DataStructure& data);
 	bool operator==(const Room& other) const;
@@ -28,7 +28,7 @@ struct Room
 
 class ContentManager
 {
-	std::vector<Room> m_rooms;
+	std::vector<std::unique_ptr<Room>> m_rooms;
 
 	Room* m_selectedRoom = nullptr;
 	ApoapseThread* m_selectedThread = nullptr;
@@ -47,8 +47,8 @@ public:
 	void OnReceivedSignal(const std::string& name, const JsonHelper& json);
 	
 	Room& GetRoomById(DbId id);
-	Room& GetRoomByUuid(Uuid uuid);
-	ApoapseThread& GetThreadByUuid(Uuid uuid);
+	Room& GetRoomByUuid(const Uuid& uuid);
+	ApoapseThread& GetThreadByUuid(const Uuid& uuid);
 	void OpenRoom(Room& room);
 	void OpenThread(ApoapseThread& thread);
 

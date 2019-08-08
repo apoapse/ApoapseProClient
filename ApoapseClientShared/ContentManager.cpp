@@ -29,20 +29,20 @@ JsonHelper Room::GetJson() const
 
 ApoapseThread& Room::GetThread(DbId id)
 {
-	auto res = std::find_if(threads.begin(), threads.end(), [id](const ApoapseThread& thread)
-		{
-			return (thread.id == id);
-		});
+	const auto res = std::find_if(threads.begin(), threads.end(), [id](const auto& thread)
+	{
+		return (thread->id == id);
+	});
 
 	if (res == threads.end())
 		throw std::exception("Unable to find the thread with the provided id in this room");
 
-	return *res;
+	return **res;
 }
 
 ContentManager::ContentManager(ApoapseClient& apoapseClient) : client(apoapseClient)
 {
-	//global content cache system (nothing todo with signaks)
+	//global content cache system (nothing to do with signals)
 }
 
 void ContentManager::Init()
@@ -51,13 +51,13 @@ void ContentManager::Init()
 	auto rooms = global->apoapseData->ReadListFromDatabase("room", "", "");
 	for (auto& roomData : rooms)
 	{
-		m_rooms.push_back(Room(roomData));
+		m_rooms.push_back(std::make_unique<Room>(roomData));
 	}
 
 	// Open room if any
 	if (!m_rooms.empty())
 	{
-		OpenRoom(m_rooms[0]);
+		OpenRoom(*m_rooms[0]);
 	}
 }
 
@@ -78,13 +78,13 @@ void ContentManager::OnReceivedSignal(const std::string& name, const JsonHelper&
 
 void ContentManager::OnAddNewRoom(DataStructure& data)
 {
-	auto room = Room(data);
-	m_rooms.push_back(room);
+	auto room = std::make_unique<Room>(data);
+	LOG << "Added new room " << room->name << " id: " << room->id;
 
-	LOG << "Added new room " << room.name;
+	m_rooms.push_back(std::move(room));
 
 	if (m_rooms.size() == 1)
-		OpenRoom(m_rooms[0]);	//If this is the first room created, open it directly
+		OpenRoom(*m_rooms[0]);	//If this is the first room created, open it directly
 	else
 		UIRoomsUpdate();
 }
@@ -92,15 +92,16 @@ void ContentManager::OnAddNewRoom(DataStructure& data)
 void ContentManager::OnAddNewThread(DataStructure& data)
 {
 	auto& parrentRoom = GetRoomByUuid(data.GetField("parent_room").GetValue<Uuid>());
-	auto thread = ApoapseThread(data, parrentRoom, *this);
-	parrentRoom.threads.push_back(thread);
+	auto thread = std::make_unique<ApoapseThread>(data, parrentRoom, *this);
 
-	LOG << "Added new thread " << thread.name;
+	LOG << "Added new thread " << thread->name << " id: " << thread->id;
 
 	if (parrentRoom == *m_selectedRoom)
 	{
-		global->htmlUI->SendSignal("OnNewThreadOnCurrentRoom", thread.GetJson().Generate());
+		global->htmlUI->SendSignal("OnNewThreadOnCurrentRoom", thread->GetJson().Generate());
 	}
+
+	parrentRoom.threads.push_back(std::move(thread));
 }
 
 void ContentManager::OnAddNewMessage(DataStructure& data)
@@ -141,38 +142,38 @@ void ContentManager::OnAddNewTag(DataStructure& data)
 
 Room& ContentManager::GetRoomById(DbId id)
 {
-	auto res = std::find_if(m_rooms.begin(), m_rooms.end(), [id](const Room& room)
+	const auto res = std::find_if(m_rooms.begin(), m_rooms.end(), [id](const auto& room)
 	{
-		return (room.id == id);
+		return (room->id == id);
 	});
-
+	
 	if (res == m_rooms.end())
 		throw std::exception("Unable to find the room with the provided id");
 
-	return *res;
+	return **res;
 }
 
-Room& ContentManager::GetRoomByUuid(Uuid uuid)
+Room& ContentManager::GetRoomByUuid(const Uuid& uuid)
 {
-	auto res = std::find_if(m_rooms.begin(), m_rooms.end(), [&uuid](const Room& room)
+	const auto res = std::find_if(m_rooms.begin(), m_rooms.end(), [&uuid](const auto& room)
 	{
-		return (room.uuid == uuid);
+		return (room->uuid == uuid);
 	});
 
 	if (res == m_rooms.end())
 		throw std::exception("Unable to find the room with the provided uuid");
 
-	return *res;
+	return **res;
 }
 
-ApoapseThread& ContentManager::GetThreadByUuid(Uuid uuid)
+ApoapseThread& ContentManager::GetThreadByUuid(const Uuid& uuid)
 {
 	for (auto& room : m_rooms)
 	{
-		for (auto& thread : room.threads)
+		for (auto& thread : room->threads)
 		{
-			if (thread.uuid == uuid)
-				return thread;
+			if (thread->uuid == uuid)
+				return *thread;
 		}
 	}
 
@@ -192,7 +193,7 @@ void ContentManager::OpenRoom(Room& room)
 	JsonHelper ser;
 	for (const auto& thread : m_selectedRoom->threads)
 	{
-		ser.Insert("threads", thread.GetJson());
+		ser.Insert("threads", thread->GetJson());
 	}
 
 	ser.Insert("room", room.GetJson());
@@ -238,9 +239,9 @@ void ContentManager::UIRoomsUpdate() const
 
 	for (const auto& room : m_rooms)
 	{
-		auto json = room.GetJson();
+		auto json = room->GetJson();
 
-		const bool isSelected = (m_selectedRoom && room == *m_selectedRoom);
+		const bool isSelected = (m_selectedRoom && *room == *m_selectedRoom);
 		json.Insert("is_selected", isSelected);
 
 		ser.Insert("rooms", json);

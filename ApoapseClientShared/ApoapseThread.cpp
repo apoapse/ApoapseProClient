@@ -159,6 +159,8 @@ void ApoapseThread::AddNewMessage(ApoapseMessage& message)
 	{
 		global->htmlUI->SendSignal("NewMessage", message.GetJson().Generate());
 	}
+
+	LOG << "Added new message id: " << message.id;
 }
 
 void ApoapseThread::LoadAllThreads(Room& room, ContentManager& cManager)
@@ -170,7 +172,7 @@ void ApoapseThread::LoadAllThreads(Room& room, ContentManager& cManager)
 
 		for (auto& threadData : threads)
 		{
-			room.threads.push_back(ApoapseThread(threadData, room, cManager));
+			room.threads.push_back(std::make_unique<ApoapseThread>(threadData, room, cManager));
 		}
 
 		LOG << "Loaded " << room.threads.size() << " threads on room " << room.name;
