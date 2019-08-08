@@ -91,17 +91,23 @@ void ContentManager::OnAddNewRoom(DataStructure& data)
 
 void ContentManager::OnAddNewThread(DataStructure& data)
 {
-	auto& parrentRoom = GetRoomByUuid(data.GetField("parent_room").GetValue<Uuid>());
-	auto thread = std::make_unique<ApoapseThread>(data, parrentRoom, *this);
+	auto& parentRoom = GetRoomByUuid(data.GetField("parent_room").GetValue<Uuid>());
+	auto thread = std::make_unique<ApoapseThread>(data, parentRoom, *this);
 
 	LOG << "Added new thread " << thread->name << " id: " << thread->id;
 
-	if (parrentRoom == *m_selectedRoom)
+	if (parentRoom == *m_selectedRoom)
 	{
 		global->htmlUI->SendSignal("OnNewThreadOnCurrentRoom", thread->GetJson().Generate());
 	}
 
-	parrentRoom.threads.push_back(std::move(thread));
+	parentRoom.threads.push_back(std::move(thread));
+
+	// If on the current room and it use a single thread layout, we open it directly
+	if (m_selectedRoom && parentRoom == *m_selectedRoom && parentRoom.threadsLayout == Room::ThreadsLayout::single)
+	{
+		OpenThread(*parentRoom.threads.at(0));
+	}
 }
 
 void ContentManager::OnAddNewMessage(DataStructure& data)
@@ -188,17 +194,28 @@ void ContentManager::OpenRoom(Room& room)
 	LOG << "Selected room " << room.name;
 	UIRoomsUpdate();
 
-	ApoapseThread::LoadAllThreads(*m_selectedRoom, *this);
-
-	JsonHelper ser;
-	for (const auto& thread : m_selectedRoom->threads)
+	if (room.threadsLayout == Room::ThreadsLayout::multiple)
 	{
-		ser.Insert("threads", thread->GetJson());
+		ApoapseThread::LoadAllThreads(*m_selectedRoom, *this);
+
+		JsonHelper ser;
+		for (const auto& thread : m_selectedRoom->threads)
+		{
+			ser.Insert("threads", thread->GetJson());
+		}
+
+		ser.Insert("room", room.GetJson());
+
+		global->htmlUI->SendSignal("OnOpenRoom", ser.Generate());
 	}
-
-	ser.Insert("room", room.GetJson());
-
-	global->htmlUI->SendSignal("OnOpenRoom", ser.Generate());
+	else
+	{
+		if (!room.threads.empty())
+		{
+			OpenThread(*room.threads.at(0));
+			LOG << "This room is of single thread type, the default thread was opened directly";
+		}
+	}
 }
 
 void ContentManager::OpenThread(ApoapseThread& thread)

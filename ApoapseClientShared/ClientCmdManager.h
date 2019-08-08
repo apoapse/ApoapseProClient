@@ -14,4 +14,5 @@ public:
 	virtual bool OnSendCommandPre(CommandV2& cmd) override;
 	virtual bool OnReceivedCommandPre(CommandV2& cmd, GenericConnection& netConnection) override;
 	virtual void OnReceivedCommand(CommandV2& cmd, GenericConnection& netConnection) override;
+	virtual void OnReceivedCommandPost(CommandV2& cmd, GenericConnection& netConnection) override;
 };

@@ -21,7 +21,7 @@ bool ClientCmdManager::OnSendCommandPre(CommandV2& cmd)
 		cmd.GetData().GetField("admin_username").SetValue(username);
 		cmd.GetData().GetField("admin_password").SetValue(password);
 	}
-	
+
 	else if (cmd.name == "create_thread")
 	{
 		cmd.GetData().GetField("parent_room").SetValue(apoapseClient.GetContentManager().GetCurrentRoom().uuid);
@@ -111,4 +111,9 @@ void ClientCmdManager::OnReceivedCommand(CommandV2& cmd, GenericConnection& netC
 	}
 
 	LOG_DEBUG << "RECEIVED!";
+}
+
+void ClientCmdManager::OnReceivedCommandPost(CommandV2& cmd, GenericConnection& netConnection)
+{
+
 }
