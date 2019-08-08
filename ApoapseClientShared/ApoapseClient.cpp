@@ -6,11 +6,8 @@
 #include "HTMLUI.h"
 #include "User.h"
 #include "GlobalVarDefines.hpp"
-#include "CmdRegisterNewUser.h"
 #include "LibraryLoader.hpp"
 #include "DatabaseIntegrityPatcher.h"
-#include "ClientDatabaseScheme.hpp"
-#include "CmdFirstUserConnection.h"
 #include "CmdMarkMessageAsRead.h"
 #include "Hash.hpp"
 #include "CommandsManagerV2.h"
@@ -103,8 +100,13 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 
 	else if (name == "user_first_connection" && m_connected)
 	{
-		const auto password = User::HashPasswordForServer(json.ReadFieldValue<std::string>("password").get());
-		CmdFirstUserConnection::SetUserIdentity(password, json.ReadFieldValue<std::string>("nickname").get(), *this);
+		const ByteContainer password = User::HashPasswordForServer(json.ReadFieldValue<std::string>("password").get());
+
+		auto dat = global->apoapseData->GetStructure("set_identity");
+		dat.GetField("password").SetValue(password);
+		dat.GetField("nickname").SetValue(json.ReadFieldValue<std::string>("nickname").get());
+
+		global->cmdManager->CreateCommand("set_identity", dat).Send(*m_connection);
 	}
 
 	else if (name == "request_random_password" && m_connected)
@@ -117,20 +119,24 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 
 	else if (name == "register_user" && m_connected)
 	{
-		// #MVP Add permissions checks
 		const auto tempPassword = User::GenerateTemporaryRandomPassword();
-		const auto username = json.ReadFieldValue<std::string>("username").get();
+		const std::string username = json.ReadFieldValue<std::string>("username").get();
+		const std::string usergroup = json.ReadFieldValue<std::string>("usergroup").get();
 
 		{
 			JsonHelper json;
 			json.Insert("username", username);
 			json.Insert("temp_password", tempPassword);
 
-			global->htmlUI->SendSignal("OnAddedNewUser", json.Generate());
+			global->htmlUI->SendSignal("OnAddNewUserLocal", json.Generate());
 		}
 
-		const auto password = User::HashPasswordForServer(tempPassword);
-		CmdRegisterNewUser::SendRegisterCommand(User::HashUsername(username), password, *this);
+		auto dat = global->apoapseData->GetStructure("add_user");
+		dat.GetField("username").SetValue(User::HashUsername(username));
+		dat.GetField("temp_password").SetValue(User::HashPasswordForServer(tempPassword));
+		dat.GetField("usergroup").SetValue(GetUsergroupManager().GetUsergroup(usergroup).GetUuid());
+
+		global->cmdManager->CreateCommand("add_user", dat).Send(*m_connection);
 	}
 
 	else if (name == "AddTag")
@@ -313,7 +319,19 @@ void ApoapseClient::UnloadDatabase()
 
 void ApoapseClient::RefreshUserInfo() const
 {
-	global->htmlUI->SendSignal("UpdateUserInfo", GetLocalUser().GetJson().Generate());
+	JsonHelper ser;
+	ser.Insert("local_user", GetLocalUser().GetJson());
+
+	for (const auto& usergroup : GetUsergroupManager().GetUsergroups())
+	{
+		JsonHelper userGrpSer;
+		userGrpSer.Insert("name", usergroup.GetName());
+		userGrpSer.InsertArray("usergroups", usergroup.GetPermissions());
+
+		ser.Insert("usergroups", userGrpSer);
+	}
+
+	global->htmlUI->SendSignal("UpdateUserInfo", ser.Generate());
 }
 
 bool ApoapseClient::IsAuthenticated() const

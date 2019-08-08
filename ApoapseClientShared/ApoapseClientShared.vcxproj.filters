@@ -15,14 +15,8 @@
     <ClCompile Include="ClientConnection.cpp">
       <Filter>Network</Filter>
     </ClCompile>
-    <ClCompile Include="CmdRegisterNewUser.cpp">
-      <Filter>Commands</Filter>
-    </ClCompile>
     <ClCompile Include="User.cpp">
       <Filter>UsersSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="CmdFirstUserConnection.cpp">
-      <Filter>Commands</Filter>
     </ClCompile>
     <ClCompile Include="CmdMarkMessageAsRead.cpp">
       <Filter>Commands</Filter>
@@ -69,14 +63,8 @@
     <ClInclude Include="LocalUser.h">
       <Filter>UsersSystem</Filter>
     </ClInclude>
-    <ClInclude Include="CmdRegisterNewUser.h">
-      <Filter>Commands</Filter>
-    </ClInclude>
     <ClInclude Include="ClientDatabaseScheme.hpp">
       <Filter>Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="CmdFirstUserConnection.h">
-      <Filter>Commands</Filter>
     </ClInclude>
     <ClInclude Include="CmdMarkMessageAsRead.h">
       <Filter>Commands</Filter>
