@@ -28,7 +28,7 @@ std::string HTMLUI::OnReceivedSignal(const std::string& name, const std::string&
 
 	auto res = m_clientMainThread->PushTask([this, name, data]
 	{
-		if (!data.empty() && data.substr(0, 1) == "{")
+		if (!data.empty() && data.at(0) == '{')
 		{	
 			// Data is in json
 			JsonHelper jsonDeserializer(data);
