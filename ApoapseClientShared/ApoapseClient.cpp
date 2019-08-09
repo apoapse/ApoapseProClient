@@ -155,6 +155,19 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 		global->cmdManager->CreateCommand("add_tag", dat).Send(*m_connection);
 	}
 
+	else if (name == "mark_message_as_read")
+	{
+		const DbId msgId = json.ReadFieldValue<Int64>("id").get();
+		const DbId threadId = json.ReadFieldValue<Int64>("threadId").get();
+		auto& message = GetContentManager().GetThreadById(threadId).GetMessageById(msgId);
+
+		auto dat = global->apoapseData->GetStructure("mark_as_read");
+		dat.GetField("item_type").SetValue("msg");
+		dat.GetField("item_uuid").SetValue(message.uuid);
+
+		global->cmdManager->CreateCommand("mark_as_read", dat).Send(*m_connection);
+	}
+
 	else
 	{
 		if (IsAuthenticated())

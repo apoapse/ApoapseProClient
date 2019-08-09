@@ -18,6 +18,7 @@ struct ApoapseMessage
 	std::string message;
 	DateTimeUtils::UTCDateTime sentTime;
 	std::vector<std::string> tags;
+	bool isRead = true;
 
 	ApoapseMessage(DataStructure& data, ApoapseClient& client);
 	JsonHelper GetJson() const;
@@ -34,7 +35,8 @@ public:
 	std::string name;
 	ContentManager& contentManager;
 	Room& parrentRoom;
-	Int64 m_totalMessagesCount = -1;
+	Int64 totalMessagesCount = 0;
+	Int64 unreadMesagesCount = 0;
 
 	ApoapseThread(DataStructure& data, Room& parrentRoom, ContentManager& cManager);
 	bool operator==(const ApoapseThread& other) const;
@@ -46,6 +48,8 @@ public:
 
 	void LoadMessages();
 	void AddNewMessage(ApoapseMessage& message);
+
+	void RefreshUnreadMessagesCount();
 
 	static void LoadAllThreads(Room& room, ContentManager& cManager);
 

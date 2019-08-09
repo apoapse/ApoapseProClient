@@ -3,7 +3,7 @@
 #include "ApoapseThread.h"
 #include "ContentManager.h"
 #include "Json.hpp"
-#include <SQLQuery.h>
+#include "SQLQuery.h"
 #include "Username.h"
 #include "HTMLUI.h"
 #include "ApoapseClient.h"
@@ -16,6 +16,7 @@ ApoapseMessage::ApoapseMessage(DataStructure& data, ApoapseClient& client) : apo
 	message = data.GetField("message").GetValue<std::string>();
 	sentTime = data.GetField("sent_time").GetValue<DateTimeUtils::UTCDateTime>();
 	author = &apoapseClient.GetClientUsers().GetUserByUsername(data.GetField("author").GetValue<Username>());
+	isRead = data.GetField("is_read").GetValue<bool>();
 
 	// tags
 	{
@@ -38,6 +39,7 @@ JsonHelper ApoapseMessage::GetJson() const
 	ser.Insert("author", author->nickname);
 	ser.Insert("author_id", author->id);
 	ser.InsertArray("tags", tags);
+	ser.Insert("is_read", isRead);
 
 	return ser;
 }
@@ -56,10 +58,10 @@ ApoapseThread::ApoapseThread(DataStructure& data, Room& parrentRoom, ContentMana
 		query << SELECT << "COUNT(*)" FROM << "messages" << WHERE << "parent_thread" << EQUALS << uuid.GetBytes();
 		auto res = query.Exec();
 
-		m_totalMessagesCount = res[0][0].GetInt64();
+		totalMessagesCount = res[0][0].GetInt64();
 	}
 
-	if (m_totalMessagesCount > 0)
+	if (totalMessagesCount > 0)
 	{
 		LoadLastMessage();
 	}
@@ -77,7 +79,8 @@ JsonHelper ApoapseThread::GetJson() const
 	JsonHelper ser;
 	ser.Insert("id", id);
 	ser.Insert("name", name);
-	ser.Insert("msg_count", m_totalMessagesCount);
+	ser.Insert("msg_count", totalMessagesCount);
+	ser.Insert("unreadMsgCount", unreadMesagesCount);
 
 	if (!m_messages.empty())
 	{
@@ -127,10 +130,10 @@ ApoapseMessage* ApoapseThread::GetMessageByUuid(const Uuid& uuid)
 
 void ApoapseThread::LoadMessages()
 {
-	if (m_messages.size() != m_totalMessagesCount)
+	if (m_messages.size() != totalMessagesCount)
 	{
 		m_messages.clear();
-		m_messages.reserve(m_totalMessagesCount);
+		m_messages.reserve(totalMessagesCount);
 
 		auto messages = global->apoapseData->ReadListFromDatabase("message", "parent_thread", uuid);
 		for (auto& messageDat : messages)
@@ -139,19 +142,34 @@ void ApoapseThread::LoadMessages()
 		}
 	}
 
-	ASSERT(m_messages.size() == m_totalMessagesCount);
+	ASSERT(m_messages.size() == totalMessagesCount);
 	LOG << "Loaded " << m_messages.size() << " messages on thread " << name;
 }
 
 void ApoapseThread::AddNewMessage(ApoapseMessage& message)
 {
-	m_totalMessagesCount++;
+	totalMessagesCount++;
 	m_messages.push_back(message);
+
+	if (!message.isRead)
+	{
+		unreadMesagesCount++;
+		parrentRoom.unreadMsgCount++;
+		contentManager.UIRoomsUpdate();
+	}
 
 	// User is on the threads list
 	if (contentManager.GetCurrentRoom() == parrentRoom && !contentManager.IsThreadDisplayed())
 	{
 		global->htmlUI->SendSignal("UpdateThreadPreview", GetJson().Generate());
+
+		if (!message.isRead)
+		{
+			JsonHelper ser; //TODO replace with a generic "UpdateThread" signal used here and to update msg preview
+			ser.Insert("thread", GetJson());
+
+			global->htmlUI->SendSignal("UpdateThreadUnreadMsgCount", ser.Generate());
+		}
 	}
 
 	// User is reading the thread
@@ -161,6 +179,15 @@ void ApoapseThread::AddNewMessage(ApoapseMessage& message)
 	}
 
 	LOG << "Added new message id: " << message.id;
+}
+
+void ApoapseThread::RefreshUnreadMessagesCount()
+{
+	SQLQuery query(*global->database);
+	query << SELECT << "COUNT(*)" FROM << "messages" << WHERE << "parent_thread" << EQUALS << uuid.GetBytes() << AND << "is_read" << EQUALS << 0;
+	const auto res = query.Exec();
+
+	unreadMesagesCount = res[0][0].GetInt64();
 }
 
 void ApoapseThread::LoadAllThreads(Room& room, ContentManager& cManager)

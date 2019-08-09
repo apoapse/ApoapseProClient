@@ -4,6 +4,7 @@
 #include "Json.hpp"
 #include "HTMLUI.h"
 #include "ApoapseClient.h"
+#include <numeric>
 
 Room::Room(DataStructure& data)
 {
@@ -11,6 +12,17 @@ Room::Room(DataStructure& data)
 	uuid = data.GetField("uuid").GetValue<Uuid>();
 	threadsLayout = (data.GetField("threads_layout").GetValue<std::string>() == "single") ? ThreadsLayout::single : ThreadsLayout::multiple;
 	id = data.GetDbId();
+}
+
+void Room::RefrechUnreadMessagesCount()
+{
+	unreadMsgCount = 0;
+
+	for (auto& thread : threads)
+	{
+		thread->RefreshUnreadMessagesCount();
+		unreadMsgCount += thread->unreadMesagesCount;
+	}
 }
 
 bool Room::operator==(const Room& other) const
@@ -23,6 +35,7 @@ JsonHelper Room::GetJson() const
 	JsonHelper ser;
 	ser.Insert("id", id);
 	ser.Insert("name", HTMLUI::HtmlSpecialChars(name));
+	ser.Insert("unreadMsgCount", unreadMsgCount);
 
 	return ser;
 }
@@ -51,7 +64,11 @@ void ContentManager::Init()
 	auto rooms = global->apoapseData->ReadListFromDatabase("room", "", "");
 	for (auto& roomData : rooms)
 	{
-		m_rooms.push_back(std::make_unique<Room>(roomData));
+		auto room = std::make_unique<Room>(roomData);
+		ApoapseThread::LoadAllThreads(*room, *this);
+		room->RefrechUnreadMessagesCount();
+
+		m_rooms.push_back(std::move(room));
 	}
 
 	// Open room if any
@@ -146,6 +163,25 @@ void ContentManager::OnAddNewTag(DataStructure& data)
 	}
 }
 
+void ContentManager::MarkMessageAsRead(const Uuid& uuid)
+{
+	auto dat = global->apoapseData->ReadItemFromDatabase("message", "uuid", uuid);
+	dat.GetField("is_read").SetValue(true);
+	dat.SaveToDatabase();
+
+	auto& parentThread = GetThreadByUuid(dat.GetField("parent_thread").GetValue<Uuid>());
+	parentThread.unreadMesagesCount--;
+	parentThread.parrentRoom.unreadMsgCount--;
+
+	auto* msgObject = parentThread.GetMessageByUuid(dat.GetField("uuid").GetValue<Uuid>());
+	if (msgObject)
+	{
+		msgObject->isRead = true;
+	}
+
+	UIRoomsUpdate();
+}
+
 Room& ContentManager::GetRoomById(DbId id)
 {
 	const auto res = std::find_if(m_rooms.begin(), m_rooms.end(), [id](const auto& room)
@@ -186,12 +222,28 @@ ApoapseThread& ContentManager::GetThreadByUuid(const Uuid& uuid)
 	throw std::exception("The requested thread cannot be found");
 }
 
+ApoapseThread& ContentManager::GetThreadById(DbId id)
+{
+	for (auto& room : m_rooms)
+	{
+		for (auto& thread : room->threads)
+		{
+			if (thread->id == id)
+				return *thread;
+		}
+	}
+
+	throw std::exception("The requested thread cannot be found with the DbId provided");
+}
+
 void ContentManager::OpenRoom(Room& room)
 {
 	m_selectedRoom = &room;
 	m_selectedThread = nullptr;
 
 	LOG << "Selected room " << room.name;
+
+	room.RefrechUnreadMessagesCount();
 	UIRoomsUpdate();
 
 	if (room.threadsLayout == Room::ThreadsLayout::multiple)
@@ -266,3 +318,26 @@ void ContentManager::UIRoomsUpdate() const
 
 	global->htmlUI->SendSignal("rooms_update", ser.Generate());
 }
+/*
+void ContentManager::UpdateUnreadMsgCount(const Room& room) const
+{
+	Int64 roomUnreadMsg = 0;
+	JsonHelper ser;
+
+	for (const auto& thread : room.threads)
+	{
+		const Int64 threadUnreadMsgs = thread->CountUnreadMessages();
+		roomUnreadMsg += threadUnreadMsgs;
+
+		JsonHelper threadSer;
+		threadSer.Insert("id", thread->id);
+		threadSer.Insert("unreadMsgCount", threadUnreadMsgs);
+
+		ser.Insert("threads", threadSer);
+	}
+
+	ser.Insert("roomUnreadMsgCount", roomUnreadMsg);
+	ser.Insert("roomId", room.id);
+
+	global->htmlUI->SendSignal("UpdateUnreadMsgCount", ser.Generate());
+}*/

@@ -16,10 +16,12 @@ struct Room
 	Uuid uuid;
 	ThreadsLayout threadsLayout = ThreadsLayout::multiple;
 	DbId id = -1;
+	Int64 unreadMsgCount = 0;
 
 	std::vector<std::unique_ptr<ApoapseThread>> threads;
 
 	Room(DataStructure& data);
+	void RefrechUnreadMessagesCount();
 	bool operator==(const Room& other) const;
 
 	JsonHelper GetJson() const;
@@ -43,12 +45,14 @@ public:
 	void OnAddNewThread(DataStructure& data);
 	void OnAddNewMessage(DataStructure& data);
 	void OnAddNewTag(DataStructure& data);
+	void MarkMessageAsRead(const Uuid& uuid);
 
 	void OnReceivedSignal(const std::string& name, const JsonHelper& json);
 	
 	Room& GetRoomById(DbId id);
 	Room& GetRoomByUuid(const Uuid& uuid);
 	ApoapseThread& GetThreadByUuid(const Uuid& uuid);
+	ApoapseThread& GetThreadById(DbId id);
 	void OpenRoom(Room& room);
 	void OpenThread(ApoapseThread& thread);
 
@@ -56,6 +60,8 @@ public:
 	bool IsThreadDisplayed() const;
 	ApoapseThread& GetCurrentThread();
 
-private:
 	void UIRoomsUpdate() const;
+
+private:
+
 };

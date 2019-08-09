@@ -39,6 +39,8 @@ bool ClientCmdManager::OnSendCommandPre(CommandV2& cmd)
 
 bool ClientCmdManager::OnReceivedCommandPre(CommandV2& cmd, GenericConnection& netConnection)
 {
+	auto& connection = dynamic_cast<ClientConnection&>(netConnection);
+
 	// Checks if the operation/item is not already registered
 	if (cmd.operationRegister)
 	{
@@ -50,8 +52,21 @@ bool ClientCmdManager::OnReceivedCommandPre(CommandV2& cmd, GenericConnection& n
 		}
 		else
 		{
-			LOG << LogSeverity::error << "Rejecting the command " << cmd.name << " because the operation " << operationUuid.GetBytes() << " is aready registered";
+			LOG << LogSeverity::error << "Rejecting the command " << cmd.name << " because the operation " << operationUuid.GetBytes() << " is already registered";
 			return false;
+		}
+	}
+
+	if (cmd.name == "new_message")
+	{
+		// TODO add default value feature to the data system/database integrity system so that is_read is to false by default
+		if (cmd.GetData().GetField("author").GetValue<Username>() == connection.GetConnectedUser().value())
+		{
+			cmd.GetData().GetField("is_read").SetValue(true);
+		}
+		else
+		{
+			cmd.GetData().GetField("is_read").SetValue(false);
 		}
 	}
 
@@ -110,7 +125,17 @@ void ClientCmdManager::OnReceivedCommand(CommandV2& cmd, GenericConnection& netC
 		apoapseClient.GetContentManager().OnAddNewTag(cmd.GetData());
 	}
 
-	LOG_DEBUG << "RECEIVED!";
+	else if (cmd.name == "mark_as_read")
+	{
+		if (cmd.GetData().GetField("item_type").GetValue<std::string>() == "msg")
+		{
+			apoapseClient.GetContentManager().MarkMessageAsRead(cmd.GetData().GetField("item_uuid").GetValue<Uuid>());
+		}
+		else
+		{
+			LOG << LogSeverity::warning << "mark_as_read: Unsupported item_type";
+		}
+	}
 }
 
 void ClientCmdManager::OnReceivedCommandPost(CommandV2& cmd, GenericConnection& netConnection)
