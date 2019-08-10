@@ -10,6 +10,7 @@
 #include "include/wrapper/cef_closure_task.h"
 #include "include/wrapper/cef_helpers.h"
 #include "../CefClientWindows/resource.h"
+#include "ClientEntryPoint.h"
 
 namespace {
 
@@ -137,12 +138,16 @@ bool GenericHandler::OnDragEnter(CefRefPtr<CefBrowser> browser, CefRefPtr<CefDra
 		std::vector<CefString> filePaths;
 		dragData->GetFileNames(filePaths);
 
-		//TODO
+		std::vector<std::string> filePathsStd;
+		filePathsStd.reserve(filePaths.size());
+		std::copy(filePaths.begin(), filePaths.end(), std::back_inserter(filePathsStd));
+		
+		ApoapseClientEntry::SetLastFilesDrop(filePathsStd);
 
-		return true;
+		return false;
 	}
 
-	return false;
+	return true;
 }
 
 void GenericHandler::CloseAllBrowsers(bool forceClose)

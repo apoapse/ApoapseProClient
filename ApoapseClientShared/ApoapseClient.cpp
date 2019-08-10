@@ -369,6 +369,12 @@ const LocalUser& ApoapseClient::GetLocalUser() const
 	return m_authenticatedUser.value();
 }
 
+void ApoapseClient::OnDropFiles(const std::vector<std::string> files)
+{
+	m_lastDroppedFiles = files;
+	LOG << "Drag and Drop: user dropped " << m_lastDroppedFiles.size() << " files";
+}
+
 ContentManager& ApoapseClient::GetContentManager() const
 {
 	ASSERT(IsAuthenticated());

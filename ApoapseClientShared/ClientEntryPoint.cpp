@@ -64,3 +64,8 @@ std::string ApoapseClientEntry::OnReceivedSignal(const std::string& name, const 
 {
 	return dynamic_cast<HTMLUI*>(global->htmlUI)->OnReceivedSignal(name, data);
 }
+
+void ApoapseClientEntry::SetLastFilesDrop(const std::vector<std::string>& files)
+{
+	m_apoapseClient->OnDropFiles(files);
+}

@@ -27,6 +27,8 @@ class ApoapseClient
 	std::optional<std::string> m_dbPassword;
 	std::optional<LocalUser> m_authenticatedUser;
 
+	std::vector<std::string> m_lastDroppedFiles;
+
 	std::unique_ptr<UsergroupManager> m_usergroupManager;
 	std::unique_ptr<ClientUsers> m_clientUsers;
 	std::unique_ptr<ContentManager> m_contentManager;
@@ -53,6 +55,8 @@ public:
 	bool IsAuthenticated() const;
 //	const hashSecBytes& GetIdentityPasswordHash() const;
 	const LocalUser& GetLocalUser() const;
+
+	void OnDropFiles(const std::vector<std::string> files);
 
 	ContentManager& GetContentManager() const;
 	ClientOperations& GetClientOperations() const;
