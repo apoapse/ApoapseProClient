@@ -212,6 +212,11 @@ void ApoapseClient::OnDisconnect()
 	m_authenticatedUser.reset();
 	m_loginCmd.reset();
 
+	m_usergroupManager.reset();
+	m_clientUsers.reset();
+	m_contentManager.reset();
+	m_clientOperations.reset();
+
 	m_IOService->reset();
 
 	if (global->database != nullptr)
