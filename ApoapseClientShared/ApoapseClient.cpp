@@ -186,25 +186,6 @@ void ApoapseClient::OnConnectedToServer()
 	m_loginCmd.reset();
 }
 
-void ApoapseClient::OnSetupState()
-{
-/*	{
-		JsonHelper ser;
-		ser.Insert("previousUsername", GetLastLoginTryUsername());
-
-		global->htmlUI->SendSignal("show_install", ser.Generate());
-	}
-
-	global->htmlUI->UpdateStatusBar("@connected_in_setup_phase_status");
-*/
-}
-
-void ApoapseClient::OnUserFirstConnection()
-{
-//	global->htmlUI->SendSignal("ShowFirstUserConnection", "");
-//	global->htmlUI->UpdateStatusBar("@connected_first_user_connection_status");
-}
-
 void ApoapseClient::OnDisconnect()
 {
 	m_connected = false;

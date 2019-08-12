@@ -46,8 +46,6 @@ public:
 
 	void Connect(const std::string& serverAddress, const std::string& username, const std::string& password);
 	void OnConnectedToServer();
-	void OnSetupState();
-	void OnUserFirstConnection();
 	void OnDisconnect();
 	const Username& GetLastLoginTryUsername() const;
 
