@@ -159,6 +159,7 @@
     <ClCompile Include="HTMLUI.cpp" />
     <ClCompile Include="LocalSettings.cpp" />
     <ClCompile Include="LocalUser.cpp" />
+    <ClCompile Include="ClientFileStreamConnection.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
@@ -179,6 +180,7 @@
     <ClInclude Include="ISignalSender.hpp" />
     <ClInclude Include="LocalSettings.h" />
     <ClInclude Include="LocalUser.h" />
+    <ClInclude Include="ClientFileStreamConnection.h" />
     <ClInclude Include="User.h" />
     <ClInclude Include="WebResourcesManager.h" />
   </ItemGroup>

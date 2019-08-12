@@ -10,6 +10,7 @@
 #include "DatabaseIntegrityPatcher.h"
 #include "Hash.hpp"
 #include "CommandsManagerV2.h"
+#include "ClientFileStreamConnection.h"
 //#include <Random.hpp>
 
 
@@ -51,10 +52,14 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 		const UInt16 port = defaultServerPort;
 		ssl::context tlsContext(ssl::context::sslv23);
 
-		auto connection = std::make_shared<ClientConnection>(*m_IOService, tlsContext, *this);
-		connection->Connect(serverAddress, port);
+		//auto connection = std::make_shared<ClientConnection>(*m_IOService, tlsContext, *this);
+		//connection->Connect(serverAddress, port);
+		//
+		auto fileConnection = std::make_shared<ClientFileStreamConnection>(*m_IOService, tlsContext, *this);
+		fileConnection->Connect(serverAddress, 3333);
+		
 
-		m_connection = connection.get();
+		//m_connection = connection.get();
 		LOG << "TCP Client started to " << serverAddress << " port: " << port;
 	}
 

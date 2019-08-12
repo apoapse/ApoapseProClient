@@ -36,6 +36,9 @@
     <ClCompile Include="LocalUser.cpp">
       <Filter>UsersSystem</Filter>
     </ClCompile>
+    <ClCompile Include="ClientFileStreamConnection.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientEntryPoint.h" />
@@ -77,6 +80,9 @@
     </ClInclude>
     <ClInclude Include="ClientOperations.h">
       <Filter>Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientFileStreamConnection.h">
+      <Filter>Network</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
