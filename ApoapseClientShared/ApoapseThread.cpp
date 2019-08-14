@@ -12,11 +12,13 @@ ApoapseMessage::ApoapseMessage(DataStructure& data, ApoapseClient& client) : apo
 {
 	id = data.GetDbId();
 	uuid = data.GetField("uuid").GetValue<Uuid>();
-	threadUuid = data.GetField("parent_thread").GetValue<Uuid>();
 	message = data.GetField("message").GetValue<std::string>();
 	sentTime = data.GetField("sent_time").GetValue<DateTimeUtils::UTCDateTime>();
 	author = &apoapseClient.GetClientUsers().GetUserByUsername(data.GetField("author").GetValue<Username>());
 	isRead = data.GetField("is_read").GetValue<bool>();
+
+	if (data.GetField("parent_thread").HasValue())
+		threadUuid = data.GetField("parent_thread").GetValue<Uuid>();
 
 	// tags
 	{
@@ -40,6 +42,7 @@ JsonHelper ApoapseMessage::GetJson() const
 	ser.Insert("author_id", author->id);
 	ser.InsertArray("tags", tags);
 	ser.Insert("is_read", isRead);
+	ser.Insert("support_tags", supportTags);
 
 	return ser;
 }

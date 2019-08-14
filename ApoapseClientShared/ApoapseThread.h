@@ -13,12 +13,14 @@ struct ApoapseMessage
 
 	DbId id = -1;
 	Uuid uuid;
-	Uuid threadUuid;
+	std::optional<Uuid> threadUuid;
 	const User* author;
 	std::string message;
 	DateTimeUtils::UTCDateTime sentTime;
 	std::vector<std::string> tags;
 	bool isRead = true;
+
+	bool supportTags = true;
 
 	ApoapseMessage(DataStructure& data, ApoapseClient& client);
 	JsonHelper GetJson() const;

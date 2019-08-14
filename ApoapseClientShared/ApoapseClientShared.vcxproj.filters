@@ -39,6 +39,9 @@
     <ClCompile Include="ClientFileStreamConnection.cpp">
       <Filter>Network</Filter>
     </ClCompile>
+    <ClCompile Include="PrivateMsgThread.cpp">
+      <Filter>Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientEntryPoint.h" />
@@ -83,6 +86,9 @@
     </ClInclude>
     <ClInclude Include="ClientFileStreamConnection.h">
       <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="PrivateMsgThread.h">
+      <Filter>Systems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

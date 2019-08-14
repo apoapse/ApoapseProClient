@@ -2,6 +2,7 @@
 #include "TypeDefs.hpp"
 #include "Uuid.h"
 #include "ApoapseThread.h"
+#include "PrivateMsgThread.h"
 class ApoapseClient;
 
 struct Room
@@ -31,9 +32,11 @@ struct Room
 class ContentManager
 {
 	std::vector<std::unique_ptr<Room>> m_rooms;
+	std::vector<std::unique_ptr<PrivateMsgThread>> m_privateMsgThreads;
 
 	Room* m_selectedRoom = nullptr;
 	ApoapseThread* m_selectedThread = nullptr;
+	PrivateMsgThread* m_selectedUserPage = nullptr;
 
 public:
 	ApoapseClient& client;
@@ -44,6 +47,7 @@ public:
 	void OnAddNewRoom(DataStructure& data);
 	void OnAddNewThread(DataStructure& data);
 	void OnAddNewMessage(DataStructure& data);
+	void OnAddNewPrivateMessage(DataStructure& data);
 	void OnAddNewTag(DataStructure& data);
 	void MarkMessageAsRead(const Uuid& uuid);
 
@@ -53,12 +57,19 @@ public:
 	Room& GetRoomByUuid(const Uuid& uuid);
 	ApoapseThread& GetThreadByUuid(const Uuid& uuid);
 	ApoapseThread& GetThreadById(DbId id);
+	PrivateMsgThread& GetPrivateThreadByUserId(DbId id);
+	
 	void OpenRoom(Room& room);
 	void OpenThread(ApoapseThread& thread);
+	void OpenPrivateMsgThread(PrivateMsgThread& thread);
 
-	Room& GetCurrentRoom();
+	void RegisterPrivateMsgThread(const User& user);
+
+	Room& GetCurrentRoom() const;
 	bool IsThreadDisplayed() const;
-	ApoapseThread& GetCurrentThread();
+	ApoapseThread& GetCurrentThread() const;
+	bool IsUserPageDisplayed() const;
+	PrivateMsgThread& GetCurrentUserPage() const;
 
 	void UIRoomsUpdate() const;
 

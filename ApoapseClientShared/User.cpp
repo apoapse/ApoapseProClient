@@ -133,6 +133,35 @@ const User& ClientUsers::GetUserByUsername(const Username& username) const
 	return m_registeredUsers.at(username);
 }
 
+const User& ClientUsers::GetUserById(DbId id) const
+{
+	for (const auto& user : m_registeredUsers)
+	{
+		if (user.second.id == id)
+			return user.second;
+	}
+
+	throw std::exception("Unable to find an user with the provided id");
+}
+
+std::vector<const User*> ClientUsers::GetUsers() const
+{
+	std::vector<const User*> ouput;
+	ouput.reserve(m_registeredUsers.size());
+
+	for (const auto& user : m_registeredUsers)
+	{
+		ouput.push_back(&user.second);
+	}
+	
+	return ouput;
+}
+
+UInt64 ClientUsers::GetUserCount() const
+{
+	return m_registeredUsers.size();
+}
+
 void ClientUsers::UpdateUI() const
 {
 	JsonHelper ser;

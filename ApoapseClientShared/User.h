@@ -3,7 +3,6 @@
 #include <string>
 #include "TypeDefs.hpp"
 #include "Username.h"
-#include <map>
 class DataStructure;
 class JsonHelper;
 class ApoapseClient;
@@ -52,6 +51,9 @@ public:
 
 	void OnAddNewUser(User& user);
 	const User& GetUserByUsername(const Username& username) const;
+	const User& GetUserById(DbId id) const;
+	std::vector<const User*> GetUsers() const;
+	UInt64 GetUserCount() const;
 
 private:
 	void UpdateUI() const;

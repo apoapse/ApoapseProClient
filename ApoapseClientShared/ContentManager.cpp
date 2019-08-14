@@ -5,6 +5,7 @@
 #include "HTMLUI.h"
 #include "ApoapseClient.h"
 #include <numeric>
+#include "PrivateMsgThread.h"
 
 Room::Room(DataStructure& data)
 {
@@ -60,21 +61,33 @@ ContentManager::ContentManager(ApoapseClient& apoapseClient) : client(apoapseCli
 
 void ContentManager::Init()
 {
-	// Loading rooms
-	auto rooms = global->apoapseData->ReadListFromDatabase("room", "", "");
-	for (auto& roomData : rooms)
+	// Load rooms
 	{
-		auto room = std::make_unique<Room>(roomData);
-		ApoapseThread::LoadAllThreads(*room, *this);
-		room->RefrechUnreadMessagesCount();
+		auto rooms = global->apoapseData->ReadListFromDatabase("room", "", "");
+		for (auto& roomData : rooms)
+		{
+			auto room = std::make_unique<Room>(roomData);
+			ApoapseThread::LoadAllThreads(*room, *this);
+			room->RefrechUnreadMessagesCount();
 
-		m_rooms.push_back(std::move(room));
+			m_rooms.push_back(std::move(room));
+		}
 	}
 
 	// Open room if any
 	if (!m_rooms.empty())
 	{
 		OpenRoom(*m_rooms[0]);
+	}
+	
+	// Load private messages threads
+	{
+		m_privateMsgThreads.reserve(std::max((Int64)client.GetClientUsers().GetUserCount() - 1, (Int64)1));	// -1 because we ignore the current user
+		
+		for (const User* user : client.GetClientUsers().GetUsers())
+		{
+			RegisterPrivateMsgThread(*user);
+		}
 	}
 }
 
@@ -90,6 +103,15 @@ void ContentManager::OnReceivedSignal(const std::string& name, const JsonHelper&
 	{
 		ApoapseThread& thread = m_selectedRoom->GetThread(json.ReadFieldValue<Int64>("id").value());
 		OpenThread(thread);
+	}
+
+	else if (name == "LoadUserPage")
+	{
+		const User& user = client.GetClientUsers().GetUserById(json.ReadFieldValue<Int64>("id").value());
+		if (user.username != client.GetLocalUser().username)
+		{
+			OpenPrivateMsgThread(GetPrivateThreadByUserId(user.id));
+		}
 	}
 }
 
@@ -130,9 +152,20 @@ void ContentManager::OnAddNewThread(DataStructure& data)
 void ContentManager::OnAddNewMessage(DataStructure& data)
 {
 	auto message = ApoapseMessage(data, client);
-	auto& parentThread = GetThreadByUuid(message.threadUuid);
+	auto& parentThread = GetThreadByUuid(message.threadUuid.value());
 
 	parentThread.AddNewMessage(message);
+}
+
+void ContentManager::OnAddNewPrivateMessage(DataStructure& data)
+{
+	const auto message = PrivateMessage(data, client);
+	auto& thread = GetPrivateThreadByUserId(message.relatedUser->id);
+
+	if (IsUserPageDisplayed() && GetCurrentUserPage().relatedUserId == message.relatedUser->id)
+	{
+		global->htmlUI->SendSignal("NewMessage", message.GetJson().Generate());
+	}
 }
 
 void ContentManager::OnAddNewTag(DataStructure& data)
@@ -236,10 +269,21 @@ ApoapseThread& ContentManager::GetThreadById(DbId id)
 	throw std::exception("The requested thread cannot be found with the DbId provided");
 }
 
+PrivateMsgThread& ContentManager::GetPrivateThreadByUserId(DbId id)
+{
+	const auto res = std::find_if(m_privateMsgThreads.begin(), m_privateMsgThreads.end(), [id](const auto& thread)
+	{
+		return (thread->relatedUserId == id);
+	});
+
+	return **res;
+}
+
 void ContentManager::OpenRoom(Room& room)
 {
 	m_selectedRoom = &room;
 	m_selectedThread = nullptr;
+	m_selectedUserPage = nullptr;
 
 	LOG << "Selected room " << room.name;
 
@@ -281,7 +325,27 @@ void ContentManager::OpenThread(ApoapseThread& thread)
 	global->htmlUI->SendSignal("OnOpenThread", ser.Generate());
 }
 
-Room& ContentManager::GetCurrentRoom()
+void ContentManager::OpenPrivateMsgThread(PrivateMsgThread& thread)
+{
+	m_selectedUserPage = &thread;
+	m_selectedThread = nullptr;
+	m_selectedRoom = nullptr;
+
+	thread.LoadMessages(*this);
+	
+	global->htmlUI->SendSignal("OnOpenPrivateMsgThread", thread.GetJson().Generate());
+}
+
+void ContentManager::RegisterPrivateMsgThread(const User& user)
+{
+	if (user.username == client.GetLocalUser().username)
+		return;
+	
+	auto threadPtr = std::make_unique<PrivateMsgThread>(user);
+	m_privateMsgThreads.push_back(std::move(threadPtr));
+}
+
+Room& ContentManager::GetCurrentRoom() const
 {
 	if (!m_selectedRoom)
 		throw std::exception("There is no room currently selected");
@@ -294,12 +358,25 @@ bool ContentManager::IsThreadDisplayed() const
 	return (m_selectedThread != nullptr);
 }
 
-ApoapseThread& ContentManager::GetCurrentThread()
+ApoapseThread& ContentManager::GetCurrentThread() const
 {
 	if (!m_selectedThread)
 		throw std::exception("No thread selected");
 
 	return *m_selectedThread;
+}
+
+bool ContentManager::IsUserPageDisplayed() const
+{
+	return (m_selectedUserPage != nullptr);
+}
+
+PrivateMsgThread& ContentManager::GetCurrentUserPage() const
+{
+	if (!m_selectedUserPage)
+		throw std::exception("No user page/private msg thread selected");
+
+	return *m_selectedUserPage;
 }
 
 void ContentManager::UIRoomsUpdate() const

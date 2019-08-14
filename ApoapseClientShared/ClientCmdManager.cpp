@@ -34,6 +34,13 @@ bool ClientCmdManager::OnSendCommandPre(CommandV2& cmd)
 		cmd.GetData().GetField("author").SetValue(apoapseClient.GetLocalUser().username);
 	}
 
+	else if (cmd.name == "direct_message")
+	{
+		cmd.GetData().GetField("direct_recipient").SetValue(apoapseClient.GetContentManager().GetCurrentUserPage().relatedUserPtr->username);
+		cmd.GetData().GetField("sent_time").SetValue(DateTimeUtils::UTCDateTime::CurrentTime());
+		cmd.GetData().GetField("author").SetValue(apoapseClient.GetLocalUser().username);
+	}
+
 	return true;
 }
 
@@ -57,7 +64,7 @@ bool ClientCmdManager::OnReceivedCommandPre(CommandV2& cmd, GenericConnection& n
 		}
 	}
 
-	if (cmd.name == "new_message")
+	if (cmd.name == "new_message" || cmd.name == "direct_message")
 	{
 		// TODO add default value feature to the data system/database integrity system so that is_read is to false by default
 		if (cmd.GetData().GetField("author").GetValue<Username>() == connection.GetConnectedUser().value())
@@ -99,10 +106,11 @@ void ClientCmdManager::OnReceivedCommand(CommandV2& cmd, GenericConnection& netC
 		}
 	}
 
-	if (cmd.name == "user")
+	else if (cmd.name == "user")
 	{
 		auto user = User(cmd.GetData(), apoapseClient);
 		apoapseClient.GetClientUsers().OnAddNewUser(user);
+		apoapseClient.GetContentManager().RegisterPrivateMsgThread(apoapseClient.GetClientUsers().GetUserByUsername(user.username));
 	}
 	
 	else if (cmd.name == "create_room")
@@ -118,6 +126,11 @@ void ClientCmdManager::OnReceivedCommand(CommandV2& cmd, GenericConnection& netC
 	else if (cmd.name == "new_message")
 	{
 		apoapseClient.GetContentManager().OnAddNewMessage(cmd.GetData());
+	}
+
+	else if (cmd.name == "direct_message")
+	{
+		apoapseClient.GetContentManager().OnAddNewPrivateMessage(cmd.GetData());
 	}
 
 	else if (cmd.name == "add_tag")
