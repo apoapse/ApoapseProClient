@@ -119,13 +119,11 @@ ClientUsers::ClientUsers(ApoapseClient& client): apoapseClient(client)
 	}
 
 	LOG << "Loaded " << m_registeredUsers.size() << " users";
-	UpdateUI();
 }
 
 void ClientUsers::OnAddNewUser(User& user)
 {
 	m_registeredUsers[user.username] = user;
-	UpdateUI();
 }
 
 const User& ClientUsers::GetUserByUsername(const Username& username) const
@@ -160,16 +158,4 @@ std::vector<const User*> ClientUsers::GetUsers() const
 UInt64 ClientUsers::GetUserCount() const
 {
 	return m_registeredUsers.size();
-}
-
-void ClientUsers::UpdateUI() const
-{
-	JsonHelper ser;
-
-	for (const auto& user : m_registeredUsers)
-	{
-		ser.Insert("users", user.second.GetJson());
-	}
-
-	global->htmlUI->SendSignal("OnUpdateUserList", ser.Generate());
 }

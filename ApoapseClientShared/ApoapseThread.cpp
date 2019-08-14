@@ -107,7 +107,7 @@ JsonHelper ApoapseThread::GetMessageListJson() const
 
 ApoapseMessage& ApoapseThread::GetMessageById(DbId id)
 {
-	auto res = std::find_if(m_messages.begin(), m_messages.end(), [id](ApoapseMessage& msg)
+	const auto res = std::find_if(m_messages.begin(), m_messages.end(), [id](ApoapseMessage& msg)
 	{
 		return (msg.id == id);
 	});

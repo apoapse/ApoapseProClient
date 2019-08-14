@@ -56,5 +56,4 @@ public:
 	UInt64 GetUserCount() const;
 
 private:
-	void UpdateUI() const;
 };

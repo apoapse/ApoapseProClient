@@ -72,6 +72,7 @@ public:
 	PrivateMsgThread& GetCurrentUserPage() const;
 
 	void UIRoomsUpdate() const;
+	void UIUserListUpdate();
 
 private:
 

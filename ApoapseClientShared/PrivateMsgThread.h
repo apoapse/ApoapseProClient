@@ -13,15 +13,21 @@ struct PrivateMessage : public ApoapseMessage
 
 class PrivateMsgThread
 {
+	ContentManager& contentManager;
 	std::vector<PrivateMessage> m_messages;
 	
 public:
-	PrivateMsgThread(const User& relatedUser);
+	Int64 unreadMesagesCount = 0;
+	
+	PrivateMsgThread(const User& relatedUser, ContentManager& cManager);
 	
 	DbId relatedUserId = -1;
 	const User* relatedUserPtr = nullptr;
 
+	void RefreshUnreadMessagesCount();
 	void LoadMessages(ContentManager& contentManager);
-	JsonHelper GetJson() const;
 	void AddNewMessage(PrivateMessage& message);
+	
+	JsonHelper GetJson() const;
+	PrivateMessage& GetMessageById(DbId id);
 };

@@ -19,10 +19,21 @@ PrivateMessage::PrivateMessage(DataStructure& data, ApoapseClient& client) : Apo
 		relatedUser = &client.GetClientUsers().GetUserByUsername(recipient);
 }
 
-PrivateMsgThread::PrivateMsgThread(const User& relatedUser)
+PrivateMsgThread::PrivateMsgThread(const User& relatedUser, ContentManager& cManager) : contentManager(cManager)
 {
 	relatedUserId = relatedUser.id;
 	relatedUserPtr = &relatedUser;
+
+	RefreshUnreadMessagesCount();
+}
+
+void PrivateMsgThread::RefreshUnreadMessagesCount()
+{
+	SQLQuery query(*global->database);
+	query << SELECT << "COUNT(*)" FROM  << "messages" << WHERE << "is_read" << EQUALS << 0 << AND << "direct_recipient" << EQUALS << relatedUserPtr->username.GetBytes() << OR << "(author" << EQUALS << relatedUserPtr->username.GetBytes() << AND << "direct_recipient" << EQUALS << contentManager.client.GetLocalUser().username.GetBytes() << ")";
+	auto res = query.Exec();
+
+	unreadMesagesCount = res[0][0].GetInt64();
 }
 
 void PrivateMsgThread::LoadMessages(ContentManager& contentManager)
@@ -60,6 +71,19 @@ JsonHelper PrivateMsgThread::GetJson() const
 	}
 
 	return ser;
+}
+
+PrivateMessage& PrivateMsgThread::GetMessageById(DbId id)
+{
+	const auto res = std::find_if(m_messages.begin(), m_messages.end(), [id](ApoapseMessage& msg)
+	{
+		return (msg.id == id);
+	});
+
+	if (res == m_messages.end())
+		throw std::exception("The private message with the provided id do not exist on this thread");
+
+	return *res;
 }
 
 void PrivateMsgThread::AddNewMessage(PrivateMessage& message)

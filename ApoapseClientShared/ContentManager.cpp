@@ -88,6 +88,8 @@ void ContentManager::Init()
 		{
 			RegisterPrivateMsgThread(*user);
 		}
+
+		UIUserListUpdate();
 	}
 }
 
@@ -202,17 +204,40 @@ void ContentManager::MarkMessageAsRead(const Uuid& uuid)
 	dat.GetField("is_read").SetValue(true);
 	dat.SaveToDatabase();
 
-	auto& parentThread = GetThreadByUuid(dat.GetField("parent_thread").GetValue<Uuid>());
-	parentThread.unreadMesagesCount--;
-	parentThread.parrentRoom.unreadMsgCount--;
-
-	auto* msgObject = parentThread.GetMessageByUuid(dat.GetField("uuid").GetValue<Uuid>());
-	if (msgObject)
+	if (dat.GetField("direct_recipient").HasValue())
 	{
-		msgObject->isRead = true;
-	}
+		const Username recipient = dat.GetField("direct_recipient").GetValue<Username>();
+		const User* relatedUser = nullptr;
+		
+		if (recipient == client.GetLocalUser().username)
+			relatedUser = &client.GetClientUsers().GetUserByUsername(dat.GetField("author").GetValue<Username>());
+		else
+			relatedUser = &client.GetClientUsers().GetUserByUsername(recipient);
 
-	UIRoomsUpdate();
+		PrivateMsgThread& privateThread = GetPrivateThreadByUserId(relatedUser->id);
+		privateThread.unreadMesagesCount--;
+
+		UIUserListUpdate();
+
+		/*if (IsUserPageDisplayed() && GetCurrentUserPage().relatedUserId == relatedUser->id)
+		{
+			
+		}*/
+	}
+	else
+	{
+		auto& parentThread = GetThreadByUuid(dat.GetField("parent_thread").GetValue<Uuid>());
+		parentThread.unreadMesagesCount--;
+		parentThread.parrentRoom.unreadMsgCount--;
+
+		auto* msgObject = parentThread.GetMessageByUuid(dat.GetField("uuid").GetValue<Uuid>());
+		if (msgObject)
+		{
+			msgObject->isRead = true;
+		}
+
+		UIRoomsUpdate();
+	}
 }
 
 Room& ContentManager::GetRoomById(DbId id)
@@ -341,8 +366,10 @@ void ContentManager::RegisterPrivateMsgThread(const User& user)
 	if (user.username == client.GetLocalUser().username)
 		return;
 	
-	auto threadPtr = std::make_unique<PrivateMsgThread>(user);
+	auto threadPtr = std::make_unique<PrivateMsgThread>(user, *this);
 	m_privateMsgThreads.push_back(std::move(threadPtr));
+
+	UIUserListUpdate();
 }
 
 Room& ContentManager::GetCurrentRoom() const
@@ -395,6 +422,38 @@ void ContentManager::UIRoomsUpdate() const
 
 	global->htmlUI->SendSignal("rooms_update", ser.Generate());
 }
+
+void ContentManager::UIUserListUpdate()
+{
+	JsonHelper ser;
+
+	for (const User* user : client.GetClientUsers().GetUsers())
+	{
+		//if (!user->isLocalUser)
+		{
+			JsonHelper serUser;
+			serUser.Insert("id", user->id);
+			serUser.Insert("nickname", HTMLUI::HtmlSpecialChars(user->nickname, true));
+			serUser.Insert("isOnline", user->isOnline);
+
+			if (IsUserPageDisplayed())
+				serUser.Insert("isSelected", (GetCurrentUserPage().relatedUserId == user->id));
+			else
+				serUser.Insert("isSelected", false);
+
+			if (!user->isLocalUser)
+			{
+				auto& privateMsgThread = GetPrivateThreadByUserId(user->id);
+				serUser.Insert("unreadMsgCount", privateMsgThread.unreadMesagesCount);
+			}
+			
+			ser.Insert("users", serUser);
+		}
+	}
+	
+	global->htmlUI->SendSignal("OnUpdateUserList", ser.Generate());
+}
+
 /*
 void ContentManager::UpdateUnreadMsgCount(const Room& room) const
 {
