@@ -63,7 +63,7 @@ JsonHelper PrivateMsgThread::GetJson() const
 {
 	JsonHelper ser;
 	ser.Insert("user.nickname", relatedUserPtr->nickname);
-	ser.Insert("user.isOnline", relatedUserPtr->isOnline);
+	ser.Insert("user.isOnline", (relatedUserPtr->GetStatus() == User::UserStatus::online));
 	
 	for (const auto& message : m_messages)
 	{

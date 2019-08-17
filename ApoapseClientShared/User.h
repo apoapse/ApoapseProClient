@@ -3,6 +3,7 @@
 #include <string>
 #include "TypeDefs.hpp"
 #include "Username.h"
+#include <set>
 class DataStructure;
 class JsonHelper;
 class ApoapseClient;
@@ -17,6 +18,12 @@ class User
 	//static constexpr UInt32 identityDecryptionKeyHashIterations = 500'000;
 
 public:
+	enum class UserStatus
+	{
+		offine = 0,
+		online = 1
+	};
+	
 	User() = default;
 	User(DataStructure& data, ApoapseClient& client);
 
@@ -24,10 +31,10 @@ public:
 	Username username;
 	const Usergroup* usergroup;
 	std::string nickname;
-	bool isOnline = false;
 	bool isLocalUser = false;
 
 	JsonHelper GetJson() const;
+	UserStatus GetStatus() const;
 
 	static Username HashUsername(const std::string& username);
 	static std::vector<byte> HashPasswordForServer(const std::string& password);
@@ -44,6 +51,8 @@ private:
 class ClientUsers
 {
 	std::map<Username, User> m_registeredUsers;
+	std::set<Username> m_onlineUsers;
+	
 	ApoapseClient& apoapseClient;
 
 public:
@@ -54,6 +63,9 @@ public:
 	const User& GetUserById(DbId id) const;
 	std::vector<const User*> GetUsers() const;
 	UInt64 GetUserCount() const;
+
+	User::UserStatus GetUserStatus(const Username& username) const;
+	void ChangeUserStatus(const Username& username, User::UserStatus status);
 
 private:
 };

@@ -90,15 +90,34 @@ void ClientCmdManager::OnReceivedCommand(CommandV2& cmd, GenericConnection& netC
 
 		if (status == "authenticated")
 		{
-			auto usergroupsDat = cmd.GetData().GetField("usergroups").GetDataArray();
-			apoapseClient.InitUsergroupManager(usergroupsDat);
+			// Read usergroups
+			{
+				auto usergroupsDat = cmd.GetData().GetField("usergroups").GetDataArray();
+				apoapseClient.InitUsergroupManager(usergroupsDat);
+			}
 
+			// Read local user
 			LocalUser user;
 			user.nickname = HTMLUI::HtmlSpecialChars(cmd.GetData().GetField("nickname").GetValue<std::string>(), true);
 			user.username = cmd.GetData().GetField("username").GetValue<Username>();
 			user.usergroup = &apoapseClient.GetUsergroupManager().GetUsergroup(cmd.GetData().GetField("usergroup").GetValue<Uuid>());
 
+			// Auth
 			apoapseClient.Authenticate(user);
+
+			// Read online users
+			{
+				auto onlineUsers = cmd.GetData().GetField("connected_users").GetDataArray();
+				for (DataStructure& dat : onlineUsers)
+				{
+					apoapseClient.GetClientUsers().ChangeUserStatus(dat.GetField("user").GetValue<Username>(), User::UserStatus::online);
+				}
+
+				LOG << onlineUsers.size() << " users are online";
+				
+				if (!onlineUsers.empty())
+					apoapseClient.GetContentManager().UIUserListUpdate();
+			}
 		}
 		else if (status == "requirePasswordChange")
 		{
@@ -111,6 +130,15 @@ void ClientCmdManager::OnReceivedCommand(CommandV2& cmd, GenericConnection& netC
 		auto user = User(cmd.GetData(), apoapseClient);
 		apoapseClient.GetClientUsers().OnAddNewUser(user);
 		apoapseClient.GetContentManager().RegisterPrivateMsgThread(apoapseClient.GetClientUsers().GetUserByUsername(user.username));
+	}
+
+	else if (cmd.name == "change_user_status")
+	{
+		const Username username = cmd.GetData().GetField("user").GetValue<Username>();
+		const User::UserStatus status = static_cast<User::UserStatus>(cmd.GetData().GetField("status").GetValue<Int64>());
+		
+		apoapseClient.GetClientUsers().ChangeUserStatus(username, status);
+		apoapseClient.GetContentManager().UIUserListUpdate();
 	}
 	
 	else if (cmd.name == "create_room")

@@ -20,7 +20,6 @@ User::User(DataStructure& data, ApoapseClient& client) : apoapseClient(&client)
 	if (username == apoapseClient->GetLocalUser().username)
 	{
 		isLocalUser = true;
-		isOnline = true;
 	}
 
 	usergroup = &apoapseClient->GetUsergroupManager().GetUsergroup(data.GetField("usergroup").GetValue<Uuid>());
@@ -31,9 +30,14 @@ JsonHelper User::GetJson() const
 	JsonHelper ser;
 	ser.Insert("id", id);
 	ser.Insert("nickname", nickname);
-	ser.Insert("isOnline", isOnline);
+	ser.Insert("isOnline", (GetStatus() == UserStatus::online));
 
 	return ser;
+}
+
+User::UserStatus User::GetStatus() const
+{
+	return apoapseClient->GetClientUsers().GetUserStatus(username);
 }
 
 Username User::HashUsername(const std::string& username)
@@ -158,4 +162,26 @@ std::vector<const User*> ClientUsers::GetUsers() const
 UInt64 ClientUsers::GetUserCount() const
 {
 	return m_registeredUsers.size();
+}
+
+User::UserStatus ClientUsers::GetUserStatus(const Username& username) const
+{
+	if (m_onlineUsers.count(username))
+		return User::UserStatus::online;
+	else
+		return User::UserStatus::offine;
+}
+
+void ClientUsers::ChangeUserStatus(const Username& username, User::UserStatus status)
+{
+	const bool isOnOnlineList = m_onlineUsers.count(username);
+
+	if (status == User::UserStatus::online && !isOnOnlineList)
+	{
+		m_onlineUsers.insert(username);
+	}
+	else if (status == User::UserStatus::offine && isOnOnlineList)
+	{
+		m_onlineUsers.erase(username);
+	}
 }

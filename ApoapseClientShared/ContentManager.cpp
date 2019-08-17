@@ -89,7 +89,7 @@ void ContentManager::Init()
 			RegisterPrivateMsgThread(*user);
 		}
 
-		UIUserListUpdate();
+		// UIUserListUpdate(); do not update here as it it already updated when receiving the server_info cmd
 	}
 }
 
@@ -434,7 +434,7 @@ void ContentManager::UIUserListUpdate()
 			JsonHelper serUser;
 			serUser.Insert("id", user->id);
 			serUser.Insert("nickname", HTMLUI::HtmlSpecialChars(user->nickname, true));
-			serUser.Insert("isOnline", user->isOnline);
+			serUser.Insert("isOnline", (user->GetStatus() == User::UserStatus::online));
 
 			if (IsUserPageDisplayed())
 				serUser.Insert("isSelected", (GetCurrentUserPage().relatedUserId == user->id));
