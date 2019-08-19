@@ -8,7 +8,6 @@
 HTMLUI::HTMLUI(ApoapseClient& client) : m_apoapseClient(client)
 {
 	m_webResourcesManager = std::make_unique<WebResourcesManager>();
-	m_clientMainThread = std::make_unique<ThreadPool>("Client main thread", 1);
 }
 
 void HTMLUI::RegisterSignalSender(ISignalSender* signalSender)
@@ -26,7 +25,7 @@ std::string HTMLUI::OnReceivedSignal(const std::string& name, const std::string&
 		return "";
 	}
 
-	auto res = m_clientMainThread->PushTask([this, name, data]
+	auto res = global->mainThread->PushTaskFuture([this, name, data]
 	{
 		if (!data.empty() && data.at(0) == '{')
 		{	

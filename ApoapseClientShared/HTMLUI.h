@@ -11,7 +11,6 @@ class HTMLUI : public IHtmlUI
 	ApoapseClient& m_apoapseClient;
 	std::unique_ptr<WebResourcesManager> m_webResourcesManager;
 	ISignalSender* m_uiSignalSender = nullptr;
-	std::unique_ptr<ThreadPool> m_clientMainThread;
 
 public:
 
