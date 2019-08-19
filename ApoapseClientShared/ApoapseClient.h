@@ -17,7 +17,6 @@ class ClientConnection;
 class ApoapseClient
 {
 	boost::shared_ptr<IDatabase> m_databaseSharedPtr;
-	std::unique_ptr<boost::asio::io_service> m_IOService;
 	std::thread m_ioServiceThread;
 	ClientConnection* m_connection;
 	bool m_connected;

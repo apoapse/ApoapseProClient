@@ -45,13 +45,13 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 	}
 
 	{
-		m_IOService = std::make_unique<boost::asio::io_service>();
+		global->mainConnectionIOService = std::make_unique<boost::asio::io_service>();
 
 		global->htmlUI->UpdateStatusBar("@connecting_status");
 		const UInt16 port = defaultServerPort;
 		ssl::context tlsContext(ssl::context::sslv23);
 
-		auto connection = std::make_shared<ClientConnection>(*m_IOService, tlsContext, *this);
+		auto connection = std::make_shared<ClientConnection>(*global->mainConnectionIOService, tlsContext, *this);
 		connection->Connect(serverAddress, port);
 
 		m_connection = connection.get();
@@ -60,7 +60,7 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 
 	m_ioServiceThread = std::thread([this]
 	{
-		m_IOService->run();
+		global->mainConnectionIOService->run();
 	});
 	m_ioServiceThread.detach();
 }
@@ -208,7 +208,7 @@ void ApoapseClient::OnDisconnect()
 	m_contentManager.reset();
 	m_clientOperations.reset();
 
-	m_IOService->reset();
+	global->mainConnectionIOService->reset();
 
 	if (global->database != nullptr)
 		UnloadDatabase();
