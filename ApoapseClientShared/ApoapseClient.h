@@ -13,13 +13,20 @@
 #include "User.h"
 #include "UsergroupManager.h"
 class ClientConnection;
+class ClientFileStreamConnection;
 
 class ApoapseClient
 {
 	boost::shared_ptr<IDatabase> m_databaseSharedPtr;
+	
 	std::thread m_ioServiceThread;
-	ClientConnection* m_connection;
+	std::thread m_fileStreamIoServiceThread;
+	std::unique_ptr<boost::asio::io_service> m_fileStreamIOService;
+	
+	ClientConnection* m_connection = nullptr;
+	ClientFileStreamConnection* m_fileStreamConnection = nullptr;
 	bool m_connected;
+	
 	std::optional<CommandV2> m_loginCmd;
 	//hashSecBytes m_identityPasswordHash;
 	Username m_lastLoginTryUsername;
@@ -41,13 +48,16 @@ public:
 	std::string OnReceivedSignal(const std::string& name, const JsonHelper& deserializer);
 
 	ClientConnection* GetConnection() const;
+	ClientFileStreamConnection* GetFileStreamConnection() const;
 	bool IsConnectedToServer() const;
+	void Disconnect();
 
 	void Connect(const std::string& serverAddress, const std::string& username, const std::string& password);
 	void OnConnectedToServer();
 	void OnDisconnect();
 	const Username& GetLastLoginTryUsername() const;
 
+	void AuthenticateFileStream(const std::vector<byte>& authCode);
 	void Authenticate(const LocalUser& user);
 	bool IsAuthenticated() const;
 //	const hashSecBytes& GetIdentityPasswordHash() const;

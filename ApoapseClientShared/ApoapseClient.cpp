@@ -10,6 +10,7 @@
 #include "DatabaseIntegrityPatcher.h"
 #include "Hash.hpp"
 #include "CommandsManagerV2.h"
+#include "ClientFileStreamConnection.h"
 //#include <Random.hpp>
 
 
@@ -46,18 +47,38 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 
 	{
 		global->mainConnectionIOService = std::make_unique<boost::asio::io_service>();
+		m_fileStreamIOService = std::make_unique<boost::asio::io_service>();
 
 		global->htmlUI->UpdateStatusBar("@connecting_status");
-		const UInt16 port = defaultServerPort;
 		ssl::context tlsContext(ssl::context::sslv23);
 
-		auto connection = std::make_shared<ClientConnection>(*global->mainConnectionIOService, tlsContext, *this);
-		connection->Connect(serverAddress, port);
+		// File Stream
+		{
+			auto connection = std::make_shared<ClientFileStreamConnection>(*global->mainConnectionIOService, tlsContext, *this);
+			connection->Connect(serverAddress, defaultFileStreamPort);
 
-		m_connection = connection.get();
-		LOG << "TCP Client started to " << serverAddress << " port: " << port;
+			m_fileStreamConnection = connection.get();
+			LOG << "[File stream connection] TCP Client started to " << serverAddress << " port: " << defaultFileStreamPort;
+		}
+		
+		// Main connection
+		{
+			auto connection = std::make_shared<ClientConnection>(*global->mainConnectionIOService, tlsContext, *this);
+			connection->Connect(serverAddress, defaultServerPort);
+
+			m_connection = connection.get();
+			LOG << "[Main connection] TCP Client started to " << serverAddress << " port: " << defaultServerPort;
+		}
 	}
 
+	// File Stream service
+	m_fileStreamIoServiceThread = std::thread([this]
+	{
+		m_fileStreamIOService->run();
+	});
+	m_fileStreamIoServiceThread.detach();
+
+	// Main connection service
 	m_ioServiceThread = std::thread([this]
 	{
 		global->mainConnectionIOService->run();
@@ -70,9 +91,20 @@ ClientConnection* ApoapseClient::GetConnection() const
 	return m_connection;
 }
 
+ClientFileStreamConnection* ApoapseClient::GetFileStreamConnection() const
+{
+	return m_fileStreamConnection;
+}
+
 bool ApoapseClient::IsConnectedToServer() const
 {
 	return m_connected;
+}
+
+void ApoapseClient::Disconnect()
+{
+	m_connection->Close();
+	m_fileStreamConnection->Close();
 }
 
 std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonHelper& json)
@@ -89,7 +121,7 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 	else if (name == "disconnect" && m_connected)
 	{
 		LOG << "User requested disconnection";
-		m_connection->Close();
+		Disconnect();
 	}
 
 	else if (name == "login" && !m_connected)
@@ -223,6 +255,18 @@ const Username& ApoapseClient::GetLastLoginTryUsername() const
 	return m_lastLoginTryUsername;
 }
 
+void ApoapseClient::AuthenticateFileStream(const std::vector<byte>& authCode)
+{
+	auto dat = std::make_shared<ByteContainer>();
+	dat->reserve(sha256Length + sha256Length);
+	
+	auto& username = GetLocalUser().username;
+	std::copy(username.GetRaw().begin(), username.GetRaw().end(), std::back_inserter(*dat));
+	std::copy(authCode.begin(), authCode.end(), std::back_inserter(*dat));
+	
+	m_fileStreamConnection->Send(dat);
+}
+
 void ApoapseClient::Authenticate(const LocalUser& user)
 {
 	m_authenticatedUser = user;
@@ -247,7 +291,7 @@ void ApoapseClient::OnAuthenticated()
 	{
 		if (!LoadDatabase())
 		{
-			m_connection->Close();
+			Disconnect();
 			return;
 		}
 
@@ -255,7 +299,7 @@ void ApoapseClient::OnAuthenticated()
 		if (!dbIntegrity.CheckAndResolve())
 		{
 			LOG << LogSeverity::error << "The database integrity patcher has failed";
-			m_connection->Close();
+			Disconnect();
 			return;
 		}
 	}

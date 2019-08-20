@@ -104,6 +104,7 @@ void ClientCmdManager::OnReceivedCommand(CommandV2& cmd, GenericConnection& netC
 
 			// Auth
 			apoapseClient.Authenticate(user);
+			apoapseClient.AuthenticateFileStream(cmd.GetData().GetField("file_stream_auth_code").GetValue<ByteContainer>());
 
 			// Read online users
 			{

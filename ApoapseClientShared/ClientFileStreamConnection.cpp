@@ -6,6 +6,7 @@
 
 ClientFileStreamConnection::ClientFileStreamConnection(boost::asio::io_service& ioService, ssl::context& context, ApoapseClient& client)
 	: FileStreamConnection(ioService, context)
+	, client(client)
 {
 	
 }
@@ -19,11 +20,6 @@ void ClientFileStreamConnection::ErrorDisconnectAll()
 {
 	LOG_DEBUG << "ErrorDisconnectAll";
 	
-}
-
-void ClientFileStreamConnection::Authenticate(const Username& username, const hash_SHA256& authCode)
-{
-	LOG_DEBUG << "Authenticate";
 }
 
 std::string ClientFileStreamConnection::GetDownloadFilePath(UInt64 fileSize)
@@ -42,7 +38,4 @@ void ClientFileStreamConnection::OnFileSentSuccessfully()
 void ClientFileStreamConnection::OnConnectedToServer()
 {
 	LOG_DEBUG << "OnConnectedToServer";
-
-	auto test = std::make_shared<ByteContainer>(Cryptography::GenerateRandomBytes(4 + sha256Length + sha256Length));
-	Send(test);
 }
