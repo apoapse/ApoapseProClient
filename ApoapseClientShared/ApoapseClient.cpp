@@ -11,6 +11,7 @@
 #include "Hash.hpp"
 #include "CommandsManagerV2.h"
 #include "ClientFileStreamConnection.h"
+#include "attachment.h"
 //#include <Random.hpp>
 
 
@@ -116,6 +117,11 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 		auto dataStructure = global->apoapseData->FromJSON(cmdDef.relatedDataStructure, json);
 
 		global->cmdManager->CreateCommand(cmdName, dataStructure).Send(*m_connection);
+	}
+
+	else if (name == "OnFilesDropped")
+	{
+		OnDropFiles();
 	}
 
 	else if (name == "disconnect" && m_connected)
@@ -404,10 +410,51 @@ const LocalUser& ApoapseClient::GetLocalUser() const
 	return m_authenticatedUser.value();
 }
 
-void ApoapseClient::OnDropFiles(const std::vector<std::string> files)
+void ApoapseClient::OnDradFiles(const std::vector<std::string> filesRaw)
 {
-	m_lastDroppedFiles = files;
-	LOG << "Drag and Drop: user dropped " << m_lastDroppedFiles.size() << " files";
+	for (const std::string& filePath : filesRaw)
+	{
+		Attachment::File file = Attachment::File(filePath);
+		LOG << "Drag and Drop: user dragged file " << file.fileName << " size: " << file.fileSize;
+		
+		m_lastDroppedFiles.push_back(file);
+	}
+}
+
+void ApoapseClient::OnDropFiles()
+{
+	if (!IsAuthenticated() || m_lastDroppedFiles.empty())
+		return;
+
+	LOG << "Dropped " << m_lastDroppedFiles.size() << " files";
+
+	if (GetContentManager().IsThreadDisplayed())
+	{
+		for (const auto& file : m_lastDroppedFiles)
+		{
+			auto dat = global->apoapseData->GetStructure("attachment");
+			dat.GetField("name").SetValue(file.fileName);
+			dat.GetField("file_size").SetValue((Int64)file.fileSize);
+			dat.GetField("parent_thread").SetValue(GetContentManager().GetCurrentThread().uuid);
+			dat.GetField("sent_time").SetValue(DateTimeUtils::UTCDateTime::CurrentTime());
+			dat.GetField("sender").SetValue(GetLocalUser().username);
+
+			global->cmdManager->CreateCommand("upload_attachment", dat).Send(*m_connection);
+		}
+	}
+}
+
+void ApoapseClient::SendFirstDroppedFile()
+{
+	const Attachment::File att = m_lastDroppedFiles.front();
+	AttachmentFile file;
+	file.fileName = att.fileName;
+	file.fileSize = att.fileSize;
+	file.filePath = att.filePath;
+	
+	GetFileStreamConnection()->PushFileToSend(file);
+	
+	m_lastDroppedFiles.pop_front();
 }
 
 ContentManager& ApoapseClient::GetContentManager() const

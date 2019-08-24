@@ -10,9 +10,8 @@ public:
 	ClientFileStreamConnection(boost::asio::io_service& ioService, ssl::context& context, ApoapseClient& client);
 	
 protected:
-	void OnFileDownloadCompleted() override;
+	void OnFileDownloadCompleted(const AttachmentFile& file) override;
 	void ErrorDisconnectAll() override;
-	std::string GetDownloadFilePath(UInt64 fileSize) override;
-	void OnFileSentSuccessfully() override;
-	void OnConnectedToServer() override;
+	void OnFileSentSuccessfully(const AttachmentFile& file) override;
+	void OnSocketConnected() override;
 };

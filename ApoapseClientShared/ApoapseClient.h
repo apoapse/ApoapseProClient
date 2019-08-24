@@ -5,6 +5,7 @@
 #include "LocalUser.h"
 #include <optional>
 #include <thread>
+#include <deque>
 #include <boost/shared_ptr.hpp>
 #include "Database.hpp"
 #include "CommandV2.h"
@@ -12,6 +13,7 @@
 #include "ClientOperations.h"
 #include "User.h"
 #include "UsergroupManager.h"
+#include "Attachment.h"
 class ClientConnection;
 class ClientFileStreamConnection;
 
@@ -33,7 +35,7 @@ class ApoapseClient
 	std::optional<std::string> m_dbPassword;
 	std::optional<LocalUser> m_authenticatedUser;
 
-	std::vector<std::string> m_lastDroppedFiles;
+	std::deque<Attachment::File> m_lastDroppedFiles;
 
 	std::unique_ptr<UsergroupManager> m_usergroupManager;
 	std::unique_ptr<ClientUsers> m_clientUsers;
@@ -63,7 +65,9 @@ public:
 //	const hashSecBytes& GetIdentityPasswordHash() const;
 	const LocalUser& GetLocalUser() const;
 
-	void OnDropFiles(const std::vector<std::string> files);
+	void OnDradFiles(const std::vector<std::string> filesRaw);
+	void OnDropFiles();
+	void SendFirstDroppedFile();
 
 	ContentManager& GetContentManager() const;
 	ClientOperations& GetClientOperations() const;

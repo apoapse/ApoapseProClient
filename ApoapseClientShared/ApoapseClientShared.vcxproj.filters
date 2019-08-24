@@ -24,12 +24,6 @@
     <ClCompile Include="ClientCmdManager.cpp">
       <Filter>Commands</Filter>
     </ClCompile>
-    <ClCompile Include="ContentManager.cpp">
-      <Filter>Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="ApoapseThread.cpp">
-      <Filter>Systems</Filter>
-    </ClCompile>
     <ClCompile Include="ClientOperations.cpp">
       <Filter>Systems</Filter>
     </ClCompile>
@@ -39,8 +33,17 @@
     <ClCompile Include="ClientFileStreamConnection.cpp">
       <Filter>Network</Filter>
     </ClCompile>
+    <ClCompile Include="ApoapseThread.cpp">
+      <Filter>Systems\Content</Filter>
+    </ClCompile>
+    <ClCompile Include="Attachment.cpp">
+      <Filter>Systems\Content</Filter>
+    </ClCompile>
+    <ClCompile Include="ContentManager.cpp">
+      <Filter>Systems\Content</Filter>
+    </ClCompile>
     <ClCompile Include="PrivateMsgThread.cpp">
-      <Filter>Systems</Filter>
+      <Filter>Systems\Content</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -75,20 +78,23 @@
     <ClInclude Include="ClientCmdManager.h">
       <Filter>Commands</Filter>
     </ClInclude>
-    <ClInclude Include="ContentManager.h">
-      <Filter>Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="ApoapseThread.h">
-      <Filter>Systems</Filter>
-    </ClInclude>
     <ClInclude Include="ClientOperations.h">
       <Filter>Systems</Filter>
     </ClInclude>
     <ClInclude Include="ClientFileStreamConnection.h">
       <Filter>Network</Filter>
     </ClInclude>
+    <ClInclude Include="ApoapseThread.h">
+      <Filter>Systems\Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Attachment.h">
+      <Filter>Systems\Content</Filter>
+    </ClInclude>
+    <ClInclude Include="ContentManager.h">
+      <Filter>Systems\Content</Filter>
+    </ClInclude>
     <ClInclude Include="PrivateMsgThread.h">
-      <Filter>Systems</Filter>
+      <Filter>Systems\Content</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -109,6 +115,9 @@
     </Filter>
     <Filter Include="Systems">
       <UniqueIdentifier>{a6d40b2f-b128-4e2b-887f-021905a90af1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Systems\Content">
+      <UniqueIdentifier>{fcc74db1-bbc2-4d09-9349-d721b1b58bc8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

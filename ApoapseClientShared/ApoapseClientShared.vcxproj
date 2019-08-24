@@ -152,6 +152,7 @@
   <ItemGroup>
     <ClCompile Include="ApoapseClient.cpp" />
     <ClCompile Include="ApoapseThread.cpp" />
+    <ClCompile Include="Attachment.cpp" />
     <ClCompile Include="ClientCmdManager.cpp" />
     <ClCompile Include="ClientConnection.cpp" />
     <ClCompile Include="ClientOperations.cpp" />
@@ -171,6 +172,7 @@
   <ItemGroup>
     <ClInclude Include="ApoapseClient.h" />
     <ClInclude Include="ApoapseThread.h" />
+    <ClInclude Include="Attachment.h" />
     <ClInclude Include="ClientCmdManager.h" />
     <ClInclude Include="ClientConnection.h" />
     <ClInclude Include="ClientDatabaseScheme.hpp" />

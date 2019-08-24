@@ -6,6 +6,7 @@
 #include "LocalUser.h"
 #include "ApoapseClient.h"
 #include "HTMLUI.h"
+#include "ClientFileStreamConnection.h"
 
 ClientCmdManager::ClientCmdManager(ApoapseClient& client) : CommandsManagerV2(GetCommandDef()), apoapseClient(client)
 {
@@ -177,6 +178,11 @@ void ClientCmdManager::OnReceivedCommand(CommandV2& cmd, GenericConnection& netC
 		{
 			LOG << LogSeverity::warning << "mark_as_read: Unsupported item_type";
 		}
+	}
+
+	else if (cmd.name == "ready_to_receive_file")
+	{
+		apoapseClient.SendFirstDroppedFile();
 	}
 }
 
