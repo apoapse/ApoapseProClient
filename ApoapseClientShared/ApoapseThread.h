@@ -20,6 +20,7 @@ struct ApoapseMessage
 	DateTimeUtils::UTCDateTime sentTime;
 	std::vector<std::string> tags;
 	bool isRead = true;
+	std::vector<Attachment*> attachments;
 
 	bool supportTags = true;
 
@@ -40,7 +41,6 @@ public:
 	Room& parrentRoom;
 	Int64 totalMessagesCount = 0;
 	Int64 unreadMesagesCount = 0;
-	std::vector<Attachment> attachments;
 
 	ApoapseThread(DataStructure& data, Room& parrentRoom, ContentManager& cManager);
 	bool operator==(const ApoapseThread& other) const;

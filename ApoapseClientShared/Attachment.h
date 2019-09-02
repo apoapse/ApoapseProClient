@@ -1,7 +1,13 @@
 #pragma once
+#include "Username.h"
+#include "Json.hpp"
+#include "Uuid.h"
+class ApoapseClient;
 
 class Attachment
 {
+	ApoapseClient& apoapseClient;
+	
 public:
 	struct File
 	{
@@ -9,6 +15,7 @@ public:
 		std::string filePath;
 		size_t fileSize = 0;
 		bool attached = false;
+		bool isDownloaded = false;
 
 		DataStructure GetDataStructure() const;
 
@@ -17,8 +24,15 @@ public:
 	};
 
 	File relatedFile;
+	DbId id = -1;
+	Uuid uuid;
+	Username sender;
 
-	Attachment() = default;
-	Attachment(const File& file);
-	
+	//Attachment() = default;
+	Attachment(const File& file, ApoapseClient& client);
+	Attachment(DataStructure& data, ApoapseClient& client);
+
+	JsonHelper GetJson() const;
+
+	static std::string GetAttachmentFilePath(const Username& username, const Uuid& attUuid, const std::string& fileFullName);
 };

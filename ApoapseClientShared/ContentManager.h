@@ -3,6 +3,7 @@
 #include "Uuid.h"
 #include "ApoapseThread.h"
 #include "PrivateMsgThread.h"
+#include "Attachment.h"
 class ApoapseClient;
 
 struct Room
@@ -33,7 +34,8 @@ class ContentManager
 {
 	std::vector<std::unique_ptr<Room>> m_rooms;
 	std::vector<std::unique_ptr<PrivateMsgThread>> m_privateMsgThreads;
-
+	std::vector<std::shared_ptr<Attachment>> m_attachmentsPool;
+		
 	Room* m_selectedRoom = nullptr;
 	ApoapseThread* m_selectedThread = nullptr;
 	PrivateMsgThread* m_selectedUserPage = nullptr;
@@ -58,6 +60,9 @@ public:
 	ApoapseThread& GetThreadByUuid(const Uuid& uuid);
 	ApoapseThread& GetThreadById(DbId id);
 	PrivateMsgThread& GetPrivateThreadByUserId(DbId id);
+
+	std::shared_ptr<Attachment> GetAttachment(const Uuid& uuid);
+	void RegisterAttachment(std::shared_ptr<Attachment>& attachment);
 	
 	void OpenRoom(Room& room);
 	void OpenThread(ApoapseThread& thread);

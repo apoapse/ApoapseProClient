@@ -20,6 +20,30 @@ ApoapseMessage::ApoapseMessage(DataStructure& data, ApoapseClient& client) : apo
 	if (data.GetField("parent_thread").HasValue())
 		threadUuid = data.GetField("parent_thread").GetValue<Uuid>();
 
+	// Attachments
+	if (data.GetField("attachments").HasValue())
+	{
+		auto attachmentsDat = data.GetField("attachments").GetDataArray();
+
+		for (DataStructure& dat : attachmentsDat)
+		{
+			auto attPtr = std::make_shared<Attachment>(dat, apoapseClient);
+			client.GetContentManager().RegisterAttachment(attPtr);
+			attachments.push_back(attPtr.get());
+		}
+	}
+	else
+	{
+		auto dbDat = global->apoapseData->ReadListFromDatabase("attachment", "parent_message", uuid);
+
+		for (DataStructure& dat : dbDat)
+		{
+			auto attPtr = std::make_shared<Attachment>(dat, apoapseClient);
+			client.GetContentManager().RegisterAttachment(attPtr);
+			attachments.push_back(attPtr.get());
+		}
+	}
+
 	// tags
 	{
 		auto res = global->apoapseData->ReadListFromDatabase("tag", "item_uuid", uuid);
@@ -43,6 +67,11 @@ JsonHelper ApoapseMessage::GetJson() const
 	ser.InsertArray("tags", tags);
 	ser.Insert("is_read", isRead);
 	ser.Insert("support_tags", supportTags);
+
+	for (Attachment* attachment : attachments)
+	{
+		ser.Insert("attachments", attachment->GetJson());
+	}
 
 	return ser;
 }
@@ -145,7 +174,7 @@ void ApoapseThread::LoadMessages()
 		}
 	}
 
-	ASSERT(m_messages.size() == totalMessagesCount);
+	//ASSERT(m_messages.size() == totalMessagesCount);
 	LOG << "Loaded " << m_messages.size() << " messages on thread " << name;
 }
 
