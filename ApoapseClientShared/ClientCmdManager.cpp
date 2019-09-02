@@ -33,6 +33,22 @@ bool ClientCmdManager::OnSendCommandPre(CommandV2& cmd)
 		cmd.GetData().GetField("parent_thread").SetValue(apoapseClient.GetContentManager().GetCurrentThread().uuid);
 		cmd.GetData().GetField("sent_time").SetValue(DateTimeUtils::UTCDateTime::CurrentTime());
 		cmd.GetData().GetField("author").SetValue(apoapseClient.GetLocalUser().username);
+
+		const auto attachmentFiles = apoapseClient.GetDroppedFilesToSend();
+		if (!attachmentFiles.empty())
+		{
+			std::vector<DataStructure> attachmentsDat;
+			attachmentsDat.reserve(attachmentFiles.size());
+
+			for (const auto& attachment : attachmentFiles)
+			{
+				attachmentsDat.push_back(attachment.GetDataStructure());
+			}
+			
+			cmd.GetData().GetField("attachments").SetValue(attachmentsDat);
+		}
+
+		LOG << "Sending a message with " << attachmentFiles.size() << " attachments";
 	}
 
 	else if (cmd.name == "direct_message")
@@ -67,6 +83,8 @@ bool ClientCmdManager::OnReceivedCommandPre(CommandV2& cmd, GenericConnection& n
 
 	if (cmd.name == "new_message" || cmd.name == "direct_message")
 	{
+		const Uuid msgUuid = cmd.GetData().GetField("uuid").GetValue<Uuid>();
+		
 		// TODO add default value feature to the data system/database integrity system so that is_read is to false by default
 		if (cmd.GetData().GetField("author").GetValue<Username>() == connection.GetConnectedUser().value())
 		{
@@ -75,6 +93,18 @@ bool ClientCmdManager::OnReceivedCommandPre(CommandV2& cmd, GenericConnection& n
 		else
 		{
 			cmd.GetData().GetField("is_read").SetValue(false);
+		}
+
+		if (cmd.GetData().GetField("attachments").HasValue())
+		{
+			auto attachmentsDat = cmd.GetData().GetField("attachments").GetDataArray();
+
+			for (DataStructure& dat : attachmentsDat)
+			{
+				dat.GetField("parent_message").SetValue(msgUuid);
+				dat.GetField("is_downloaded").SetValue(false);
+				dat.SaveToDatabase();
+			}
 		}
 	}
 

@@ -68,6 +68,7 @@ public:
 	void OnDradFiles(const std::vector<std::string> filesRaw);
 	void OnDropFiles();
 	void SendFirstDroppedFile();
+	std::vector<Attachment::File> GetDroppedFilesToSend();
 
 	ContentManager& GetContentManager() const;
 	ClientOperations& GetClientOperations() const;

@@ -2,6 +2,7 @@
 #include "TypeDefs.hpp"
 #include "Uuid.h"
 #include "DateTimeUtils.h"
+#include "Attachment.h"
 class ContentManager;
 class ApoapseClient;
 class User;
@@ -39,6 +40,7 @@ public:
 	Room& parrentRoom;
 	Int64 totalMessagesCount = 0;
 	Int64 unreadMesagesCount = 0;
+	std::vector<Attachment> attachments;
 
 	ApoapseThread(DataStructure& data, Room& parrentRoom, ContentManager& cManager);
 	bool operator==(const ApoapseThread& other) const;

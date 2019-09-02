@@ -428,19 +428,20 @@ void ApoapseClient::OnDropFiles()
 
 	LOG << "Dropped " << m_lastDroppedFiles.size() << " files";
 
-	if (GetContentManager().IsThreadDisplayed())
+	if (GetContentManager().IsThreadDisplayed() || GetContentManager().IsUserPageDisplayed())
 	{
+		JsonHelper ser;
+
 		for (const auto& file : m_lastDroppedFiles)
 		{
-			auto dat = global->apoapseData->GetStructure("attachment");
-			dat.GetField("name").SetValue(file.fileName);
-			dat.GetField("file_size").SetValue((Int64)file.fileSize);
-			dat.GetField("parent_thread").SetValue(GetContentManager().GetCurrentThread().uuid);
-			dat.GetField("sent_time").SetValue(DateTimeUtils::UTCDateTime::CurrentTime());
-			dat.GetField("sender").SetValue(GetLocalUser().username);
+			JsonHelper attSer;
+			attSer.Insert("name", HTMLUI::HtmlSpecialChars(file.fileName, true));
+			attSer.Insert("size", file.fileSize / 1000);	//Size in kb
 
-			global->cmdManager->CreateCommand("upload_attachment", dat).Send(*m_connection);
+			ser.Insert("attachments", attSer);
 		}
+		
+		global->htmlUI->SendSignal("OnDroppedFiles", ser.Generate());
 	}
 }
 
@@ -455,6 +456,22 @@ void ApoapseClient::SendFirstDroppedFile()
 	GetFileStreamConnection()->PushFileToSend(file);
 	
 	m_lastDroppedFiles.pop_front();
+}
+
+std::vector<Attachment::File> ApoapseClient::GetDroppedFilesToSend()
+{
+	std::vector<Attachment::File> out;
+
+	for (auto& file : m_lastDroppedFiles)
+	{
+		if (!file.attached)
+		{
+			file.attached = true;
+			out.push_back(file);
+		}
+	}
+
+	return out;
 }
 
 ContentManager& ApoapseClient::GetContentManager() const
