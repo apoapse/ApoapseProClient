@@ -415,6 +415,8 @@ void ApoapseClient::OnDradFiles(const std::vector<std::string> filesRaw)
 	for (const std::string& filePath : filesRaw)
 	{
 		Attachment::File file = Attachment::File(filePath);
+		file.uuid = Uuid::Generate();
+		
 		LOG << "Drag and Drop: user dragged file " << file.fileName << " size: " << file.fileSize;
 		
 		m_lastDroppedFiles.push_back(file);
@@ -432,30 +434,41 @@ void ApoapseClient::OnDropFiles()
 	{
 		JsonHelper ser;
 
+		size_t i = 0;
 		for (const auto& file : m_lastDroppedFiles)
 		{
 			JsonHelper attSer;
 			attSer.Insert("fileName", HTMLUI::HtmlSpecialChars(file.fileName, true));
 			attSer.Insert("fileSize", file.fileSize / 1000);	//Size in kb
+			attSer.Insert("id", i);
 
 			ser.Insert("attachments", attSer);
+			i++;
 		}
 		
 		global->htmlUI->SendSignal("OnDroppedFiles", ser.Generate());
 	}
 }
 
-void ApoapseClient::SendFirstDroppedFile()
+void ApoapseClient::SendQueuedDroppedFile()
 {
 	const Attachment::File att = m_lastDroppedFiles.front();
+	const std::shared_ptr<Attachment> attachment = GetContentManager().GetAttachment(att.uuid);
+
 	AttachmentFile file;
+	file.uuid = att.uuid;
 	file.fileName = att.fileName;
 	file.fileSize = att.fileSize;
 	file.filePath = att.filePath;
 	
 	GetFileStreamConnection()->PushFileToSend(file);
 	
-	m_lastDroppedFiles.pop_front();
+	{
+		JsonHelper ser;
+		ser.Insert("id", attachment->id);
+
+		global->htmlUI->SendSignal("OnAttachmentUploadStart", ser.Generate());
+	}
 }
 
 std::vector<Attachment::File> ApoapseClient::GetDroppedFilesToSend()
@@ -472,6 +485,20 @@ std::vector<Attachment::File> ApoapseClient::GetDroppedFilesToSend()
 	}
 
 	return out;
+}
+
+void ApoapseClient::OnFileUploaded()
+{
+	ASSERT(!m_lastDroppedFiles.empty());
+
+	const Uuid uuid = m_lastDroppedFiles.front().uuid;
+	const std::shared_ptr<Attachment> attachment = GetContentManager().GetAttachment(uuid);
+	
+	JsonHelper ser;
+	ser.Insert("id", attachment->id);
+	global->htmlUI->SendSignal("OnAttachmentUploadEnded", ser.Generate());
+	
+	m_lastDroppedFiles.pop_front();
 }
 
 ContentManager& ApoapseClient::GetContentManager() const

@@ -61,6 +61,18 @@ ContentManager::ContentManager(ApoapseClient& apoapseClient) : client(apoapseCli
 
 void ContentManager::Init()
 {
+	// Load attachments
+	{
+		auto attachments = global->apoapseData->ReadListFromDatabase("attachment", "", "");
+		for (DataStructure& dat : attachments)
+		{
+			auto attachmentPtr = std::make_shared<Attachment>(dat, client);
+			m_attachmentsPool.push_back(attachmentPtr);
+		}
+
+		LOG << "Loaded " << m_attachmentsPool.size() << " attachments";
+	}
+	
 	// Load rooms
 	{
 		auto rooms = global->apoapseData->ReadListFromDatabase("room", "", "");
@@ -90,18 +102,6 @@ void ContentManager::Init()
 		}
 
 		// UIUserListUpdate(); do not update here as it it already updated when receiving the server_info cmd
-	}
-
-	// Load attachments
-	{
-		auto attachments = global->apoapseData->ReadListFromDatabase("attachment", "", "");
-		for (DataStructure& dat : attachments)
-		{
-			auto attachmentPtr = std::make_shared<Attachment>(dat, client);
-			m_attachmentsPool.push_back(attachmentPtr);
-		}
-
-		LOG << "Loaded " << m_attachmentsPool.size() << " attachments";
 	}
 }
 
@@ -320,7 +320,7 @@ std::shared_ptr<Attachment> ContentManager::GetAttachment(const Uuid& uuid)
 {
 	const auto res = std::find_if(m_attachmentsPool.begin(), m_attachmentsPool.end(), [&uuid](std::shared_ptr<Attachment>& attachment)
 	{
-		return (attachment->uuid == uuid);
+		return (attachment->relatedFile.uuid == uuid);
 	});
 
 	return *res;
@@ -329,6 +329,11 @@ std::shared_ptr<Attachment> ContentManager::GetAttachment(const Uuid& uuid)
 void ContentManager::RegisterAttachment(std::shared_ptr<Attachment>& attachment)
 {
 	m_attachmentsPool.push_back(attachment);
+}
+
+UInt64 ContentManager::GetAttachmentsCount() const
+{
+	return m_attachmentsPool.size();
 }
 
 void ContentManager::OpenRoom(Room& room)

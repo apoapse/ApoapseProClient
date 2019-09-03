@@ -29,7 +29,11 @@ void ClientFileStreamConnection::ErrorDisconnectAll()
 void ClientFileStreamConnection::OnFileSentSuccessfully(const AttachmentFile& file)
 {
 	LOG_DEBUG << "OnFileSentSuccessfully " << file.fileName;
-	
+
+	global->mainThread->PushTask([this]()
+	{
+		client.OnFileUploaded();
+	});
 }
 
 void ClientFileStreamConnection::OnSocketConnected()

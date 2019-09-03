@@ -11,6 +11,7 @@ class Attachment
 public:
 	struct File
 	{
+		Uuid uuid;
 		std::string fileName;
 		std::string filePath;
 		size_t fileSize = 0;
@@ -25,7 +26,6 @@ public:
 
 	File relatedFile;
 	DbId id = -1;
-	Uuid uuid;
 	Username sender;
 
 	//Attachment() = default;

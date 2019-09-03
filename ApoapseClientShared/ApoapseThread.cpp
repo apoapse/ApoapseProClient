@@ -38,9 +38,12 @@ ApoapseMessage::ApoapseMessage(DataStructure& data, ApoapseClient& client) : apo
 
 		for (DataStructure& dat : dbDat)
 		{
-			auto attPtr = std::make_shared<Attachment>(dat, apoapseClient);
-			client.GetContentManager().RegisterAttachment(attPtr);
+			std::shared_ptr<Attachment> attPtr = client.GetContentManager().GetAttachment(dat.GetField("uuid").GetValue<Uuid>());
 			attachments.push_back(attPtr.get());
+			
+			/*auto attPtr = std::make_shared<Attachment>(dat, apoapseClient);
+			client.GetContentManager().RegisterAttachment(attPtr);
+			attachments.push_back(attPtr.get());*/
 		}
 	}
 

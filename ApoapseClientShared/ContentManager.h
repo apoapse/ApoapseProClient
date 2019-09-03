@@ -63,6 +63,7 @@ public:
 
 	std::shared_ptr<Attachment> GetAttachment(const Uuid& uuid);
 	void RegisterAttachment(std::shared_ptr<Attachment>& attachment);
+	UInt64 GetAttachmentsCount() const;
 	
 	void OpenRoom(Room& room);
 	void OpenThread(ApoapseThread& thread);

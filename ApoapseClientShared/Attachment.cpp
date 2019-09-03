@@ -9,7 +9,7 @@
 DataStructure Attachment::File::GetDataStructure() const
 {
 	DataStructure dat = global->apoapseData->GetStructure("attachment");
-	dat.GetField("uuid").SetValue(Uuid::Generate());
+	dat.GetField("uuid").SetValue(uuid);
 	dat.GetField("name").SetValue(fileName);
 	dat.GetField("file_size").SetValue((Int64)fileSize);
 
@@ -29,12 +29,11 @@ Attachment::Attachment(const File& file, ApoapseClient& client) : relatedFile(fi
 
 Attachment::Attachment(DataStructure& data, ApoapseClient& client) : apoapseClient(client)
 {
-	uuid = data.GetField("uuid").GetValue<Uuid>();
-	
 	File file;
+	file.uuid = data.GetField("uuid").GetValue<Uuid>();
 	file.fileName = data.GetField("name").GetValue<std::string>();
 	file.fileSize = data.GetField("file_size").GetValue<Int64>();
-	file.filePath = GetAttachmentFilePath(apoapseClient.GetLocalUser().GetUsername(), uuid, file.fileName);
+	file.filePath = GetAttachmentFilePath(apoapseClient.GetLocalUser().GetUsername(), file.uuid, file.fileName);
 	
 	file.isDownloaded = (data.GetField("is_downloaded").HasValue()) ? data.GetField("is_downloaded").GetValue<bool>() : false;
 

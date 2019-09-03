@@ -34,6 +34,7 @@ bool ClientCmdManager::OnSendCommandPre(CommandV2& cmd)
 		cmd.GetData().GetField("sent_time").SetValue(DateTimeUtils::UTCDateTime::CurrentTime());
 		cmd.GetData().GetField("author").SetValue(apoapseClient.GetLocalUser().username);
 
+		// Attachments
 		const auto attachmentFiles = apoapseClient.GetDroppedFilesToSend();
 		if (!attachmentFiles.empty())
 		{
@@ -212,7 +213,7 @@ void ClientCmdManager::OnReceivedCommand(CommandV2& cmd, GenericConnection& netC
 
 	else if (cmd.name == "ready_to_receive_file")
 	{
-		apoapseClient.SendFirstDroppedFile();
+		apoapseClient.SendQueuedDroppedFile();
 	}
 }
 
