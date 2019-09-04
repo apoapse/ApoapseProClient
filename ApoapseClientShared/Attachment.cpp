@@ -5,6 +5,8 @@
 #include "Uuid.h"
 #include "ApoapseClient.h"
 #include "HTMLUI.h"
+#include "ClientConnection.h"
+#include "ClientFileStreamConnection.h"
 
 DataStructure Attachment::File::GetDataStructure() const
 {
@@ -41,6 +43,50 @@ Attachment::Attachment(DataStructure& data, ApoapseClient& client) : apoapseClie
 	id = data.GetDbId();
 }
 
+void Attachment::RequestOpenFile()
+{
+	const std::string filePath = GetAttachmentFilePath(apoapseClient.GetLocalUser().GetUsername(), relatedFile.uuid, relatedFile.fileName);
+	
+	if (relatedFile.isDownloaded)
+	{
+		LOG << "Opening attachment file " << filePath;
+		std::system(std::string("start " + filePath).c_str());
+	}
+	else
+	{
+		{
+			AttachmentFile file;
+			file.uuid = relatedFile.uuid;
+			file.fileName = relatedFile.fileName;
+			file.filePath = filePath;
+			file.fileSize = relatedFile.fileSize;
+			
+			apoapseClient.GetFileStreamConnection()->PushFileToReceive(file);
+		}
+
+		{
+			DataStructure dat = global->apoapseData->GetStructure("attachment_download");
+			dat.GetField("uuid").SetValue(relatedFile.uuid);
+
+			global->cmdManager->CreateCommand("attachment_download", dat).Send(*apoapseClient.GetConnection());
+		}
+	}
+}
+
+void Attachment::SetFileAsDownloaded()
+{
+	relatedFile.isDownloaded = true;
+
+	/*{
+		auto dat = global->apoapseData->ReadItemFromDatabase("attachment", "uuid", relatedFile.uuid);
+		dat.GetField("is_downloaded").SetValue(true);
+		dat.SaveToDatabase();
+	}
+	*/
+	// Auto open file
+	RequestOpenFile();
+}
+
 JsonHelper Attachment::GetJson() const
 {
 	JsonHelper ser;
@@ -55,5 +101,5 @@ JsonHelper Attachment::GetJson() const
 std::string Attachment::GetAttachmentFilePath(const Username& username, const Uuid& attUuid, const std::string& fileFullName)
 {
 	const std::string uuidStr = BytesToHexString(attUuid.GetBytes());
-	return "client_download" + username.ToStr() + '/' + uuidStr.substr(0, 4) + fileFullName;
+	return "client_download_" + username.ToStr().substr(0, 16) + '/' + uuidStr.substr(0, 4) + fileFullName;
 }

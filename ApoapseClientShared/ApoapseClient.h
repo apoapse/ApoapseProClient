@@ -49,7 +49,7 @@ public:
 	//std::string OnReceivedSignal(const std::string& name, const std::string& data);
 	std::string OnReceivedSignal(const std::string& name, const JsonHelper& deserializer);
 
-	ClientConnection* GetConnection() const;
+	ClientConnection* GetConnection();
 	ClientFileStreamConnection* GetFileStreamConnection() const;
 	bool IsConnectedToServer() const;
 	void Disconnect();

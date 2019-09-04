@@ -5,9 +5,10 @@
 #include "CryptographyTypes.hpp"
 #include "ApoapseClient.h"
 #include "ClientConnection.h"
+#include "Attachment.h"
 
-ClientFileStreamConnection::ClientFileStreamConnection(boost::asio::io_service& ioService, ssl::context& context, ApoapseClient& client)
-	: FileStreamConnection(ioService, context)
+ClientFileStreamConnection::ClientFileStreamConnection(boost::asio::io_service& ioService/*, ssl::context& context*/, ApoapseClient& client)
+	: FileStreamConnection(ioService/*, context*/)
 	, client(client)
 {
 	
@@ -16,6 +17,12 @@ ClientFileStreamConnection::ClientFileStreamConnection(boost::asio::io_service& 
 void ClientFileStreamConnection::OnFileDownloadCompleted(const AttachmentFile& file)
 {
 	LOG_DEBUG << "Download completed";
+
+	global->mainThread->PushTask([this, file]()
+	{
+		std::shared_ptr<Attachment> att = client.GetContentManager().GetAttachment(file.uuid);
+		att->SetFileAsDownloaded();
+	});
 }
 
 void ClientFileStreamConnection::ErrorDisconnectAll()

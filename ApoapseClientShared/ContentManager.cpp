@@ -326,6 +326,16 @@ std::shared_ptr<Attachment> ContentManager::GetAttachment(const Uuid& uuid)
 	return *res;
 }
 
+std::shared_ptr<Attachment> ContentManager::GetAttachment(DbId id)
+{
+	const auto res = std::find_if(m_attachmentsPool.begin(), m_attachmentsPool.end(), [&id](std::shared_ptr<Attachment>& attachment)
+	{
+		return (attachment->id == id);
+	});
+
+	return *res;
+}
+
 void ContentManager::RegisterAttachment(std::shared_ptr<Attachment>& attachment)
 {
 	m_attachmentsPool.push_back(attachment);

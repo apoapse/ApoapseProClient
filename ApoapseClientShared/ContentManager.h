@@ -62,6 +62,7 @@ public:
 	PrivateMsgThread& GetPrivateThreadByUserId(DbId id);
 
 	std::shared_ptr<Attachment> GetAttachment(const Uuid& uuid);
+	std::shared_ptr<Attachment> GetAttachment(DbId id);
 	void RegisterAttachment(std::shared_ptr<Attachment>& attachment);
 	UInt64 GetAttachmentsCount() const;
 	

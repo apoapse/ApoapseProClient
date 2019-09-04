@@ -12,6 +12,7 @@
 #include "CommandsManagerV2.h"
 #include "ClientFileStreamConnection.h"
 #include "attachment.h"
+#include "ThreadUtils.h"
 //#include <Random.hpp>
 
 
@@ -52,10 +53,12 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 
 		global->htmlUI->UpdateStatusBar("@connecting_status");
 		ssl::context tlsContext(ssl::context::sslv23);
+		tlsContext.set_options(boost::asio::ssl::context::default_workarounds | boost::asio::ssl::context::no_sslv2 | boost::asio::ssl::context::single_dh_use);
+		tlsContext.set_default_verify_paths();
 
 		// File Stream
 		{
-			auto connection = std::make_shared<ClientFileStreamConnection>(*global->mainConnectionIOService, tlsContext, *this);
+			auto connection = std::make_shared<ClientFileStreamConnection>(*global->mainConnectionIOService/*, tlsContext*/, *this);
 			connection->Connect(serverAddress, defaultFileStreamPort);
 
 			m_fileStreamConnection = connection.get();
@@ -75,6 +78,7 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 	// File Stream service
 	m_fileStreamIoServiceThread = std::thread([this]
 	{
+		ThreadUtils::NameThread("File Stream thread");
 		m_fileStreamIOService->run();
 	});
 	m_fileStreamIoServiceThread.detach();
@@ -82,12 +86,13 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 	// Main connection service
 	m_ioServiceThread = std::thread([this]
 	{
+		ThreadUtils::NameThread("Main connection thread");
 		global->mainConnectionIOService->run();
 	});
 	m_ioServiceThread.detach();
 }
 
-ClientConnection* ApoapseClient::GetConnection() const
+ClientConnection* ApoapseClient::GetConnection()
 {
 	return m_connection;
 }
@@ -197,7 +202,6 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 	{
 		const DbId msgId = json.ReadFieldValue<Int64>("id").get();
 		
-
 		Uuid itemUuid;
 		if (GetContentManager().IsThreadDisplayed())
 		{
@@ -214,6 +218,11 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 		dat.GetField("item_uuid").SetValue(itemUuid);
 
 		global->cmdManager->CreateCommand("mark_as_read", dat).Send(*m_connection);
+	}
+	else if (name == "openAttachment")
+	{
+		std::shared_ptr<Attachment> att = GetContentManager().GetAttachment((DbId)json.ReadFieldValue<Int64>("id").value());
+		att->RequestOpenFile();
 	}
 
 	else

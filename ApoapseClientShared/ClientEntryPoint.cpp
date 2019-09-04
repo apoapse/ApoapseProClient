@@ -20,7 +20,7 @@ int ApoapseClientEntry::ClientMain(const std::vector<std::string>& launchArgs)
 		ASSERT(global == nullptr);
 		global = Global::CreateGlobal();
 		global->isClient = true;
-
+		
 		global->apoapseData = std::make_unique<ApoapseData>(GetDataStructures());
 
 		global->logger = std::make_unique<Logger>("log_client.txt");

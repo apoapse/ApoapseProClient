@@ -31,7 +31,9 @@ public:
 	//Attachment() = default;
 	Attachment(const File& file, ApoapseClient& client);
 	Attachment(DataStructure& data, ApoapseClient& client);
-
+	
+	void RequestOpenFile();
+	void SetFileAsDownloaded();
 	JsonHelper GetJson() const;
 
 	static std::string GetAttachmentFilePath(const Username& username, const Uuid& attUuid, const std::string& fileFullName);
