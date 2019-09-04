@@ -479,6 +479,9 @@ void ApoapseClient::SendQueuedDroppedFile()
 
 		global->htmlUI->SendSignal("ChangeAttachmentStatus", ser.Generate());
 	}
+
+	// Save the file locally
+	attachment->CopyFileLocally(att.filePath);
 }
 
 std::vector<Attachment::File> ApoapseClient::GetDroppedFilesToSend()

@@ -33,7 +33,8 @@ public:
 	Attachment(DataStructure& data, ApoapseClient& client);
 	
 	void RequestOpenFile();
-	void SetFileAsDownloaded();
+	void SetFileAsDownloaded(bool autoOpen);
+	void CopyFileLocally(const std::string& localFilePath);
 	JsonHelper GetJson() const;
 
 	static std::string GetAttachmentFilePath(const Username& username, const Uuid& attUuid, const std::string& fileFullName);

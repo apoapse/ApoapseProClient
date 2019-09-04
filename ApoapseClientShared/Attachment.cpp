@@ -90,7 +90,7 @@ void Attachment::RequestOpenFile()
 	}
 }
 
-void Attachment::SetFileAsDownloaded()
+void Attachment::SetFileAsDownloaded(bool autoOpen)
 {
 	relatedFile.isDownloaded = true;
 
@@ -100,8 +100,8 @@ void Attachment::SetFileAsDownloaded()
 		dat.SaveToDatabase();
 	}
 	
-	// Auto open file
-	RequestOpenFile();
+	if (autoOpen)
+		RequestOpenFile();
 
 	{
 		JsonHelper ser;
@@ -110,6 +110,14 @@ void Attachment::SetFileAsDownloaded()
 
 		global->htmlUI->SendSignal("ChangeAttachmentStatus", ser.Generate());
 	}
+}
+
+void Attachment::CopyFileLocally(const std::string& localFilePath)
+{
+	const std::string finalPath = GetAttachmentFilePath(apoapseClient.GetLocalUser().GetUsername(), relatedFile.uuid, relatedFile.fileName);
+	std::filesystem::copy(localFilePath, finalPath);
+	
+	SetFileAsDownloaded(false);
 }
 
 JsonHelper Attachment::GetJson() const

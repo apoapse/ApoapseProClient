@@ -21,7 +21,7 @@ void ClientFileStreamConnection::OnFileDownloadCompleted(const AttachmentFile& f
 	global->mainThread->PushTask([this, file]()
 	{
 		std::shared_ptr<Attachment> att = client.GetContentManager().GetAttachment(file.uuid);
-		att->SetFileAsDownloaded();
+		att->SetFileAsDownloaded(true);
 	});
 }
 
