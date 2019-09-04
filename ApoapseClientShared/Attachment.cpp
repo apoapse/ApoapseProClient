@@ -46,11 +46,20 @@ Attachment::Attachment(DataStructure& data, ApoapseClient& client) : apoapseClie
 void Attachment::RequestOpenFile()
 {
 	const std::string filePath = GetAttachmentFilePath(apoapseClient.GetLocalUser().GetUsername(), relatedFile.uuid, relatedFile.fileName);
-	
+
 	if (relatedFile.isDownloaded)
 	{
-		LOG << "Opening attachment file " << filePath;
-		std::system(std::string("start " + filePath).c_str());
+		if (std::filesystem::exists(filePath))
+		{
+			LOG << "Opening attachment file " << filePath;
+			std::system(std::string("start " + filePath).c_str());
+		}
+		else
+		{
+			LOG << LogSeverity::warning << "The file " << relatedFile.fileName << " should be saved locally but cannot be found. Downloading again.";
+			relatedFile.isDownloaded = false;
+			RequestOpenFile();
+		}
 	}
 	else
 	{
@@ -70,6 +79,14 @@ void Attachment::RequestOpenFile()
 
 			global->cmdManager->CreateCommand("attachment_download", dat).Send(*apoapseClient.GetConnection());
 		}
+
+		{
+			JsonHelper ser;
+			ser.Insert("id", id);
+			ser.Insert("status", "downloading");
+
+			global->htmlUI->SendSignal("ChangeAttachmentStatus", ser.Generate());
+		}
 	}
 }
 
@@ -77,14 +94,22 @@ void Attachment::SetFileAsDownloaded()
 {
 	relatedFile.isDownloaded = true;
 
-	/*{
+	{
 		auto dat = global->apoapseData->ReadItemFromDatabase("attachment", "uuid", relatedFile.uuid);
 		dat.GetField("is_downloaded").SetValue(true);
 		dat.SaveToDatabase();
 	}
-	*/
+	
 	// Auto open file
 	RequestOpenFile();
+
+	{
+		JsonHelper ser;
+		ser.Insert("id", id);
+		ser.Insert("status", "ready");
+
+		global->htmlUI->SendSignal("ChangeAttachmentStatus", ser.Generate());
+	}
 }
 
 JsonHelper Attachment::GetJson() const

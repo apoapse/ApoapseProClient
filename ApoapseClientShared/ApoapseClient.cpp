@@ -475,8 +475,9 @@ void ApoapseClient::SendQueuedDroppedFile()
 	{
 		JsonHelper ser;
 		ser.Insert("id", attachment->id);
+		ser.Insert("status", "uploading");
 
-		global->htmlUI->SendSignal("OnAttachmentUploadStart", ser.Generate());
+		global->htmlUI->SendSignal("ChangeAttachmentStatus", ser.Generate());
 	}
 }
 
@@ -505,7 +506,9 @@ void ApoapseClient::OnFileUploaded()
 	
 	JsonHelper ser;
 	ser.Insert("id", attachment->id);
-	global->htmlUI->SendSignal("OnAttachmentUploadEnded", ser.Generate());
+	ser.Insert("status", "ready");
+
+	global->htmlUI->SendSignal("ChangeAttachmentStatus", ser.Generate());
 	
 	m_lastDroppedFiles.pop_front();
 }
