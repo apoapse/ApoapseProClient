@@ -81,7 +81,7 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 		ThreadUtils::NameThread("File Stream thread");
 		m_fileStreamIOService->run();
 	});
-	m_fileStreamIoServiceThread.detach();
+	//m_fileStreamIoServiceThread.detach();
 
 	// Main connection service
 	m_ioServiceThread = std::thread([this]
@@ -89,7 +89,7 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 		ThreadUtils::NameThread("Main connection thread");
 		global->mainConnectionIOService->run();
 	});
-	m_ioServiceThread.detach();
+	//m_ioServiceThread.detach();
 }
 
 ClientConnection* ApoapseClient::GetConnection()
@@ -514,6 +514,11 @@ void ApoapseClient::OnFileUploaded()
 	global->htmlUI->SendSignal("ChangeAttachmentStatus", ser.Generate());
 	
 	m_lastDroppedFiles.pop_front();
+
+	if (!m_lastDroppedFiles.empty())
+	{
+		SendQueuedDroppedFile();
+	}
 }
 
 ContentManager& ApoapseClient::GetContentManager() const

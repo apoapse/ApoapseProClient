@@ -16,7 +16,7 @@ ClientFileStreamConnection::ClientFileStreamConnection(boost::asio::io_service& 
 
 void ClientFileStreamConnection::OnFileDownloadCompleted(const AttachmentFile& file)
 {
-	LOG_DEBUG << "Download completed";
+	LOG << "Download completed";
 
 	global->mainThread->PushTask([this, file]()
 	{
@@ -35,7 +35,7 @@ void ClientFileStreamConnection::ErrorDisconnectAll()
 
 void ClientFileStreamConnection::OnFileSentSuccessfully(const AttachmentFile& file)
 {
-	LOG_DEBUG << "OnFileSentSuccessfully " << file.fileName;
+	LOG << "File " << file.fileName << " sent successfully";
 
 	global->mainThread->PushTask([this]()
 	{
