@@ -98,7 +98,7 @@ bool ClientCmdManager::OnReceivedCommandPre(CommandV2& cmd, GenericConnection& n
 
 		if (cmd.GetData().GetField("attachments").HasValue())
 		{
-			auto attachmentsDat = cmd.GetData().GetField("attachments").GetDataArray();
+			auto& attachmentsDat = cmd.GetData().GetField("attachments").GetDataArray();
 
 			for (DataStructure& dat : attachmentsDat)
 			{
@@ -124,7 +124,7 @@ void ClientCmdManager::OnReceivedCommand(CommandV2& cmd, GenericConnection& netC
 		{
 			// Read usergroups
 			{
-				auto usergroupsDat = cmd.GetData().GetField("usergroups").GetDataArray();
+				auto& usergroupsDat = cmd.GetData().GetField("usergroups").GetDataArray();
 				apoapseClient.InitUsergroupManager(usergroupsDat);
 			}
 
@@ -140,7 +140,7 @@ void ClientCmdManager::OnReceivedCommand(CommandV2& cmd, GenericConnection& netC
 
 			// Read online users
 			{
-				auto onlineUsers = cmd.GetData().GetField("connected_users").GetDataArray();
+				auto& onlineUsers = cmd.GetData().GetField("connected_users").GetDataArray();
 				for (DataStructure& dat : onlineUsers)
 				{
 					apoapseClient.GetClientUsers().ChangeUserStatus(dat.GetField("user").GetValue<Username>(), User::UserStatus::online);

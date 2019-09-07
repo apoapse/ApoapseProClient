@@ -103,6 +103,8 @@ void ContentManager::Init()
 
 		// UIUserListUpdate(); do not update here as it it already updated when receiving the server_info cmd
 	}
+
+	UpdateAttachmentsUI();
 }
 
 void ContentManager::OnReceivedSignal(const std::string& name, const JsonHelper& json)
@@ -339,11 +341,30 @@ std::shared_ptr<Attachment> ContentManager::GetAttachment(DbId id)
 void ContentManager::RegisterAttachment(std::shared_ptr<Attachment>& attachment)
 {
 	m_attachmentsPool.push_back(attachment);
+
+	UpdateAttachmentsUI();
 }
 
 UInt64 ContentManager::GetAttachmentsCount() const
 {
 	return m_attachmentsPool.size();
+}
+
+void ContentManager::UpdateAttachmentsUI()
+{
+	JsonHelper ser;
+
+	std::sort(m_attachmentsPool.begin(), m_attachmentsPool.end(), [](std::shared_ptr<Attachment> attA, std::shared_ptr<Attachment> attB)
+	{
+		return (attA->sentTime > attB->sentTime);
+	});
+
+	for (const auto& attachment : m_attachmentsPool)
+	{
+		ser.Insert("attachments", attachment->GetJson());
+	}
+
+	global->htmlUI->SendSignal("UpdateAttachments", ser.Generate());
 }
 
 void ContentManager::OpenRoom(Room& room)

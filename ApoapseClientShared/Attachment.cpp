@@ -36,10 +36,18 @@ Attachment::Attachment(DataStructure& data, ApoapseClient& client) : apoapseClie
 	file.fileName = data.GetField("name").GetValue<std::string>();
 	file.fileSize = data.GetField("file_size").GetValue<Int64>();
 	file.filePath = GetAttachmentFilePath(apoapseClient.GetLocalUser().GetUsername(), file.uuid, file.fileName);
+	relatedFile = file;
+	
+	parentMessage = data.GetField("parent_message").GetValue<Uuid>();
 	
 	file.isDownloaded = (data.GetField("is_downloaded").HasValue()) ? data.GetField("is_downloaded").GetValue<bool>() : false;
 
-	relatedFile = file;
+	{
+		DataStructure msgDat = global->apoapseData->ReadItemFromDBCustomFields("message", "uuid", parentMessage, std::vector<std::string>{"author", "sent_time"});
+		sender = msgDat.GetField("author").GetValue<Username>();
+		sentTime = msgDat.GetField("sent_time").GetValue<DateTimeUtils::UTCDateTime>();
+	}
+
 	id = data.GetDbId();
 }
 
@@ -127,6 +135,8 @@ JsonHelper Attachment::GetJson() const
 	ser.Insert("fileName", HTMLUI::HtmlSpecialChars(relatedFile.fileName, true));
 	ser.Insert("fileSize", relatedFile.fileSize / 1000);	// In kb
 	ser.Insert("isDownloaded", relatedFile.isDownloaded);
+	ser.Insert("author", "");
+	ser.Insert("dateTime", sentTime.GetStr());
 		
 	return ser;
 }

@@ -2,6 +2,7 @@
 #include "Username.h"
 #include "Json.hpp"
 #include "Uuid.h"
+#include "DateTimeUtils.h"
 class ApoapseClient;
 
 class Attachment
@@ -26,11 +27,13 @@ public:
 
 	File relatedFile;
 	DbId id = -1;
+	Uuid parentMessage;
 	Username sender;
+	DateTimeUtils::UTCDateTime sentTime;
 
 	//Attachment() = default;
 	Attachment(const File& file, ApoapseClient& client);
-	Attachment(DataStructure& data, ApoapseClient& client);
+	Attachment(DataStructure& data,  ApoapseClient& client);
 	
 	void RequestOpenFile();
 	void SetFileAsDownloaded(bool autoOpen);

@@ -65,6 +65,7 @@ public:
 	std::shared_ptr<Attachment> GetAttachment(DbId id);
 	void RegisterAttachment(std::shared_ptr<Attachment>& attachment);
 	UInt64 GetAttachmentsCount() const;
+	void UpdateAttachmentsUI();
 	
 	void OpenRoom(Room& room);
 	void OpenThread(ApoapseThread& thread);
