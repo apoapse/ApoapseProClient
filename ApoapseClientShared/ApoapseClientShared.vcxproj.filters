@@ -110,9 +110,6 @@
     <Filter Include="UsersSystem">
       <UniqueIdentifier>{338cfd4e-30bf-4a3d-a497-cfbcba659684}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Tests">
-      <UniqueIdentifier>{bafb35f5-2bbc-46e4-9023-1004799655f8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Systems">
       <UniqueIdentifier>{a6d40b2f-b128-4e2b-887f-021905a90af1}</UniqueIdentifier>
     </Filter>
