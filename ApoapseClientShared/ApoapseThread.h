@@ -47,8 +47,8 @@ public:
 
 	JsonHelper GetJson() const;
 	JsonHelper GetMessageListJson() const;
-	ApoapseMessage& GetMessageById(DbId id);
-	ApoapseMessage* GetMessageByUuid(const Uuid& uuid);
+	ApoapseMessage& GetMessageById(DbId dbId);
+	ApoapseMessage* GetMessageByUuid(const Uuid& msgUuid);
 
 	void LoadMessages();
 	void AddNewMessage(ApoapseMessage& message);

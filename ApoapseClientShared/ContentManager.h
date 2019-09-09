@@ -27,7 +27,7 @@ struct Room
 	bool operator==(const Room& other) const;
 
 	JsonHelper GetJson() const;
-	ApoapseThread& GetThread(DbId id);
+	ApoapseThread& GetThread(DbId dbId);
 };
 
 class ContentManager

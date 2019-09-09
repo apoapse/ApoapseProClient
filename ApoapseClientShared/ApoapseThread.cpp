@@ -137,11 +137,11 @@ JsonHelper ApoapseThread::GetMessageListJson() const
 	return ser;
 }
 
-ApoapseMessage& ApoapseThread::GetMessageById(DbId id)
+ApoapseMessage& ApoapseThread::GetMessageById(DbId dbId)
 {
-	const auto res = std::find_if(m_messages.begin(), m_messages.end(), [id](ApoapseMessage& msg)
+	const auto res = std::find_if(m_messages.begin(), m_messages.end(), [dbId](ApoapseMessage& msg)
 	{
-		return (msg.id == id);
+		return (msg.id == dbId);
 	});
 
 	if (res == m_messages.end())
@@ -150,11 +150,11 @@ ApoapseMessage& ApoapseThread::GetMessageById(DbId id)
 	return *res;
 }
 
-ApoapseMessage* ApoapseThread::GetMessageByUuid(const Uuid& uuid)
+ApoapseMessage* ApoapseThread::GetMessageByUuid(const Uuid& msgUuid)
 {
-	auto res = std::find_if(m_messages.begin(), m_messages.end(), [&uuid](ApoapseMessage& msg)
+	auto res = std::find_if(m_messages.begin(), m_messages.end(), [&msgUuid](ApoapseMessage& msg)
 	{
-		return (msg.uuid == uuid);
+		return (msg.uuid == msgUuid);
 	});
 
 	if (res != m_messages.end())
@@ -165,7 +165,7 @@ ApoapseMessage* ApoapseThread::GetMessageByUuid(const Uuid& uuid)
 
 void ApoapseThread::LoadMessages()
 {
-	if (m_messages.size() != totalMessagesCount)
+	if ((Int64)m_messages.size() != totalMessagesCount)
 	{
 		m_messages.clear();
 		m_messages.reserve(totalMessagesCount);

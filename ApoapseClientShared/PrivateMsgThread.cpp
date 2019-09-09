@@ -55,7 +55,6 @@ void PrivateMsgThread::LoadMessages(ContentManager& contentManager)
 		m_messages.push_back(PrivateMessage(msgData, contentManager.client));
 	}
 
-	auto size = res.RowCount();
 	LOG << "Loaded " << m_messages.size() << " private messages on user thread " << relatedUserPtr->nickname;
 }
 

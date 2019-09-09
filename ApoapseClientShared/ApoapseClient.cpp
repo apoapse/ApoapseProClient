@@ -166,11 +166,11 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 		const std::string usergroup = json.ReadFieldValue<std::string>("usergroup").get();
 
 		{
-			JsonHelper json;
-			json.Insert("username", username);
-			json.Insert("temp_password", tempPassword);
+			JsonHelper ser;
+			ser.Insert("username", username);
+			ser.Insert("temp_password", tempPassword);
 
-			global->htmlUI->SendSignal("OnAddNewUserLocal", json.Generate());
+			global->htmlUI->SendSignal("OnAddNewUserLocal", ser.Generate());
 		}
 
 		auto dat = global->apoapseData->GetStructure("add_user");

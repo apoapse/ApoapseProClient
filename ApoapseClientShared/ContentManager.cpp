@@ -41,11 +41,11 @@ JsonHelper Room::GetJson() const
 	return ser;
 }
 
-ApoapseThread& Room::GetThread(DbId id)
+ApoapseThread& Room::GetThread(DbId dbId)
 {
-	const auto res = std::find_if(threads.begin(), threads.end(), [id](const auto& thread)
+	const auto res = std::find_if(threads.begin(), threads.end(), [dbId](const auto& thread)
 	{
-		return (thread->id == id);
+		return (thread->id == dbId);
 	});
 
 	if (res == threads.end())
@@ -176,7 +176,7 @@ void ContentManager::OnAddNewMessage(DataStructure& data)
 void ContentManager::OnAddNewPrivateMessage(DataStructure& data)
 {
 	const auto message = PrivateMessage(data, client);
-	auto& thread = GetPrivateThreadByUserId(message.relatedUser->id);
+	//auto& thread = GetPrivateThreadByUserId(message.relatedUser->id);
 
 	if (IsUserPageDisplayed() && GetCurrentUserPage().relatedUserId == message.relatedUser->id)
 	{
