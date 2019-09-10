@@ -13,7 +13,8 @@
 #include "ClientFileStreamConnection.h"
 #include "attachment.h"
 #include "ThreadUtils.h"
-//#include <Random.hpp>
+#include "NativeUI.h"
+#include "ImageUtils.h"
 
 
 ApoapseClient::ApoapseClient()
@@ -129,6 +130,25 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 		OnDropFiles();
 	}
 
+	else if (name == "OpenFileDialog")
+	{
+		const std::string dialogName = json.ReadFieldValue<std::string>("name").value();
+		
+		global->threadPool->PushTask([dialogName]
+		{
+			const std::string res = NativeUI::OpenFileDialog(std::vector<std::string>{"*.jpg;*.jpeg;*.png;*.gif"}, "Images");
+
+			if (!res.empty())
+			{
+				JsonHelper ser;
+				ser.Insert("filepath", res);
+				ser.Insert("name", dialogName);
+				
+				global->htmlUI->SendSignal("OnFileDialogPathSet", ser.Generate());
+			}
+		});
+	}
+
 	else if (name == "disconnect" && m_connected)
 	{
 		LOG << "User requested disconnection";
@@ -147,6 +167,13 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 		auto dat = global->apoapseData->GetStructure("set_identity");
 		dat.GetField("password").SetValue(password);
 		dat.GetField("nickname").SetValue(json.ReadFieldValue<std::string>("nickname").get());
+		
+		const std::string avatarPath = json.ReadFieldValue<std::string>("avatar_path").value();
+		if (!avatarPath.empty())
+		{
+			const auto imgBytes = ImageUtils::ReadAndResizeImage("_ref.jpg", 128, 128, true);
+			dat.GetField("avatar").SetValue(imgBytes);
+		}
 
 		global->cmdManager->CreateCommand("set_identity", dat).Send(*m_connection);
 	}

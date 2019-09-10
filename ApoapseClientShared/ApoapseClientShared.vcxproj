@@ -159,9 +159,11 @@
     <ClCompile Include="ClientOperations.cpp" />
     <ClCompile Include="ContentManager.cpp" />
     <ClCompile Include="HTMLUI.cpp" />
+    <ClCompile Include="ImageUtils.cpp" />
     <ClCompile Include="LocalSettings.cpp" />
     <ClCompile Include="LocalUser.cpp" />
     <ClCompile Include="ClientFileStreamConnection.cpp" />
+    <ClCompile Include="NativeUI.cpp" />
     <ClCompile Include="PrivateMsgThread.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -182,10 +184,12 @@
     <ClInclude Include="ClientOperations.h" />
     <ClInclude Include="ContentManager.h" />
     <ClInclude Include="HTMLUI.h" />
+    <ClInclude Include="ImageUtils.h" />
     <ClInclude Include="ISignalSender.hpp" />
     <ClInclude Include="LocalSettings.h" />
     <ClInclude Include="LocalUser.h" />
     <ClInclude Include="ClientFileStreamConnection.h" />
+    <ClInclude Include="NativeUI.h" />
     <ClInclude Include="PrivateMsgThread.h" />
     <ClInclude Include="User.h" />
     <ClInclude Include="WebResourcesManager.h" />

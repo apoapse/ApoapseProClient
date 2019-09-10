@@ -45,6 +45,12 @@
     <ClCompile Include="PrivateMsgThread.cpp">
       <Filter>Systems\Content</Filter>
     </ClCompile>
+    <ClCompile Include="NativeUI.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageUtils.cpp">
+      <Filter>ImageProcessing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientEntryPoint.h" />
@@ -96,6 +102,12 @@
     <ClInclude Include="PrivateMsgThread.h">
       <Filter>Systems\Content</Filter>
     </ClInclude>
+    <ClInclude Include="NativeUI.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageUtils.h">
+      <Filter>ImageProcessing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="UI">
@@ -115,6 +127,9 @@
     </Filter>
     <Filter Include="Systems\Content">
       <UniqueIdentifier>{fcc74db1-bbc2-4d09-9349-d721b1b58bc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImageProcessing">
+      <UniqueIdentifier>{9704ddb1-4e9c-4853-9d0c-ca696469f897}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
