@@ -82,6 +82,11 @@ std::string User::GenerateTemporaryRandomPassword()
 		return output;
 }
 
+std::string User::GetAvatarFilePath(const Username& username)
+{
+	return "client_avatar/av_" + username.ToStr().substr(0, 24) + ".jpg";
+}
+
 /*std::pair<PrivateKeyBytes, PublicKeyBytes> User::GenerateIdentityKey()
 {
 	return Cryptography::RSA::GenerateKeyPair(identityKeySize);

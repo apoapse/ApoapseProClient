@@ -4,7 +4,7 @@
 #include <opencv2/opencv.hpp>
 #include <filesystem>
 
-std::vector<byte> ImageUtils::ReadAndResizeImage(const std::string& filePath, int newWidth, int newHeight, bool preserveRatio)
+std::vector<byte> ImageUtils::ReadAndResizeImage(const std::string& filePath, int newWidth, int newHeight, bool preserveRatio, const std::string& forceEncoding/* = std::string()*/)
 {
 	std::vector<byte> output;
 	cv::Mat outputImg;
@@ -31,7 +31,12 @@ std::vector<byte> ImageUtils::ReadAndResizeImage(const std::string& filePath, in
 
 	cv::resize(original, outputImg, cv::Size(withToResize, heightToResize), 0, 0, cv::INTER_CUBIC);
 
-	const std::string fileExtension = std::filesystem::path(filePath).extension().string();
+	std::string fileExtension;
+	if (!forceEncoding.empty())
+		fileExtension = "." + forceEncoding;
+	else
+		fileExtension = std::filesystem::path(filePath).extension().string();
+	
 	const size_t sizeInBytes = outputImg.step[0] * outputImg.rows;
 
 	output.resize(sizeInBytes);

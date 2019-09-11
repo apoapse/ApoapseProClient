@@ -39,6 +39,7 @@ public:
 	static Username HashUsername(const std::string& username);
 	static std::vector<byte> HashPasswordForServer(const std::string& password);
 	static std::string GenerateTemporaryRandomPassword();
+	static std::string GetAvatarFilePath(const Username& username);
 
 	//static std::pair<PrivateKeyBytes, PublicKeyBytes> GenerateIdentityKey();
 	//static hashSecBytes HashPasswordForIdentityPrivateKey(const std::string& password);

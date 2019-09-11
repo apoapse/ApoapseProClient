@@ -65,8 +65,11 @@ JsonHelper ApoapseMessage::GetJson() const
 	ser.Insert("id", id);
 	ser.Insert("message", HTMLUI::HtmlSpecialChars(message));
 	ser.Insert("sent_time", sentTime.GetStr());
-	ser.Insert("author", author->nickname);
-	ser.Insert("author_id", author->id);
+	
+	ser.Insert("author.name", author->nickname);
+	ser.Insert("author.id", author->id);
+	ser.Insert("author.avatar", User::GetAvatarFilePath(author->username));
+	
 	ser.InsertArray("tags", tags);
 	ser.Insert("is_read", isRead);
 	ser.Insert("support_tags", supportTags);

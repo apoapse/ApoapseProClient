@@ -26,7 +26,7 @@ bool ApoapseSchemeHandler::ProcessRequest(CefRefPtr<CefRequest> request, CefRefP
 	{
 		// Data
 		SetMimeFromExtension(fileExtension);
-		m_responseData = ApoapseClientEntry::ReadFile("ClientResources/" + ReadFileName(fullUrl), fileExtension);
+		m_responseData = ApoapseClientEntry::ReadFile(ReadFileName(fullUrl), fileExtension);
 	}
 	else
 	{

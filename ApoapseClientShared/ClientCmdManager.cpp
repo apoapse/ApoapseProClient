@@ -7,6 +7,8 @@
 #include "ApoapseClient.h"
 #include "HTMLUI.h"
 #include "ClientFileStreamConnection.h"
+#include <filesystem>
+#include "FileUtils.h"
 
 ClientCmdManager::ClientCmdManager(ApoapseClient& client) : CommandsManagerV2(GetCommandDef()), apoapseClient(client)
 {
@@ -160,6 +162,15 @@ void ClientCmdManager::OnReceivedCommand(CommandV2& cmd, GenericConnection& netC
 
 	else if (cmd.name == "user")
 	{
+		if (cmd.GetData().GetField("avatar").HasValue())
+		{
+			const auto username = cmd.GetData().GetField("username").GetValue<Username>();
+			const std::string filePath = User::GetAvatarFilePath(username);
+
+			if (!std::filesystem::exists(filePath))
+				FileUtils::SaveBytesToFile(filePath, cmd.GetData().GetField("avatar").GetValue<ByteContainer>());
+		}
+		
 		auto user = User(cmd.GetData(), apoapseClient);
 		apoapseClient.GetClientUsers().OnAddNewUser(user);
 		apoapseClient.GetContentManager().RegisterPrivateMsgThread(apoapseClient.GetClientUsers().GetUserByUsername(user.username));

@@ -171,7 +171,7 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 		const std::string avatarPath = json.ReadFieldValue<std::string>("avatar_path").value();
 		if (!avatarPath.empty())
 		{
-			const auto imgBytes = ImageUtils::ReadAndResizeImage("_ref.jpg", 128, 128, true);
+			const auto imgBytes = ImageUtils::ReadAndResizeImage(avatarPath, 128, 128, true, "jpg");
 			dat.GetField("avatar").SetValue(imgBytes);
 		}
 
