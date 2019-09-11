@@ -59,7 +59,7 @@ public:
 	Room& GetRoomByUuid(const Uuid& uuid);
 	ApoapseThread& GetThreadByUuid(const Uuid& uuid);
 	ApoapseThread& GetThreadById(DbId id);
-	PrivateMsgThread& GetPrivateThreadByUserId(DbId id);
+	PrivateMsgThread* GetPrivateThreadByUserId(DbId id);
 
 	std::shared_ptr<Attachment> GetAttachment(const Uuid& uuid);
 	std::shared_ptr<Attachment> GetAttachment(DbId id);

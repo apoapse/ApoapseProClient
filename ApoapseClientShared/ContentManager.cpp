@@ -6,6 +6,7 @@
 #include "ApoapseClient.h"
 #include <numeric>
 #include "PrivateMsgThread.h"
+#include "SearchResult.h"
 
 Room::Room(DataStructure& data)
 {
@@ -126,8 +127,18 @@ void ContentManager::OnReceivedSignal(const std::string& name, const JsonHelper&
 		const User& user = client.GetClientUsers().GetUserById(json.ReadFieldValue<Int64>("id").value());
 		if (user.username != client.GetLocalUser().username)
 		{
-			OpenPrivateMsgThread(GetPrivateThreadByUserId(user.id));
+			OpenPrivateMsgThread(*GetPrivateThreadByUserId(user.id));
 		}
+	}
+
+	else if (name == "search")
+	{
+		SearchResult res(json.ReadFieldValue<std::string>("query").value(), *this);
+		global->htmlUI->SendSignal("DisplaySearchResults", res.GetJson().Generate());
+
+		m_selectedThread = nullptr;
+		m_selectedUserPage = nullptr;
+		m_selectedRoom = nullptr;
 	}
 }
 
@@ -228,8 +239,8 @@ void ContentManager::MarkMessageAsRead(const Uuid& uuid)
 		else
 			relatedUser = &client.GetClientUsers().GetUserByUsername(recipient);
 
-		PrivateMsgThread& privateThread = GetPrivateThreadByUserId(relatedUser->id);
-		privateThread.unreadMesagesCount--;
+		PrivateMsgThread* privateThread = GetPrivateThreadByUserId(relatedUser->id);
+		privateThread->unreadMesagesCount--;
 
 		UIUserListUpdate();
 
@@ -308,14 +319,17 @@ ApoapseThread& ContentManager::GetThreadById(DbId id)
 	throw std::exception("The requested thread cannot be found with the DbId provided");
 }
 
-PrivateMsgThread& ContentManager::GetPrivateThreadByUserId(DbId id)
+PrivateMsgThread* ContentManager::GetPrivateThreadByUserId(DbId id)
 {
 	const auto res = std::find_if(m_privateMsgThreads.begin(), m_privateMsgThreads.end(), [id](const auto& thread)
 	{
 		return (thread->relatedUserId == id);
 	});
 
-	return **res;
+	if (res == m_privateMsgThreads.end())
+		return nullptr;
+	
+	return &**res;
 }
 
 std::shared_ptr<Attachment> ContentManager::GetAttachment(const Uuid& uuid)
@@ -398,6 +412,10 @@ void ContentManager::OpenRoom(Room& room)
 		{
 			OpenThread(*room.threads.at(0));
 			LOG << "This room is of single thread type, the default thread was opened directly";
+		}
+		else
+		{
+			ASSERT(false);
 		}
 	}
 }
@@ -506,8 +524,10 @@ void ContentManager::UIUserListUpdate()
 
 			if (!user->isLocalUser)
 			{
-				auto& privateMsgThread = GetPrivateThreadByUserId(user->id);
-				serUser.Insert("unreadMsgCount", privateMsgThread.unreadMesagesCount);
+				auto* privateMsgThread = GetPrivateThreadByUserId(user->id);
+				
+				if (privateMsgThread)
+					serUser.Insert("unreadMsgCount", privateMsgThread->unreadMesagesCount);
 			}
 			
 			ser.Insert("users", serUser);

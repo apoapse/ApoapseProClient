@@ -51,6 +51,9 @@
     <ClCompile Include="ImageUtils.cpp">
       <Filter>ImageProcessing</Filter>
     </ClCompile>
+    <ClCompile Include="SearchResult.cpp">
+      <Filter>Systems\Content</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientEntryPoint.h" />
@@ -107,6 +110,9 @@
     </ClInclude>
     <ClInclude Include="ImageUtils.h">
       <Filter>ImageProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="SearchResult.h">
+      <Filter>Systems\Content</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
