@@ -35,7 +35,17 @@ bool ClientCmdManager::OnSendCommandPre(CommandV2& cmd)
 		cmd.GetData().GetField("parent_thread").SetValue(apoapseClient.GetContentManager().GetCurrentThread().uuid);
 		cmd.GetData().GetField("sent_time").SetValue(DateTimeUtils::UTCDateTime::CurrentTime());
 		cmd.GetData().GetField("author").SetValue(apoapseClient.GetLocalUser().username);
+	}
+	
+	else if (cmd.name == "direct_message")
+	{
+		cmd.GetData().GetField("direct_recipient").SetValue(apoapseClient.GetContentManager().GetCurrentUserPage().relatedUserPtr->username);
+		cmd.GetData().GetField("sent_time").SetValue(DateTimeUtils::UTCDateTime::CurrentTime());
+		cmd.GetData().GetField("author").SetValue(apoapseClient.GetLocalUser().username);
+	}
 
+	if (cmd.name == "new_message" || cmd.name == "direct_message")
+	{
 		// Attachments
 		const auto attachmentFiles = apoapseClient.GetDroppedFilesToSend();
 		if (!attachmentFiles.empty())
@@ -52,13 +62,6 @@ bool ClientCmdManager::OnSendCommandPre(CommandV2& cmd)
 		}
 
 		LOG << "Sending a message with " << attachmentFiles.size() << " attachments";
-	}
-
-	else if (cmd.name == "direct_message")
-	{
-		cmd.GetData().GetField("direct_recipient").SetValue(apoapseClient.GetContentManager().GetCurrentUserPage().relatedUserPtr->username);
-		cmd.GetData().GetField("sent_time").SetValue(DateTimeUtils::UTCDateTime::CurrentTime());
-		cmd.GetData().GetField("author").SetValue(apoapseClient.GetLocalUser().username);
 	}
 
 	return true;
