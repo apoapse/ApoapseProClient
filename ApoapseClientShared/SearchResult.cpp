@@ -9,9 +9,16 @@ SearchResult::SearchResult(const std::string& query, ContentManager& cManager) :
 	LOG << "Start search";
 	LOG_DEBUG << m_searchQuery;
 
-	SearchAttachments();
-	SearchThreads();
-	SearchMessages();
+	if (m_searchQuery.substr(0, 1) == "#")
+	{
+		SearchFromTag();
+	}
+	else
+	{
+		SearchAttachments();
+		SearchThreads();
+		SearchMessages();
+	}
 }
 
 JsonHelper SearchResult::GetJson() const
@@ -42,9 +49,34 @@ std::string SearchResult::GetSearchQuery() const
 	return m_searchQuery;
 }
 
+void SearchResult::SearchFromTag()
+{
+	const std::string searchPattern = m_searchQuery.substr(1, m_searchQuery.length()) + '%';
+	DataStructureDef def = global->apoapseData->GetStructure("tag");
+	
+	SQLQuery query(*global->database);
+	query << SELECT << ALL << FROM << "tags" << WHERE << "item_type" << EQUALS << "msg"s << AND << "name" << LIKE << searchPattern;
+	auto res = query.Exec();
+	
+	m_messages.reserve(res.RowCount());
+	
+	for (auto& row : res)
+	{
+		DataStructure tagItem = global->apoapseData->ReadFromDbResult(def, row);
+		
+		const Uuid msgUuid = tagItem.GetField("item_uuid").GetValue<Uuid>();
+		DataStructure msgDat = global->apoapseData->ReadItemFromDatabase("message", "uuid", msgUuid);
+
+		m_messages.push_back(ApoapseMessage(msgDat, contentManager.client));
+	}
+
+	LOG << "Found " << m_messages.size() << " messages using tag";
+}
+
 void SearchResult::SearchMessages()
 {
 	const std::string searchPattern = '%' + m_searchQuery + '%';
+	DataStructureDef def = global->apoapseData->GetStructure("message");
 	
 	SQLQuery query(*global->database);
 	query << SELECT << ALL << FROM << "messages" << WHERE << "message" << LIKE << searchPattern;
@@ -54,7 +86,6 @@ void SearchResult::SearchMessages()
 
 	for (const auto& sqlRow : res)
 	{
-		DataStructureDef def = global->apoapseData->GetStructure("message");
 		DataStructure dat = global->apoapseData->ReadFromDbResult(def, sqlRow);
 
 		m_messages.push_back(ApoapseMessage(dat, contentManager.client));
@@ -66,6 +97,7 @@ void SearchResult::SearchMessages()
 void SearchResult::SearchThreads()
 {
 	const std::string searchPattern = '%' + m_searchQuery + '%';
+	DataStructureDef def = global->apoapseData->GetStructure("thread");
 	
 	SQLQuery query(*global->database);
 	query << SELECT << ALL << FROM << "threads" << WHERE << "name" << LIKE << searchPattern;
@@ -75,7 +107,6 @@ void SearchResult::SearchThreads()
 
 	for (const auto& sqlRow : res)
 	{
-		DataStructureDef def = global->apoapseData->GetStructure("thread");
 		DataStructure dat = global->apoapseData->ReadFromDbResult(def, sqlRow);
 		Room& parentRoom = contentManager.GetRoomByUuid(dat.GetField("parent_room").GetValue<Uuid>());
 		
@@ -88,6 +119,7 @@ void SearchResult::SearchThreads()
 void SearchResult::SearchAttachments()
 {
 	const std::string searchPattern = '%' + m_searchQuery + '%';
+	DataStructureDef def = global->apoapseData->GetStructure("attachment");
 	
 	SQLQuery query(*global->database);
 	query << SELECT << ALL << FROM << "attachments" << WHERE << "name" << LIKE << searchPattern;
@@ -97,7 +129,6 @@ void SearchResult::SearchAttachments()
 
 	for (const auto& sqlRow : res)
 	{
-		DataStructureDef def = global->apoapseData->GetStructure("attachment");
 		DataStructure dat = global->apoapseData->ReadFromDbResult(def, sqlRow);
 		
 		m_attachments.push_back(Attachment(dat, contentManager.client));

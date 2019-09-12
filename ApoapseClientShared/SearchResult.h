@@ -18,6 +18,7 @@ public:
 	std::string GetSearchQuery() const;
 	
 private:
+	void SearchFromTag();
 	void SearchMessages();
 	void SearchThreads();
 	void SearchAttachments();
