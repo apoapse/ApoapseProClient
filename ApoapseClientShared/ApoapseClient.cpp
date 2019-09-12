@@ -15,7 +15,7 @@
 #include "ThreadUtils.h"
 #include "NativeUI.h"
 #include "ImageUtils.h"
-
+#include "ApoapseError.h"
 
 ApoapseClient::ApoapseClient()
 {
@@ -295,6 +295,24 @@ void ApoapseClient::OnDisconnect()
 const Username& ApoapseClient::GetLastLoginTryUsername() const
 {
 	return m_lastLoginTryUsername;
+}
+
+void ApoapseClient::OnReceivedError(ApoapseError& error)
+{
+	// Display on UI
+	{
+		JsonHelper ser;
+		ser.Insert("name", error.GetErrorStr());
+
+		global->htmlUI->SendSignal("OnServerError", ser.Generate());
+	}
+
+	// Disconnect
+	if (m_fileStreamConnection)
+		m_fileStreamConnection->Close();
+
+	if (m_connection && m_connection->IsConnected())
+		m_connection->Close();
 }
 
 void ApoapseClient::AuthenticateFileStream(const std::vector<byte>& authCode)

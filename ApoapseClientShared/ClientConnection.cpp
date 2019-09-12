@@ -3,7 +3,7 @@
 #include "Common.h"
 #include "ApoapseClient.h"
 #include "HTMLUI.h"
-#include "SecurityAlert.h"
+#include "ApoapseError.h"
 
 ClientConnection::ClientConnection(boost::asio::io_service& ioService, ssl::context& context, ApoapseClient& client)
 	: GenericConnection(ioService, context)
@@ -54,5 +54,5 @@ void ClientConnection::OnReceivedCommand(CommandV2& cmd)
 	if (cmd.IsValid(relatedUser))
 		global->cmdManager->OnReceivedCmdInternal(cmd, *this);
 	else
-		SecurityLog::LogAlert(ApoapseErrorCode::invalid_cmd, *this);
+		ApoapseError(ApoapseErrors::invalid_cmd, this);
 }

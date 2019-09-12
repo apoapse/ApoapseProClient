@@ -16,6 +16,7 @@
 #include "Attachment.h"
 class ClientConnection;
 class ClientFileStreamConnection;
+class ApoapseError;
 
 class ApoapseClient
 {
@@ -58,6 +59,7 @@ public:
 	void OnConnectedToServer();
 	void OnDisconnect();
 	const Username& GetLastLoginTryUsername() const;
+	void OnReceivedError(ApoapseError& error);
 
 	void AuthenticateFileStream(const std::vector<byte>& authCode);
 	void Authenticate(const LocalUser& user);

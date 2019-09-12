@@ -9,6 +9,7 @@
 #include "ClientFileStreamConnection.h"
 #include <filesystem>
 #include "FileUtils.h"
+#include "ApoapseError.h"
 
 ClientCmdManager::ClientCmdManager(ApoapseClient& client) : CommandsManagerV2(GetCommandDef()), apoapseClient(client)
 {
@@ -121,7 +122,12 @@ void ClientCmdManager::OnReceivedCommand(CommandV2& cmd, GenericConnection& netC
 {
 	auto& connection = dynamic_cast<ClientConnection&>(netConnection);
 
-	if (cmd.name == "server_info")
+	if (cmd.name == "error")
+	{
+		connection.client.OnReceivedError(ApoapseError(cmd));
+	}
+
+	else if (cmd.name == "server_info")
 	{
 		const auto status = cmd.GetData().GetField("status").GetValue<std::string>();
 
