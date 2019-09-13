@@ -49,7 +49,7 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 	}
 
 	{
-		global->mainConnectionIOService = std::make_unique<boost::asio::io_service>();
+		m_mainConnectionIOService = std::make_unique<boost::asio::io_service>();
 		m_fileStreamIOService = std::make_unique<boost::asio::io_service>();
 
 		global->htmlUI->UpdateStatusBar("@connecting_status");
@@ -59,7 +59,7 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 
 		// File Stream
 		{
-			auto connection = std::make_shared<ClientFileStreamConnection>(*global->mainConnectionIOService/*, tlsContext*/, *this);
+			auto connection = std::make_shared<ClientFileStreamConnection>(*m_fileStreamIOService/*, tlsContext*/, *this);
 			connection->Connect(serverAddress, defaultFileStreamPort);
 
 			m_fileStreamConnection = connection.get();
@@ -68,7 +68,7 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 		
 		// Main connection
 		{
-			auto connection = std::make_shared<ClientConnection>(*global->mainConnectionIOService, tlsContext, *this);
+			auto connection = std::make_shared<ClientConnection>(*m_mainConnectionIOService, tlsContext, *this);
 			connection->Connect(serverAddress, defaultServerPort);
 
 			m_connection = connection.get();
@@ -88,7 +88,7 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 	m_ioServiceThread = std::thread([this]
 	{
 		ThreadUtils::NameThread("Main connection thread");
-		global->mainConnectionIOService->run();
+		m_mainConnectionIOService->run();
 	});
 	m_ioServiceThread.detach();
 }
@@ -281,8 +281,6 @@ void ApoapseClient::OnDisconnect()
 	m_clientUsers.reset();
 	m_contentManager.reset();
 	m_clientOperations.reset();
-
-	global->mainConnectionIOService->reset();
 
 	if (global->database != nullptr)
 		UnloadDatabase();

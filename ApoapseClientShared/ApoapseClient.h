@@ -25,6 +25,7 @@ class ApoapseClient
 	std::thread m_ioServiceThread;
 	std::thread m_fileStreamIoServiceThread;
 	std::unique_ptr<boost::asio::io_service> m_fileStreamIOService;
+	std::unique_ptr<boost::asio::io_service> m_mainConnectionIOService;
 	
 	ClientConnection* m_connection = nullptr;
 	ClientFileStreamConnection* m_fileStreamConnection = nullptr;
