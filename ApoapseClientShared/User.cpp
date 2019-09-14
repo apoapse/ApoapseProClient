@@ -14,7 +14,7 @@
 User::User(DataStructure& data, ApoapseClient& client) : apoapseClient(&client)
 {
 	username = data.GetField("username").GetValue<Username>();
-	nickname = HTMLUI::HtmlSpecialChars(data.GetField("nickname").GetValue<std::string>(), true);
+	nickname = HTMLUI::HtmlSpecialChars(data.GetField("nickname").GetValue<std::string>());
 	id = data.GetDbId();
 
 	if (username == apoapseClient->GetLocalUser().username)

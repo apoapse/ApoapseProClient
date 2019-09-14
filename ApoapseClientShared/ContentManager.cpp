@@ -217,7 +217,7 @@ void ContentManager::OnAddNewTag(DataStructure& data)
 			if (m_selectedThread && *m_selectedThread == *thread)
 			{
 				JsonHelper ser;
-				ser.Insert("name", HTMLUI::HtmlSpecialChars(tag, true));
+				ser.Insert("name", HTMLUI::HtmlSpecialChars(tag));
 				ser.Insert("msgId", message->id);
 				global->htmlUI->SendSignal("AddTag", ser.Generate());
 			}
@@ -520,7 +520,7 @@ void ContentManager::UIUserListUpdate()
 		{
 			JsonHelper serUser;
 			serUser.Insert("id", user->id);
-			serUser.Insert("nickname", HTMLUI::HtmlSpecialChars(user->nickname, true));
+			serUser.Insert("nickname", HTMLUI::HtmlSpecialChars(user->nickname));
 			serUser.Insert("isOnline", (user->GetStatus() == User::UserStatus::online));
 			serUser.Insert("isLocalUser", user->isLocalUser);
 

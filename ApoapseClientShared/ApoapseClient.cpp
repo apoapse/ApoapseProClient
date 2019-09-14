@@ -496,7 +496,7 @@ void ApoapseClient::OnDropFiles()
 		for (const auto& file : m_lastDroppedFiles)
 		{
 			JsonHelper attSer;
-			attSer.Insert("fileName", HTMLUI::HtmlSpecialChars(file.fileName, true));
+			attSer.Insert("fileName", HTMLUI::HtmlSpecialChars(file.fileName));
 			attSer.Insert("fileSize", file.fileSize / 1000);	//Size in kb
 			attSer.Insert("id", i);
 
