@@ -20,7 +20,17 @@
 
 ApoapseClient::ApoapseClient()
 {
+	{
+		const auto jsonData = FileUtils::ReadFile("client_global_settings.json");
+		m_clientSettingsTxt = std::string(jsonData.begin(), jsonData.end());
 
+		// We have to clean the json file first 
+		m_clientSettingsTxt = std::regex_replace(m_clientSettingsTxt.value(), std::regex("\\n"), "");
+		m_clientSettingsTxt = std::regex_replace(m_clientSettingsTxt.value(), std::regex("\\r"), "");
+		m_clientSettingsTxt = std::regex_replace(m_clientSettingsTxt.value(), std::regex("\\t"), "");
+		
+		clientSettings = JsonHelper(m_clientSettingsTxt.value());
+	}
 }
 
 void ApoapseClient::Connect(const std::string& serverAddress, const std::string& username, const std::string& password)
