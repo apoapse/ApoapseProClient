@@ -14,6 +14,7 @@
 #include "User.h"
 #include "UsergroupManager.h"
 #include "Attachment.h"
+#include "DatabaseSettings.h"
 class ClientConnection;
 class ClientFileStreamConnection;
 class ApoapseError;
@@ -45,6 +46,8 @@ class ApoapseClient
 	std::unique_ptr<ClientOperations> m_clientOperations;
 
 public:
+	DatabaseSettings serverSettings;
+	
 	ApoapseClient();
 	//virtual ~ApoapseClient();
 

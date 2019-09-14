@@ -169,6 +169,11 @@ void ClientCmdManager::OnReceivedCommand(CommandV2& cmd, GenericConnection& netC
 		}
 	}
 
+	else if (cmd.name == "server_setting")
+	{
+		apoapseClient.serverSettings = DatabaseSettings(cmd.GetData());
+	}
+
 	else if (cmd.name == "user")
 	{
 		if (cmd.GetData().GetField("avatar").HasValue())

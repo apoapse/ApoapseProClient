@@ -135,7 +135,7 @@ JsonHelper Attachment::GetJson() const
 	ser.Insert("fileName", HTMLUI::HtmlSpecialChars(relatedFile.fileName, true));
 	ser.Insert("fileSize", relatedFile.fileSize / 1000);	// In kb
 	ser.Insert("isDownloaded", relatedFile.isDownloaded);
-	ser.Insert("author", apoapseClient.GetClientUsers().GetUserByUsername(sender).nickname);
+	ser.Insert("author", HTMLUI::HtmlSpecialChars(apoapseClient.GetClientUsers().GetUserByUsername(sender).nickname, true));
 	ser.Insert("dateTime", sentTime.GetStr());
 		
 	return ser;
