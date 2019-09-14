@@ -29,11 +29,23 @@ PrivateMsgThread::PrivateMsgThread(const User& relatedUser, ContentManager& cMan
 
 void PrivateMsgThread::RefreshUnreadMessagesCount()
 {
-	SQLQuery query(*global->database);
-	query << SELECT << "COUNT(*)" FROM  << "messages" << WHERE << "is_read" << EQUALS << 0 << AND << "direct_recipient" << EQUALS << relatedUserPtr->username.GetBytes() << OR << "(author" << EQUALS << relatedUserPtr->username.GetBytes() << AND << "direct_recipient" << EQUALS << contentManager.client.GetLocalUser().username.GetBytes() << ")";
-	auto res = query.Exec();
+	if (m_messages.empty())
+	{
+		SQLQuery query(*global->database);
+		query << SELECT << "COUNT(*)" FROM << "messages" << WHERE << "is_read" << EQUALS << 0;
+		query << AND "(" << "direct_recipient" << EQUALS << relatedUserPtr->username.GetBytes();
+		query << OR << "(author" << EQUALS << relatedUserPtr->username.GetBytes() << AND << "direct_recipient" << EQUALS << contentManager.client.GetLocalUser().username.GetBytes() << "))";
+		auto res = query.Exec();
 
-	unreadMesagesCount = res[0][0].GetInt64();
+		unreadMesagesCount = res[0][0].GetInt64();
+	}
+	else
+	{
+		unreadMesagesCount = std::count_if(m_messages.begin(), m_messages.end(), [](const PrivateMessage& msg)
+		{
+			return (!msg.isRead);
+		});
+	}
 }
 
 void PrivateMsgThread::LoadMessages(ContentManager& contentManager)
@@ -91,4 +103,6 @@ void PrivateMsgThread::AddNewMessage(PrivateMessage& message)
 	{
 		m_messages.push_back(message);	// We add the message only if there are already because they will all be reloaded when the thread is opened
 	}
+
+	RefreshUnreadMessagesCount();
 }

@@ -186,8 +186,10 @@ void ContentManager::OnAddNewMessage(DataStructure& data)
 
 void ContentManager::OnAddNewPrivateMessage(DataStructure& data)
 {
-	const auto message = PrivateMessage(data, client);
-	//auto& thread = GetPrivateThreadByUserId(message.relatedUser->id);
+	auto message = PrivateMessage(data, client);
+	auto* thread = GetPrivateThreadByUserId(message.author->id);
+	if (thread)
+		thread->AddNewMessage(message);
 
 	if (IsUserPageDisplayed() && GetCurrentUserPage().relatedUserId == message.relatedUser->id)
 	{
