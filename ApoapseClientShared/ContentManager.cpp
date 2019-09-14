@@ -510,12 +510,12 @@ void ContentManager::UIUserListUpdate()
 
 	for (const User* user : client.GetClientUsers().GetUsers())
 	{
-		//if (!user->isLocalUser)
 		{
 			JsonHelper serUser;
 			serUser.Insert("id", user->id);
 			serUser.Insert("nickname", HTMLUI::HtmlSpecialChars(user->nickname, true));
 			serUser.Insert("isOnline", (user->GetStatus() == User::UserStatus::online));
+			serUser.Insert("isLocalUser", user->isLocalUser);
 
 			if (IsUserPageDisplayed())
 				serUser.Insert("isSelected", (GetCurrentUserPage().relatedUserId == user->id));

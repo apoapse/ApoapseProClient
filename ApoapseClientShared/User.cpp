@@ -160,6 +160,11 @@ std::vector<const User*> ClientUsers::GetUsers() const
 	{
 		ouput.push_back(&user.second);
 	}
+
+	std::sort(ouput.begin(), ouput.end(), [](const User* left, const User* right)
+	{
+		return (left->isLocalUser > right->isLocalUser);
+	});
 	
 	return ouput;
 }
