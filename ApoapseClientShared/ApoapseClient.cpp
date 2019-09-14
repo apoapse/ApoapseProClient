@@ -149,6 +149,12 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 		});
 	}
 
+	else if (name == "openURL")
+	{
+		const std::string cmd = "start " + json.ReadFieldValue<std::string>("url").value();
+		std::system(cmd.c_str());
+	}
+
 	else if (name == "disconnect" && m_connected)
 	{
 		LOG << "User requested disconnection";
