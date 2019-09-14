@@ -16,6 +16,7 @@
 #include "NativeUI.h"
 #include "ImageUtils.h"
 #include "ApoapseError.h"
+#include "FileUtils.h"
 
 ApoapseClient::ApoapseClient()
 {
@@ -49,6 +50,9 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 	}
 
 	{
+		const auto[address, mainPort] = ParseAddress(serverAddress);
+		const UInt16 fileStreamPort = mainPort + 1;
+		
 		m_mainConnectionIOService = std::make_unique<boost::asio::io_service>();
 		m_fileStreamIOService = std::make_unique<boost::asio::io_service>();
 
@@ -60,19 +64,19 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 		// File Stream
 		{
 			auto connection = std::make_shared<ClientFileStreamConnection>(*m_fileStreamIOService/*, tlsContext*/, *this);
-			connection->Connect(serverAddress, defaultFileStreamPort);
+			connection->Connect(address, fileStreamPort);
 
 			m_fileStreamConnection = connection.get();
-			LOG << "[File stream connection] TCP Client started to " << serverAddress << " port: " << defaultFileStreamPort;
+			LOG << "[File stream connection] TCP Client started to " << serverAddress << " port: " << fileStreamPort;
 		}
 		
 		// Main connection
 		{
 			auto connection = std::make_shared<ClientConnection>(*m_mainConnectionIOService, tlsContext, *this);
-			connection->Connect(serverAddress, defaultServerPort);
+			connection->Connect(address, mainPort);
 
 			m_connection = connection.get();
-			LOG << "[Main connection] TCP Client started to " << serverAddress << " port: " << defaultServerPort;
+			LOG << "[Main connection] TCP Client started to " << serverAddress << " port: " << mainPort;
 		}
 	}
 
@@ -123,6 +127,12 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 		auto dataStructure = global->apoapseData->FromJSON(cmdDef.relatedDataStructure, json);
 
 		global->cmdManager->CreateCommand(cmdName, dataStructure).Send(*m_connection);
+	}
+
+	else if (name == "OnUIReady")
+	{
+		global->htmlUI->SendSignal("SetClientGlobalSettings", m_clientSettingsTxt.value());
+		m_clientSettingsTxt.reset();
 	}
 
 	else if (name == "OnFilesDropped")
@@ -448,6 +458,21 @@ void ApoapseClient::RefreshUserInfo() const
 	}
 
 	global->htmlUI->SendSignal("UpdateUserInfo", ser.Generate());
+}
+
+std::tuple<std::string, UInt16> ApoapseClient::ParseAddress(const std::string& address)
+{
+	if (StringExtensions::contains(address, ':'))
+	{
+		std::vector<std::string> spliced;
+		StringExtensions::split(address, spliced, ":");
+
+		return std::make_tuple(spliced.at(0), std::atoi(spliced.at(1).c_str()));
+	}
+	else
+	{
+		return std::make_tuple(address, defaultServerPort);
+	}
 }
 
 bool ApoapseClient::IsAuthenticated() const

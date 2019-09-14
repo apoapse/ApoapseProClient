@@ -45,8 +45,11 @@ class ApoapseClient
 	std::unique_ptr<ContentManager> m_contentManager;
 	std::unique_ptr<ClientOperations> m_clientOperations;
 
+	std::optional<std::string> m_clientSettingsTxt;
+	
 public:
 	DatabaseSettings serverSettings;
+	JsonHelper clientSettings;
 	
 	ApoapseClient();
 	//virtual ~ApoapseClient();
@@ -89,4 +92,5 @@ private:
 	bool LoadDatabase();
 	void UnloadDatabase();
 	void RefreshUserInfo() const;
+	static std::tuple<std::string, UInt16> ParseAddress(const std::string& address);
 };
