@@ -392,7 +392,6 @@ void ContentManager::OpenRoom(Room& room)
 	LOG << "Selected room " << room.name;
 
 	room.RefrechUnreadMessagesCount();
-	UIRoomsUpdate();
 
 	if (room.threadsLayout == Room::ThreadsLayout::multiple)
 	{
@@ -420,6 +419,9 @@ void ContentManager::OpenRoom(Room& room)
 			ASSERT(false);
 		}
 	}
+
+	UIRoomsUpdate();
+	UIUserListUpdate();
 }
 
 void ContentManager::OpenThread(ApoapseThread& thread)
@@ -442,6 +444,9 @@ void ContentManager::OpenPrivateMsgThread(PrivateMsgThread& thread)
 	thread.LoadMessages(*this);
 	
 	global->htmlUI->SendSignal("OnOpenPrivateMsgThread", thread.GetJson().Generate());
+
+	UIRoomsUpdate();
+	UIUserListUpdate();
 }
 
 void ContentManager::RegisterPrivateMsgThread(const User& user)
