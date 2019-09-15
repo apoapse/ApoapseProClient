@@ -15,6 +15,7 @@ class PrivateMsgThread
 {
 	ContentManager& contentManager;
 	std::vector<PrivateMessage> m_messages;
+	std::string m_unsentMessage;
 	
 public:
 	Int64 unreadMesagesCount = 0;
@@ -27,6 +28,7 @@ public:
 	void RefreshUnreadMessagesCount();
 	void LoadMessages(ContentManager& contentManager);
 	void AddNewMessage(PrivateMessage& message);
+	void SetUnsentMessage(const std::string& msgContent);
 	
 	JsonHelper GetJson() const;
 	PrivateMessage& GetMessageById(DbId id);

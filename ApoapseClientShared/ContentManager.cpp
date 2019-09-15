@@ -133,6 +133,7 @@ void ContentManager::OnReceivedSignal(const std::string& name, const JsonHelper&
 	else if (name == "search")
 	{
 		PreSwitchPage();
+		m_selectedRoom = nullptr;
 		
 		SearchResult res(json.ReadFieldValue<std::string>("query").value(), *this);
 		global->htmlUI->SendSignal("DisplaySearchResults", res.GetJson().Generate());
@@ -140,11 +141,21 @@ void ContentManager::OnReceivedSignal(const std::string& name, const JsonHelper&
 
 	else if (name == "SaveUnsentMessage")
 	{
-		const DbId rommId = json.ReadFieldValue<DbId>("roomId").value();
-		const DbId threadId = json.ReadFieldValue<DbId>("threadId").value();
-		auto& thread = GetRoomById(rommId).GetThread(threadId);
+		if (json.ValueExist("threadId"))
+		{
+			const DbId roomId = json.ReadFieldValue<DbId>("roomId").value();
+			const DbId threadId = json.ReadFieldValue<DbId>("threadId").value();
+			auto& thread = GetRoomById(roomId).GetThread(threadId);
 
-		thread.SetUnsentMessage(json.ReadFieldValue<std::string>("msgContent").value());
+			thread.SetUnsentMessage(json.ReadFieldValue<std::string>("msgContent").value());
+		}
+		else
+		{
+			const DbId userId = json.ReadFieldValue<DbId>("userId").value();
+			auto* privateThread = GetPrivateThreadByUserId(userId);
+
+			privateThread->SetUnsentMessage(json.ReadFieldValue<std::string>("msgContent").value());
+		}
 	}
 }
 
@@ -444,6 +455,7 @@ void ContentManager::OpenThread(ApoapseThread& thread)
 void ContentManager::OpenPrivateMsgThread(PrivateMsgThread& thread)
 {
 	PreSwitchPage();
+	m_selectedRoom = nullptr;
 	m_selectedUserPage = &thread;
 
 	thread.LoadMessages(*this);
@@ -457,7 +469,6 @@ void ContentManager::OpenPrivateMsgThread(PrivateMsgThread& thread)
 void ContentManager::PreSwitchPage()
 {
 	m_selectedThread = nullptr;
-	m_selectedRoom = nullptr;
 	m_selectedUserPage = nullptr;
 }
 

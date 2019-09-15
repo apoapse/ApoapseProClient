@@ -74,7 +74,9 @@ JsonHelper PrivateMsgThread::GetJson() const
 {
 	JsonHelper ser;
 	ser.Insert("user.nickname", relatedUserPtr->nickname);
+	ser.Insert("user.id", relatedUserPtr->id);
 	ser.Insert("user.isOnline", (relatedUserPtr->GetStatus() == User::UserStatus::online));
+	ser.Insert("unsentMessage", m_unsentMessage);
 	
 	for (const auto& message : m_messages)
 	{
@@ -105,4 +107,9 @@ void PrivateMsgThread::AddNewMessage(PrivateMessage& message)
 	}
 
 	RefreshUnreadMessagesCount();
+}
+
+void PrivateMsgThread::SetUnsentMessage(const std::string& msgContent)
+{
+	m_unsentMessage = msgContent;
 }
