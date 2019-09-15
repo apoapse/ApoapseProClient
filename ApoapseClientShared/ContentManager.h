@@ -70,6 +70,7 @@ public:
 	void OpenRoom(Room& room);
 	void OpenThread(ApoapseThread& thread);
 	void OpenPrivateMsgThread(PrivateMsgThread& thread);
+	void PreSwitchPage();
 
 	void RegisterPrivateMsgThread(const User& user);
 

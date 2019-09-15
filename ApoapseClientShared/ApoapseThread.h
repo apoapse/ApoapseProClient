@@ -31,6 +31,7 @@ struct ApoapseMessage
 class ApoapseThread
 {
 	std::vector<ApoapseMessage> m_messages;
+		std::string m_unsentMessage;
 
 public:
 	DbId id = -1;
@@ -52,6 +53,7 @@ public:
 
 	void LoadMessages();
 	void AddNewMessage(ApoapseMessage& message);
+	void SetUnsentMessage(const std::string& msgContent);
 
 	void RefreshUnreadMessagesCount();
 

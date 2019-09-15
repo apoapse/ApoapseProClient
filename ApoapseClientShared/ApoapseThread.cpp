@@ -119,7 +119,8 @@ JsonHelper ApoapseThread::GetJson() const
 	ser.Insert("name", name);
 	ser.Insert("msg_count", totalMessagesCount);
 	ser.Insert("unreadMsgCount", unreadMesagesCount);
-
+	ser.Insert("unsentMessage", m_unsentMessage);
+	
 	if (!m_messages.empty())
 	{
 		auto& mostRecentMsg = m_messages.at(m_messages.size() - 1);
@@ -217,6 +218,11 @@ void ApoapseThread::AddNewMessage(ApoapseMessage& message)
 	}
 
 	LOG << "Added new message id: " << message.id;
+}
+
+void ApoapseThread::SetUnsentMessage(const std::string& msgContent)
+{
+	m_unsentMessage = msgContent;
 }
 
 void ApoapseThread::RefreshUnreadMessagesCount()

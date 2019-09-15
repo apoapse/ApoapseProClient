@@ -4,7 +4,6 @@
 #include "Json.hpp"
 #include "HTMLUI.h"
 #include "ApoapseClient.h"
-#include <numeric>
 #include "PrivateMsgThread.h"
 #include "SearchResult.h"
 
@@ -133,12 +132,19 @@ void ContentManager::OnReceivedSignal(const std::string& name, const JsonHelper&
 
 	else if (name == "search")
 	{
+		PreSwitchPage();
+		
 		SearchResult res(json.ReadFieldValue<std::string>("query").value(), *this);
 		global->htmlUI->SendSignal("DisplaySearchResults", res.GetJson().Generate());
+	}
 
-		m_selectedThread = nullptr;
-		m_selectedUserPage = nullptr;
-		m_selectedRoom = nullptr;
+	else if (name == "SaveUnsentMessage")
+	{
+		const DbId rommId = json.ReadFieldValue<DbId>("roomId").value();
+		const DbId threadId = json.ReadFieldValue<DbId>("threadId").value();
+		auto& thread = GetRoomById(rommId).GetThread(threadId);
+
+		thread.SetUnsentMessage(json.ReadFieldValue<std::string>("msgContent").value());
 	}
 }
 
@@ -385,9 +391,8 @@ void ContentManager::UpdateAttachmentsUI()
 
 void ContentManager::OpenRoom(Room& room)
 {
+	PreSwitchPage();
 	m_selectedRoom = &room;
-	m_selectedThread = nullptr;
-	m_selectedUserPage = nullptr;
 
 	LOG << "Selected room " << room.name;
 
@@ -426,6 +431,7 @@ void ContentManager::OpenRoom(Room& room)
 
 void ContentManager::OpenThread(ApoapseThread& thread)
 {
+	PreSwitchPage();
 	m_selectedThread = &thread;
 	m_selectedThread->LoadMessages();
 
@@ -437,9 +443,8 @@ void ContentManager::OpenThread(ApoapseThread& thread)
 
 void ContentManager::OpenPrivateMsgThread(PrivateMsgThread& thread)
 {
+	PreSwitchPage();
 	m_selectedUserPage = &thread;
-	m_selectedThread = nullptr;
-	m_selectedRoom = nullptr;
 
 	thread.LoadMessages(*this);
 	
@@ -447,6 +452,13 @@ void ContentManager::OpenPrivateMsgThread(PrivateMsgThread& thread)
 
 	UIRoomsUpdate();
 	UIUserListUpdate();
+}
+
+void ContentManager::PreSwitchPage()
+{
+	m_selectedThread = nullptr;
+	m_selectedRoom = nullptr;
+	m_selectedUserPage = nullptr;
 }
 
 void ContentManager::RegisterPrivateMsgThread(const User& user)
