@@ -424,7 +424,7 @@ bool ApoapseClient::LoadDatabase()
 
 	std::vector<const char*> dbParams;
 
-	std::string dbFileName = "user_" + m_authenticatedUser->username.ToStr() + ".db";
+	const std::string dbFileName = NativeUI::GetUserDirectory() + "user_" + m_authenticatedUser->username.ToStr() + ".db";
 	dbParams.push_back(dbFileName.c_str());
 
 #ifndef DO_NOT_ENCRYPT_DATABASE

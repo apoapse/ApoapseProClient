@@ -4,6 +4,7 @@
 #include <commdlg.h>
 #include "StringExtensions.h"
 #include <sstream>
+#include <ShlObj.h>
 
 std::string NativeUI::OpenFileDialog(const std::vector<std::string>& extensionsSupported, const std::string& extensionsGroup)
 {
@@ -32,4 +33,15 @@ std::string NativeUI::OpenFileDialog(const std::vector<std::string>& extensionsS
 	GetOpenFileName(&ofn);
 
 	return std::string(szFile);
+}
+
+std::string NativeUI::GetUserDirectory()
+{
+	char appData[MAX_PATH];
+	SHGetSpecialFolderPathA(NULL, appData, CSIDL_APPDATA, 1);
+
+	std::string filePath = std::string(appData);
+	filePath = std::regex_replace(filePath, std::regex(R"(\\)"), R"(/)");	// We convert backslashes in slashes
+
+	return filePath + "/Apoapse/";
 }

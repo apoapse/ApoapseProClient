@@ -10,6 +10,7 @@
 #include <filesystem>
 #include "FileUtils.h"
 #include "ApoapseError.h"
+#include "NativeUI.h"
 
 ClientCmdManager::ClientCmdManager(ApoapseClient& client) : CommandsManagerV2(GetCommandDef()), apoapseClient(client)
 {
@@ -179,7 +180,7 @@ void ClientCmdManager::OnReceivedCommand(CommandV2& cmd, GenericConnection& netC
 		if (cmd.GetData().GetField("avatar").HasValue())
 		{
 			const auto username = cmd.GetData().GetField("username").GetValue<Username>();
-			const std::string filePath = User::GetAvatarFilePath(username);
+			const std::string filePath = NativeUI::GetUserDirectory() + User::GetAvatarFilePath(username);
 
 			if (!std::filesystem::exists(filePath))
 				FileUtils::SaveBytesToFile(filePath, cmd.GetData().GetField("avatar").GetValue<ByteContainer>());

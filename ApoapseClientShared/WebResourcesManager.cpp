@@ -4,6 +4,7 @@
 #include <filesystem>
 #include "FileUtils.h"
 #include "StringExtensions.h"
+#include "NativeUI.h"
 
 std::vector<byte> WebResourcesManager::ReadFile(const std::string& filename, const std::string& fileExtension)
 {
@@ -11,7 +12,7 @@ std::vector<byte> WebResourcesManager::ReadFile(const std::string& filename, con
 
 	if (StringExtensions::contains(filename, "client_avatar"))
 	{
-		filePath = "./" + filename;
+		filePath = NativeUI::GetUserDirectory() + filename;
 	}
 
 	if (!std::filesystem::exists(filePath))

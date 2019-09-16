@@ -10,6 +10,7 @@
 #include "Json.hpp"
 #include "HTMLUI.h"
 #include "ApoapseClient.h"
+#include "NativeUI.h"
 
 User::User(DataStructure& data, ApoapseClient& client) : apoapseClient(&client)
 {
