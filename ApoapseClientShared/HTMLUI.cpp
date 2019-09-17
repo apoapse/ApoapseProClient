@@ -7,7 +7,7 @@
 
 HTMLUI::HTMLUI(ApoapseClient& client) : m_apoapseClient(client)
 {
-	m_webResourcesManager = std::make_unique<WebResourcesManager>();
+	m_webResourcesManager = std::make_unique<WebResourcesManager>(client);
 }
 
 void HTMLUI::RegisterSignalSender(ISignalSender* signalSender)

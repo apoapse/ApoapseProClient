@@ -5,6 +5,11 @@
 #include "FileUtils.h"
 #include "StringExtensions.h"
 #include "NativeUI.h"
+#include "ApoapseClient.h"
+
+WebResourcesManager::WebResourcesManager(ApoapseClient& client) : m_apoapseClient(client)
+{
+}
 
 std::vector<byte> WebResourcesManager::ReadFile(const std::string& filename, const std::string& fileExtension)
 {
@@ -21,5 +26,18 @@ std::vector<byte> WebResourcesManager::ReadFile(const std::string& filename, con
 		return std::vector<byte>();
 	}
 
-	return FileUtils::ReadFile(filePath);
+	const std::vector<byte> res = FileUtils::ReadFile(filePath);
+
+	if (filename == "main.html")
+	{
+		const std::string prefix = "<script>g_locale = '" + m_apoapseClient.clientSettings.ReadFieldValue<std::string>("language").value() + "';</script>";	// Global variables
+		std::vector<byte> output(prefix.size() + res.size());
+		
+		std::copy(prefix.begin(), prefix.end(), output.begin());
+		std::copy(res.begin(), res.end(), output.begin() + prefix.size());
+
+		return output;
+	}
+	
+	return res;
 }
