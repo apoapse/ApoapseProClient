@@ -72,17 +72,17 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>..\..\Bin\$(Configuration)_$(Platform)\CefClient\</OutDir>
     <IntDir>..\..\vs_build\$(ProjectName)\$(Configuration)_$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)ThirdParty\opencv\include\;$(SolutionDir)..\ApoapseCore\ThirdParty\magic_enum\include\;C:\OpenSSL-Win64\include;$(SolutionDir)..\ApoapseCore\ThirdParty\cryptopp\;$(SolutionDir)..\ApoapseCore\ThirdParty\boost_1_71_0\;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)ThirdParty\opencv\include\;$(SolutionDir)..\ApoapseCore\ThirdParty\magic_enum\include\;C:\OpenSSL-Win64-3\include;$(SolutionDir)..\ApoapseCore\ThirdParty\cryptopp\;$(SolutionDir)..\ApoapseCore\ThirdParty\boost_1_71_0\;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <SourcePath>$(VC_SourcePath);</SourcePath>
-    <LibraryPath>$(SolutionDir)ThirdParty\opencv\x64\vc15\lib\;C:\OpenSSL-Win64\lib;$(SolutionDir)..\ApoapseCore\ThirdParty\cryptopp\cryptopp\x64\Output\Debug;$(OutDir);$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)ThirdParty\opencv\x64\vc15\lib\;C:\OpenSSL-Win64-3\lib;$(SolutionDir)..\ApoapseCore\ThirdParty\cryptopp\cryptopp\x64\Output\Debug;$(OutDir);$(LibraryPath)</LibraryPath>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>..\..\Bin\$(Configuration)_$(Platform)\CefClient\</OutDir>
     <IntDir>..\..\vs_build\$(ProjectName)\$(Configuration)_$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)ThirdParty\opencv\include\;$(SolutionDir)..\ApoapseCore\ThirdParty\magic_enum\include\;C:\OpenSSL-Win64\include;$(SolutionDir)..\ApoapseCore\ThirdParty\cryptopp\;$(SolutionDir)..\ApoapseCore\ThirdParty\boost_1_71_0\;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)ThirdParty\opencv\include\;$(SolutionDir)..\ApoapseCore\ThirdParty\magic_enum\include\;C:\OpenSSL-Win64-3\include;$(SolutionDir)..\ApoapseCore\ThirdParty\cryptopp\;$(SolutionDir)..\ApoapseCore\ThirdParty\boost_1_71_0\;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <SourcePath>$(VC_SourcePath);</SourcePath>
-    <LibraryPath>$(SolutionDir)ThirdParty\opencv\x64\vc15\lib\;C:\OpenSSL-Win64\lib;$(SolutionDir)..\ApoapseCore\ThirdParty\cryptopp\cryptopp\x64\Output\Release;$(OutDir)..\;$(OutDir);$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)ThirdParty\opencv\x64\vc15\lib\;C:\OpenSSL-Win64-3\lib;$(SolutionDir)..\ApoapseCore\ThirdParty\cryptopp\cryptopp\x64\Output\Release;$(OutDir)..\;$(OutDir);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
