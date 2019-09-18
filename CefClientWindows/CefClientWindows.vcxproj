@@ -108,7 +108,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>CefClientShared.lib;ApoapseClientShared.lib;libcef_dll_wrapper.lib;libcef.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;comctl32.lib;rpcrt4.lib;shlwapi.lib;ws2_32.lib;dbghelp.lib;psapi.lib;version.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(TargetDir);$(SolutionDir)ThirdParty\cef_binary\Debug;$(SolutionDir)ThirdParty\cef_binary\libcef_dll_wrapper\Debug;C:\Program Files\boost\boost_1_67_0\lib64-msvc-14.1</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(TargetDir);$(SolutionDir)ThirdParty\cef_binary\Debug;$(SolutionDir)ThirdParty\cef_binary\libcef_dll_wrapper\Debug;C:\boost_1_71_0\lib64-msvc-14.2</AdditionalLibraryDirectories>
       <SubSystem>NotSet</SubSystem>
       <OptimizeReferences>false</OptimizeReferences>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
@@ -146,7 +146,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>CefClientShared.lib;ApoapseClientShared.lib;libcef_dll_wrapper.lib;libcef.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;comctl32.lib;rpcrt4.lib;shlwapi.lib;ws2_32.lib;dbghelp.lib;psapi.lib;version.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(TargetDir)..\;$(TargetDir);$(SolutionDir)ThirdParty\cef_binary\Release;$(SolutionDir)ThirdParty\cef_binary\libcef_dll_wrapper\Release;C:\Program Files\boost\boost_1_67_0\lib64-msvc-14.1</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(TargetDir)..\;$(TargetDir);$(SolutionDir)ThirdParty\cef_binary\Release;$(SolutionDir)ThirdParty\cef_binary\libcef_dll_wrapper\Release;C:\boost_1_71_0\lib64-msvc-14.2</AdditionalLibraryDirectories>
       <AdditionalOptions>/LTCG /ignore:4099 %(AdditionalOptions)</AdditionalOptions>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
       <SubSystem>Windows</SubSystem>
