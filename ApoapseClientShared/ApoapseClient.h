@@ -28,8 +28,8 @@ class ApoapseClient
 	std::unique_ptr<boost::asio::io_service> m_fileStreamIOService;
 	std::unique_ptr<boost::asio::io_service> m_mainConnectionIOService;
 	
-	ClientConnection* m_connection = nullptr;
-	ClientFileStreamConnection* m_fileStreamConnection = nullptr;
+	std::shared_ptr<ClientConnection> m_connection;
+	std::shared_ptr<ClientFileStreamConnection> m_fileStreamConnection;
 	bool m_connected;
 	
 	std::optional<CommandV2> m_loginCmd;

@@ -68,24 +68,22 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 
 		global->htmlUI->UpdateStatusBar("@connecting_status");
 		ssl::context tlsContext(ssl::context::sslv23);
-		tlsContext.set_options(boost::asio::ssl::context::default_workarounds | boost::asio::ssl::context::no_sslv2 | boost::asio::ssl::context::single_dh_use);
+		tlsContext.set_options(ssl::context::default_workarounds | ssl::context::no_sslv2 | ssl::context::no_tlsv1_1 | ssl::context::no_tlsv1 | ssl::context::single_dh_use | ssl::context::no_compression);
 		tlsContext.set_default_verify_paths();
 
 		// File Stream
 		{
-			auto connection = std::make_shared<ClientFileStreamConnection>(*m_fileStreamIOService/*, tlsContext*/, *this);
-			connection->Connect(address, fileStreamPort);
+			m_fileStreamConnection = std::make_shared<ClientFileStreamConnection>(*m_fileStreamIOService/*, tlsContext*/, *this);
+			m_fileStreamConnection->Connect(address, fileStreamPort);
 
-			m_fileStreamConnection = connection.get();
 			LOG << "[File stream connection] TCP Client started to " << serverAddress << " port: " << fileStreamPort;
 		}
 		
 		// Main connection
 		{
-			auto connection = std::make_shared<ClientConnection>(*m_mainConnectionIOService, tlsContext, *this);
-			connection->Connect(address, mainPort);
+			m_connection = std::make_shared<ClientConnection>(*m_mainConnectionIOService, tlsContext, *this);
+			m_connection->Connect(address, mainPort);
 
-			m_connection = connection.get();
 			LOG << "[Main connection] TCP Client started to " << serverAddress << " port: " << mainPort;
 		}
 	}
@@ -109,12 +107,12 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 
 ClientConnection* ApoapseClient::GetConnection()
 {
-	return m_connection;
+	return m_connection.get();
 }
 
 ClientFileStreamConnection* ApoapseClient::GetFileStreamConnection() const
 {
-	return m_fileStreamConnection;
+	return m_fileStreamConnection.get();
 }
 
 bool ApoapseClient::IsConnectedToServer() const
