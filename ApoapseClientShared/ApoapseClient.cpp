@@ -11,7 +11,7 @@
 #include "Hash.hpp"
 #include "CommandsManagerV2.h"
 #include "ClientFileStreamConnection.h"
-#include "attachment.h"
+#include "Attachment.h"
 #include "ThreadUtils.h"
 #include "NativeUI.h"
 #include "ImageUtils.h"
@@ -73,7 +73,7 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 
 		// File Stream
 		{
-			m_fileStreamConnection = std::make_shared<ClientFileStreamConnection>(*m_fileStreamIOService/*, tlsContext*/, *this);
+			m_fileStreamConnection = std::make_shared<ClientFileStreamConnection>(*m_fileStreamIOService, tlsContext, *this);
 			m_fileStreamConnection->Connect(address, fileStreamPort);
 
 			LOG << "[File stream connection] TCP Client started to " << serverAddress << " port: " << fileStreamPort;

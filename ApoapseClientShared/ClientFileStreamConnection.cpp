@@ -7,8 +7,8 @@
 #include "ClientConnection.h"
 #include "Attachment.h"
 
-ClientFileStreamConnection::ClientFileStreamConnection(boost::asio::io_service& ioService/*, ssl::context& context*/, ApoapseClient& client)
-	: FileStreamConnection(ioService/*, context*/)
+ClientFileStreamConnection::ClientFileStreamConnection(boost::asio::io_service& ioService, ssl::context& context, ApoapseClient& client)
+	: FileStreamConnection(ioService, context)
 	, client(client)
 {
 	
