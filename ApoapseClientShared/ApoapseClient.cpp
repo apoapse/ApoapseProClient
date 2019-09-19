@@ -124,6 +124,9 @@ void ApoapseClient::Disconnect()
 {
 	m_connection->Close();
 	m_fileStreamConnection->Close();
+
+	m_connection.reset();
+	m_fileStreamConnection.reset();
 }
 
 std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonHelper& json)
