@@ -145,5 +145,5 @@ JsonHelper Attachment::GetJson() const
 std::string Attachment::GetAttachmentFilePath(const Username& username, const Uuid& attUuid, const std::string& fileFullName)
 {
 	const std::string uuidStr = BytesToHexString(attUuid.GetBytes());
-	return NativeUI::GetUserDirectory() + "client_download_" + username.ToStr().substr(0, 16) + '/' + uuidStr.substr(0, 4) + fileFullName;
+	return NativeUI::GetUserDirectory() + "client_download_" + username.ToStr().substr(0, 16) + '/' + uuidStr.substr(0, 10) + '/' + fileFullName;
 }
