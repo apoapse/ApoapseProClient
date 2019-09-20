@@ -15,7 +15,7 @@ Room::Room(DataStructure& data)
 	id = data.GetDbId();
 }
 
-void Room::RefrechUnreadMessagesCount()
+void Room::RefreshUnreadMessagesCount()
 {
 	unreadMsgCount = 0;
 
@@ -80,7 +80,7 @@ void ContentManager::Init()
 		{
 			auto room = std::make_unique<Room>(roomData);
 			ApoapseThread::LoadAllThreads(*room, *this);
-			room->RefrechUnreadMessagesCount();
+			room->RefreshUnreadMessagesCount();
 
 			m_rooms.push_back(std::move(room));
 		}
@@ -407,7 +407,7 @@ void ContentManager::OpenRoom(Room& room)
 
 	LOG << "Selected room " << room.name;
 
-	room.RefrechUnreadMessagesCount();
+	room.RefreshUnreadMessagesCount();
 
 	if (room.threadsLayout == Room::ThreadsLayout::multiple)
 	{

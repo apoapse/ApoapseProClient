@@ -23,9 +23,9 @@ struct Room
 	std::vector<std::unique_ptr<ApoapseThread>> threads;
 
 	Room(DataStructure& data);
-	void RefrechUnreadMessagesCount();
 	bool operator==(const Room& other) const;
 
+	void RefreshUnreadMessagesCount();
 	JsonHelper GetJson() const;
 	ApoapseThread& GetThread(DbId dbId);
 };

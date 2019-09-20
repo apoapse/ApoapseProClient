@@ -238,7 +238,7 @@ void ApoapseThread::LoadAllThreads(Room& room, ContentManager& cManager)
 {
 	if (room.threads.empty())	// We don't load treads if there are any already
 	{
-		auto threads = global->apoapseData->ReadListFromDatabase("thread", "parent_room", room.uuid);
+		auto threads = global->apoapseData->ReadListFromDatabase("thread", "parent_room", room.uuid, "id", ResultOrder::desc);
 		room.threads.reserve(threads.size());
 
 		for (auto& threadData : threads)
