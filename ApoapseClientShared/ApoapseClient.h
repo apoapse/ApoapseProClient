@@ -37,6 +37,7 @@ class ApoapseClient
 	Username m_lastLoginTryUsername;
 	std::optional<std::string> m_dbPassword;
 	std::optional<LocalUser> m_authenticatedUser;
+	bool m_firstConnection = false;
 
 	std::deque<Attachment::File> m_lastDroppedFiles;
 

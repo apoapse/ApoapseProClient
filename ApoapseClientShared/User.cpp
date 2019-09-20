@@ -2,14 +2,12 @@
 #include "User.h"
 #include "Common.h"
 #include "Hash.hpp"
-#include "RSA.hpp"
-#include "AES.hpp"
 #include "Random.hpp"
 #include "Maths.hpp"
-#include "SQLQuery.h"
 #include "Json.hpp"
 #include "HTMLUI.h"
 #include "ApoapseClient.h"
+#include <filesystem>
 #include "NativeUI.h"
 
 User::User(DataStructure& data, ApoapseClient& client) : apoapseClient(&client)
@@ -85,7 +83,9 @@ std::string User::GenerateTemporaryRandomPassword()
 
 std::string User::GetAvatarFilePath(const Username& username)
 {
-	return "client_avatar/av_" + username.ToStr().substr(0, 24) + ".jpg";
+	const std::string path = "client_avatar/av_" + username.ToStr().substr(0, 24) + ".jpg";
+	
+	return (std::filesystem::exists(NativeUI::GetUserDirectory() + path) ? path : "");
 }
 
 /*std::pair<PrivateKeyBytes, PublicKeyBytes> User::GenerateIdentityKey()

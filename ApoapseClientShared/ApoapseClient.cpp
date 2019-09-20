@@ -17,6 +17,7 @@
 #include "ImageUtils.h"
 #include "ApoapseError.h"
 #include "FileUtils.h"
+#include <filesystem>
 
 ApoapseClient::ApoapseClient()
 {
@@ -426,6 +427,10 @@ bool ApoapseClient::LoadDatabase()
 	std::vector<const char*> dbParams;
 
 	const std::string dbFileName = NativeUI::GetUserDirectory() + "user_" + m_authenticatedUser->username.ToStr() + ".db";
+
+	if (!std::filesystem::exists(dbFileName))
+		m_firstConnection = true;
+	
 	dbParams.push_back(dbFileName.c_str());
 
 #ifndef DO_NOT_ENCRYPT_DATABASE
