@@ -389,6 +389,13 @@ void ApoapseClient::OnAuthenticated()
 			return;
 		}
 	}
+
+	// Create attachment folder
+	{
+		const std::string attachmentFolderPath = NativeUI::GetUserDirectory() + "client_download_" + GetLocalUser().username.ToStr().substr(0, 16);
+		if (!std::filesystem::exists(attachmentFolderPath))
+			std::filesystem::create_directory(attachmentFolderPath);
+	}
 	
 	// Systems
 	m_clientUsers = std::make_unique<ClientUsers>(*this);
