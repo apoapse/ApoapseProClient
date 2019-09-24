@@ -61,6 +61,10 @@ bool ClientCmdManager::OnSendCommandPre(CommandV2& cmd)
 			}
 			
 			cmd.GetData().GetField("attachments").SetValue(attachmentsDat);
+
+			// hack to allow to send empty messages but with attachments
+			if (cmd.GetData().GetField("message").GetValue<std::string>().empty())
+				cmd.GetData().GetField("message").SetValue(" "s);
 		}
 
 		LOG << "Sending a message with " << attachmentFiles.size() << " attachments";
