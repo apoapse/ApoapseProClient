@@ -124,6 +124,14 @@ void Attachment::SetFileAsDownloaded(bool autoOpen)
 void Attachment::CopyFileLocally(const std::string& localFilePath)
 {
 	const std::string finalPath = GetAttachmentFilePath(apoapseClient.GetLocalUser().GetUsername(), relatedFile.uuid, relatedFile.fileName);
+	const std::string filePathFolder = std::filesystem::path(finalPath).parent_path().string();
+	
+	// We create the parent directory if it does not exist
+	if (!filePathFolder.empty() && !std::filesystem::exists(filePathFolder))
+	{
+		std::filesystem::create_directory(filePathFolder);
+	}
+	
 	std::filesystem::copy(localFilePath, finalPath);
 	
 	SetFileAsDownloaded(false);

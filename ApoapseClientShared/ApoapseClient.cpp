@@ -274,10 +274,20 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 
 		global->cmdManager->CreateCommand("mark_as_read", dat).Send(*m_connection);
 	}
+	
 	else if (name == "openAttachment")
 	{
 		std::shared_ptr<Attachment> att = GetContentManager().GetAttachment((DbId)json.ReadFieldValue<Int64>("id").value());
 		att->RequestOpenFile();
+	}
+	else if (name == "removeTempAttachment")
+	{
+		const DbId id = json.ReadFieldValue<Int64>("id").value();
+
+		m_lastDroppedFiles.erase(std::remove_if(m_lastDroppedFiles.begin(), m_lastDroppedFiles.end(), [id](const Attachment::File& att)
+		{
+			return (att.temporaryId.value() == id);
+		}), m_lastDroppedFiles.end());
 	}
 
 	else
@@ -541,12 +551,14 @@ void ApoapseClient::OnDropFiles()
 		JsonHelper ser;
 
 		size_t i = 0;
-		for (const auto& file : m_lastDroppedFiles)
+		for (auto& file : m_lastDroppedFiles)
 		{
+			file.temporaryId = i;
+			
 			JsonHelper attSer;
 			attSer.Insert("fileName", HTMLUI::HtmlSpecialChars(file.fileName));
 			attSer.Insert("fileSize", file.fileSize / 1000);	//Size in kb
-			attSer.Insert("id", i);
+			attSer.Insert("id", file.temporaryId.value());
 
 			ser.Insert("attachments", attSer);
 			i++;
