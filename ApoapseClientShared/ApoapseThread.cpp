@@ -130,15 +130,43 @@ JsonHelper ApoapseThread::GetJson() const
 	return ser;
 }
 
-JsonHelper ApoapseThread::GetMessageListJson() const
+JsonHelper ApoapseThread::GetThreadMessagesJson() const
 {
 	JsonHelper ser;
-	for (const auto& message : m_messages)
+	ser.Insert("totalMsgCount", totalMessagesCount);
+	
+	const Int64 offset = std::min(totalMessagesCount, (Int64)maxMessagesPerChunk);
+	
+	std::for_each(m_messages.end() - offset, m_messages.end(), [&ser](const ApoapseMessage& message)
 	{
 		ser.Insert("messages", message.GetJson());
-	}
+	});
 
 	return ser;
+}
+
+void ApoapseThread::LoadNextMessagesChunk(Int64 messagesLoaded)
+{
+	ASSERT(contentManager.IsThreadDisplayed());
+	if (messagesLoaded >= totalMessagesCount)
+		return;
+
+	JsonHelper ser;
+	ser.Insert("totalMsgCount", totalMessagesCount);
+
+	const Int64 offset = std::min(messagesLoaded + maxMessagesPerChunk, (Int64)totalMessagesCount);
+	
+	int msgCount = 0;
+	std::for_each(m_messages.end() - offset, m_messages.end(), [&ser, &msgCount](const ApoapseMessage& message)
+	{
+		if (msgCount < maxMessagesPerChunk)
+		{
+			ser.Insert("messages", message.GetJson());
+			msgCount++;
+		}
+	});
+
+	global->htmlUI->SendSignal("OnMessagesChunkLoaded", ser.Generate());
 }
 
 ApoapseMessage& ApoapseThread::GetMessageById(DbId dbId)
@@ -156,7 +184,7 @@ ApoapseMessage& ApoapseThread::GetMessageById(DbId dbId)
 
 ApoapseMessage* ApoapseThread::GetMessageByUuid(const Uuid& msgUuid)
 {
-	auto res = std::find_if(m_messages.begin(), m_messages.end(), [&msgUuid](ApoapseMessage& msg)
+	const auto res = std::find_if(m_messages.begin(), m_messages.end(), [&msgUuid](ApoapseMessage& msg)
 	{
 		return (msg.uuid == msgUuid);
 	});
@@ -174,7 +202,7 @@ void ApoapseThread::LoadMessages()
 		m_messages.clear();
 		m_messages.reserve(totalMessagesCount);
 
-		auto messages = global->apoapseData->ReadListFromDatabase("message", "parent_thread", uuid);
+		auto messages = global->apoapseData->ReadListFromDatabase("message", "parent_thread", uuid, "id", ResultOrder::asc);
 		for (auto& messageDat : messages)
 		{
 			m_messages.push_back(ApoapseMessage(messageDat, contentManager.client));

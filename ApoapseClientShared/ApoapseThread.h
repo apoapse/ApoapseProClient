@@ -32,6 +32,7 @@ class ApoapseThread
 {
 	std::vector<ApoapseMessage> m_messages;
 	std::string m_unsentMessage;
+	static const UInt32 maxMessagesPerChunk = 15;
 
 public:
 	DbId id = -1;
@@ -47,14 +48,15 @@ public:
 	bool operator==(const ApoapseThread& other) const;
 
 	JsonHelper GetJson() const;
-	JsonHelper GetMessageListJson() const;
+	JsonHelper GetThreadMessagesJson() const;
 	ApoapseMessage& GetMessageById(DbId dbId);
 	ApoapseMessage* GetMessageByUuid(const Uuid& msgUuid);
 
 	void LoadMessages();
 	void AddNewMessage(ApoapseMessage& message);
 	void SetUnsentMessage(const std::string& msgContent);
-
+	void LoadNextMessagesChunk(Int64 messagesLoaded);
+	
 	void RefreshUnreadMessagesCount();
 
 	static void LoadAllThreads(Room& room, ContentManager& cManager);

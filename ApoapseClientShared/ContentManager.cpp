@@ -6,6 +6,7 @@
 #include "ApoapseClient.h"
 #include "PrivateMsgThread.h"
 #include "SearchResult.h"
+#include <magic_enum.hpp>
 
 Room::Room(DataStructure& data)
 {
@@ -104,7 +105,7 @@ void ContentManager::Init()
 		// UIUserListUpdate(); do not update here as it it already updated when receiving the server_info cmd
 	}
 
-	UpdateAttachmentsUI();
+	UpdateAttachmentsUI("date", ResultOrder::desc);
 }
 
 void ContentManager::OnReceivedSignal(const std::string& name, const JsonHelper& json)
@@ -156,6 +157,17 @@ void ContentManager::OnReceivedSignal(const std::string& name, const JsonHelper&
 
 			privateThread->SetUnsentMessage(json.ReadFieldValue<std::string>("msgContent").value());
 		}
+	}
+
+	else if (name == "SortAttachments")
+	{
+		const ResultOrder order = (json.ReadFieldValue<std::string>("order").value() == "desc") ? ResultOrder::desc : ResultOrder::asc;
+		UpdateAttachmentsUI(json.ReadFieldValue<std::string>("sortBy").value(), order);
+	}
+
+	else if (name == "loadNextMessagesChunk")
+	{
+		GetCurrentThread().LoadNextMessagesChunk(json.ReadFieldValue<Int64>("loadedMsgCount").value());
 	}
 }
 
@@ -375,7 +387,7 @@ void ContentManager::RegisterAttachment(std::shared_ptr<Attachment>& attachment)
 {
 	m_attachmentsPool.push_back(attachment);
 
-	UpdateAttachmentsUI();
+	UpdateAttachmentsUI("date", ResultOrder::desc);
 }
 
 UInt64 ContentManager::GetAttachmentsCount() const
@@ -383,14 +395,13 @@ UInt64 ContentManager::GetAttachmentsCount() const
 	return m_attachmentsPool.size();
 }
 
-void ContentManager::UpdateAttachmentsUI()
+void ContentManager::UpdateAttachmentsUI(const std::string& sortBy, ResultOrder order)
 {
+	SortAttachments(sortBy, order);
+	
 	JsonHelper ser;
-
-	std::sort(m_attachmentsPool.begin(), m_attachmentsPool.end(), [](std::shared_ptr<Attachment> attA, std::shared_ptr<Attachment> attB)
-	{
-		return (attA->sentTime > attB->sentTime);
-	});
+	ser.Insert("sorting.sortBy",  sortBy);
+	ser.Insert("sorting.order", std::string(magic_enum::enum_name(order)));
 
 	for (const auto& attachment : m_attachmentsPool)
 	{
@@ -398,6 +409,20 @@ void ContentManager::UpdateAttachmentsUI()
 	}
 
 	global->htmlUI->SendSignal("UpdateAttachments", ser.Generate());
+}
+
+void ContentManager::SortAttachments(const std::string& sortBy, ResultOrder order)
+{
+	std::sort(m_attachmentsPool.begin(), m_attachmentsPool.end(), [&sortBy](std::shared_ptr<Attachment> attA, std::shared_ptr<Attachment> attB)
+	{
+		if (sortBy == "size")
+			return (attA->relatedFile.fileSize > attB->relatedFile.fileSize);
+		else
+			return (attA->sentTime > attB->sentTime);
+	});
+
+	if (order == ResultOrder::asc)
+		std::reverse(m_attachmentsPool.begin(), m_attachmentsPool.end());
 }
 
 void ContentManager::OpenRoom(Room& room)
@@ -446,7 +471,7 @@ void ContentManager::OpenThread(ApoapseThread& thread)
 	m_selectedThread = &thread;
 	m_selectedThread->LoadMessages();
 
-	JsonHelper ser = m_selectedThread->GetMessageListJson();
+	JsonHelper ser = m_selectedThread->GetThreadMessagesJson();
 	ser.Insert("thread", thread.GetJson());
 
 	global->htmlUI->SendSignal("OnOpenThread", ser.Generate());
