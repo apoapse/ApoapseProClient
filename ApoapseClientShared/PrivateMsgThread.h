@@ -27,9 +27,12 @@ public:
 
 	void RefreshUnreadMessagesCount();
 	void LoadMessages(ContentManager& contentManager);
+	void LoadNextMessagesChunk(Int64 messagesLoaded);
 	void AddNewMessage(PrivateMessage& message);
 	void SetUnsentMessage(const std::string& msgContent);
 	
 	JsonHelper GetJson() const;
 	PrivateMessage& GetMessageById(DbId id);
+
+private:
 };

@@ -6,6 +6,7 @@
 #include "Json.hpp"
 #include "ApoapseClient.h"
 #include <SQLQuery.h>
+#include <boost/range/adaptor/reversed.hpp>
 
 PrivateMessage::PrivateMessage(DataStructure& data, ApoapseClient& client) : ApoapseMessage(data, client)
 {
@@ -56,7 +57,10 @@ void PrivateMsgThread::LoadMessages(ContentManager& contentManager)
 	const Username username = relatedUserPtr->username;
 
 	SQLQuery query(*global->database);
-	query << SELECT << ALL << FROM << "messages" << WHERE << "direct_recipient" << EQUALS << username.GetBytes() << OR << "(author" << EQUALS << username.GetBytes() << AND << "direct_recipient" << EQUALS << contentManager.client.GetLocalUser().username.GetBytes() << ")";
+	query << SELECT << ALL << FROM << "messages" << WHERE << "direct_recipient" << EQUALS << username.GetBytes()
+	<< OR << "(author" << EQUALS << username.GetBytes()
+	<< AND << "direct_recipient" << EQUALS << contentManager.client.GetLocalUser().username.GetBytes() << ")"
+	<< ORDER_BY << "id" << ASC;
 	auto res = query.Exec();
 
 	for (const auto& row : res)
@@ -70,6 +74,27 @@ void PrivateMsgThread::LoadMessages(ContentManager& contentManager)
 	LOG << "Loaded " << m_messages.size() << " private messages on user thread " << relatedUserPtr->nickname;
 }
 
+void PrivateMsgThread::LoadNextMessagesChunk(Int64 messagesLoaded)
+{
+	ASSERT(contentManager.IsUserPageDisplayed());
+	if (messagesLoaded >= m_messages.size())
+		return;
+
+	JsonHelper ser;
+	ser.Insert("totalMsgCount", m_messages.size());
+
+	auto chunkMessages = Range(m_messages, m_messages.size() - messagesLoaded);
+	const Int64 msgInThisChunk = std::min((Int64)ApoapseThread::maxMessagesPerChunk, (Int64)chunkMessages.size());
+	chunkMessages.Consume(chunkMessages.size() - msgInThisChunk);
+
+	for (auto& message : chunkMessages)
+	{
+		ser.Insert("messages", message.GetJson());
+	}
+
+	global->htmlUI->SendSignal("OnMessagesChunkLoaded", ser.Generate());
+}
+
 JsonHelper PrivateMsgThread::GetJson() const
 {
 	JsonHelper ser;
@@ -77,10 +102,19 @@ JsonHelper PrivateMsgThread::GetJson() const
 	ser.Insert("user.id", relatedUserPtr->id);
 	ser.Insert("user.isOnline", (relatedUserPtr->GetStatus() == User::UserStatus::online));
 	ser.Insert("unsentMessage", m_unsentMessage);
-	
-	for (const auto& message : m_messages)
+	ser.Insert("totalMsgCount", m_messages.size());
+
+	// Messages
 	{
-		ser.Insert("messages", message.GetJson());
+		auto chunkMessages = Range(m_messages);
+
+		const Int64 msgInThisChunk = std::min((Int64)ApoapseThread::maxMessagesPerChunk, (Int64)chunkMessages.size());
+		chunkMessages.Consume(chunkMessages.size() - msgInThisChunk);
+
+		for (auto& message : chunkMessages)
+		{
+			ser.Insert("messages", message.GetJson());
+		}
 	}
 
 	return ser;

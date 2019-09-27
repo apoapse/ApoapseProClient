@@ -167,7 +167,13 @@ void ContentManager::OnReceivedSignal(const std::string& name, const JsonHelper&
 
 	else if (name == "loadNextMessagesChunk")
 	{
-		GetCurrentThread().LoadNextMessagesChunk(json.ReadFieldValue<Int64>("loadedMsgCount").value());
+		const auto messagesLoaded = json.ReadFieldValue<Int64>("loadedMsgCount").value();
+		
+		if (IsThreadDisplayed())
+			GetCurrentThread().LoadNextMessagesChunk(messagesLoaded);
+		
+		else if (IsUserPageDisplayed())
+			GetCurrentUserPage().LoadNextMessagesChunk(messagesLoaded);
 	}
 }
 
@@ -216,7 +222,7 @@ void ContentManager::OnAddNewMessage(DataStructure& data)
 void ContentManager::OnAddNewPrivateMessage(DataStructure& data)
 {
 	auto message = PrivateMessage(data, client);
-	auto* thread = GetPrivateThreadByUserId(message.author->id);
+	auto* thread = GetPrivateThreadByUserId(message.relatedUser->id);
 	if (thread)
 		thread->AddNewMessage(message);
 
@@ -352,7 +358,7 @@ ApoapseThread& ContentManager::GetThreadById(DbId id)
 
 PrivateMsgThread* ContentManager::GetPrivateThreadByUserId(DbId id)
 {
-	const auto res = std::find_if(m_privateMsgThreads.begin(), m_privateMsgThreads.end(), [id](const auto& thread)
+	const auto res = std::find_if(m_privateMsgThreads.begin(), m_privateMsgThreads.end(), [id](const std::unique_ptr<PrivateMsgThread>& thread)
 	{
 		return (thread->relatedUserId == id);
 	});

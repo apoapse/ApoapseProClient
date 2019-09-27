@@ -32,9 +32,10 @@ class ApoapseThread
 {
 	std::vector<ApoapseMessage> m_messages;
 	std::string m_unsentMessage;
-	static const UInt32 maxMessagesPerChunk = 15;
 
 public:
+	static const UInt32 maxMessagesPerChunk = 15;
+	
 	DbId id = -1;
 	Uuid uuid;
 	Uuid parrentRoomUuid;

@@ -134,13 +134,16 @@ JsonHelper ApoapseThread::GetThreadMessagesJson() const
 {
 	JsonHelper ser;
 	ser.Insert("totalMsgCount", totalMessagesCount);
-	
-	const Int64 offset = std::min(totalMessagesCount, (Int64)maxMessagesPerChunk);
-	
-	std::for_each(m_messages.end() - offset, m_messages.end(), [&ser](const ApoapseMessage& message)
+
+	auto chunkMessages = Range(m_messages);
+
+	const Int64 msgInThisChunk = std::min((Int64)ApoapseThread::maxMessagesPerChunk, (Int64)chunkMessages.size());
+	chunkMessages.Consume(chunkMessages.size() - msgInThisChunk);
+
+	for (auto& message : chunkMessages)
 	{
 		ser.Insert("messages", message.GetJson());
-	});
+	}
 
 	return ser;
 }
@@ -154,17 +157,14 @@ void ApoapseThread::LoadNextMessagesChunk(Int64 messagesLoaded)
 	JsonHelper ser;
 	ser.Insert("totalMsgCount", totalMessagesCount);
 
-	const Int64 offset = std::min(messagesLoaded + maxMessagesPerChunk, (Int64)totalMessagesCount);
-	
-	int msgCount = 0;
-	std::for_each(m_messages.end() - offset, m_messages.end(), [&ser, &msgCount](const ApoapseMessage& message)
+	auto chunkMessages = Range(m_messages, m_messages.size() - messagesLoaded);
+	const Int64 msgInThisChunk = std::min((Int64)ApoapseThread::maxMessagesPerChunk, (Int64)chunkMessages.size());
+	chunkMessages.Consume(chunkMessages.size() - msgInThisChunk);
+
+	for (auto& message : chunkMessages)
 	{
-		if (msgCount < maxMessagesPerChunk)
-		{
-			ser.Insert("messages", message.GetJson());
-			msgCount++;
-		}
-	});
+		ser.Insert("messages", message.GetJson());
+	}
 
 	global->htmlUI->SendSignal("OnMessagesChunkLoaded", ser.Generate());
 }
