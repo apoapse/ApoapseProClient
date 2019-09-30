@@ -37,11 +37,11 @@ Attachment::Attachment(DataStructure& data, ApoapseClient& client) : apoapseClie
 	file.fileName = data.GetField("name").GetValue<std::string>();
 	file.fileSize = data.GetField("file_size").GetValue<Int64>();
 	file.filePath = GetAttachmentFilePath(apoapseClient.GetLocalUser().GetUsername(), file.uuid, file.fileName);
+	file.isDownloaded = (data.GetField("is_downloaded").HasValue()) ? data.GetField("is_downloaded").GetValue<bool>() : false;
+	file.isAvailable = data.GetField("is_available").GetValue<bool>();
 	relatedFile = file;
 	
 	parentMessage = data.GetField("parent_message").GetValue<Uuid>();
-	
-	file.isDownloaded = (data.GetField("is_downloaded").HasValue()) ? data.GetField("is_downloaded").GetValue<bool>() : false;
 
 	{
 		DataStructure msgDat = global->apoapseData->ReadItemFromDBCustomFields("message", "uuid", parentMessage, std::vector<std::string>{"author", "sent_time"});
@@ -70,7 +70,7 @@ void Attachment::RequestOpenFile()
 			RequestOpenFile();
 		}
 	}
-	else
+	else if (relatedFile.isAvailable)
 	{
 		{
 			AttachmentFile file;
@@ -97,6 +97,10 @@ void Attachment::RequestOpenFile()
 			global->htmlUI->SendSignal("ChangeAttachmentStatus", ser.Generate());
 		}
 	}
+	else
+	{
+		LOG << LogSeverity::error << "The file " << relatedFile.fileName << " is not available on the server at this time.";
+	}
 }
 
 void Attachment::SetFileAsDownloaded(bool autoOpen)
@@ -112,6 +116,25 @@ void Attachment::SetFileAsDownloaded(bool autoOpen)
 	if (autoOpen)
 		RequestOpenFile();
 
+	{
+		JsonHelper ser;
+		ser.Insert("id", id);
+		ser.Insert("status", "ready");
+
+		global->htmlUI->SendSignal("ChangeAttachmentStatus", ser.Generate());
+	}
+}
+
+void Attachment::SetFileAsAvailable()
+{
+	relatedFile.isAvailable = true;
+
+	{
+		auto dat = global->apoapseData->ReadItemFromDatabase("attachment", "uuid", relatedFile.uuid);
+		dat.GetField("is_available").SetValue(true);
+		dat.SaveToDatabase();
+	}
+	
 	{
 		JsonHelper ser;
 		ser.Insert("id", id);
@@ -144,6 +167,7 @@ JsonHelper Attachment::GetJson() const
 	ser.Insert("fileName", HTMLUI::HtmlSpecialChars(relatedFile.fileName));
 	ser.Insert("fileSize", relatedFile.fileSize / 1000);	// In kb
 	ser.Insert("isDownloaded", relatedFile.isDownloaded);
+	ser.Insert("isAvailable", relatedFile.isAvailable);
 	ser.Insert("author", HTMLUI::HtmlSpecialChars(apoapseClient.GetClientUsers().GetUserByUsername(sender).nickname));
 	ser.Insert("dateTime", sentTime.GetStr());
 		

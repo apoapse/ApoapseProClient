@@ -115,6 +115,7 @@ bool ClientCmdManager::OnReceivedCommandPre(CommandV2& cmd, GenericConnection& n
 			{
 				dat.GetField("parent_message").SetValue(msgUuid);
 				dat.GetField("is_downloaded").SetValue(false);
+				dat.GetField("is_available").SetValue(false);
 				dat.SaveToDatabase();
 			}
 		}
@@ -244,6 +245,12 @@ void ClientCmdManager::OnReceivedCommand(CommandV2& cmd, GenericConnection& netC
 	else if (cmd.name == "ready_to_receive_file")
 	{
 		apoapseClient.SendQueuedDroppedFile();
+	}
+
+	else if (cmd.name == "attachment_available")
+	{
+		auto attachment = apoapseClient.GetContentManager().GetAttachment(cmd.GetData().GetField("uuid").GetValue<Uuid>());
+		attachment->SetFileAsAvailable();
 	}
 }
 

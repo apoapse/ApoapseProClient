@@ -18,6 +18,7 @@ public:
 		size_t fileSize = 0;
 		bool attached = false;
 		bool isDownloaded = false;
+		bool isAvailable = false;
 		std::optional<DbId> temporaryId;	// Used when the attachments have not been sent yet
 
 		DataStructure GetDataStructure() const;
@@ -38,6 +39,7 @@ public:
 	
 	void RequestOpenFile();
 	void SetFileAsDownloaded(bool autoOpen);
+	void SetFileAsAvailable();
 	void CopyFileLocally(const std::string& localFilePath);
 	JsonHelper GetJson() const;
 
