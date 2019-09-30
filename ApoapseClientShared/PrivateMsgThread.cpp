@@ -145,5 +145,8 @@ void PrivateMsgThread::AddNewMessage(PrivateMessage& message)
 
 void PrivateMsgThread::SetUnsentMessage(const std::string& msgContent)
 {
+	if (msgContent.empty())
+		return;
+	
 	m_unsentMessage = msgContent;
 }
