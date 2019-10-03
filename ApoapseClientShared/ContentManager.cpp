@@ -423,6 +423,20 @@ void ContentManager::SortAttachments(const std::string& sortBy, ResultOrder orde
 	{
 		if (sortBy == "size")
 			return (attA->relatedFile.fileSize > attB->relatedFile.fileSize);
+		
+		else if (sortBy == "name")
+			return (attA->relatedFile.fileName < attB->relatedFile.fileName);
+
+		else if (sortBy == "type")
+		{
+			std::string fileExtA = attA->relatedFile.fileName;
+			std::string fileExtB = attB->relatedFile.fileName;
+			StringExtensions::erase_left(fileExtA, '.', true);
+			StringExtensions::erase_left(fileExtB, '.', true);
+			
+			return (fileExtA > fileExtB);
+		}
+		
 		else
 			return (attA->sentTime > attB->sentTime);
 	});

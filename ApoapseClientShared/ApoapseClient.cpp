@@ -315,6 +315,8 @@ void ApoapseClient::OnDisconnect()
 	m_authenticatedUser.reset();
 	m_loginCmd.reset();
 
+	m_lastDroppedFiles.clear();
+
 	m_usergroupManager.reset();
 	m_clientUsers.reset();
 	m_contentManager.reset();
@@ -500,7 +502,7 @@ std::tuple<std::string, UInt16> ApoapseClient::ParseAddress(const std::string& a
 		std::vector<std::string> spliced;
 		StringExtensions::split(address, spliced, ":");
 
-		return std::make_tuple(spliced.at(0), std::atoi(spliced.at(1).c_str()));
+		return std::make_tuple(spliced.at(0), (UInt16)std::atoi(spliced.at(1).c_str()));
 	}
 	else
 	{
