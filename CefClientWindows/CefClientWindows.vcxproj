@@ -77,6 +77,7 @@
     <SourcePath>$(VC_SourcePath);</SourcePath>
     <LibraryPath>$(OutDir)..\;$(OutDir);$(LibraryPath)</LibraryPath>
     <LinkIncremental>true</LinkIncremental>
+    <TargetName>ApoapsePro</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>..\..\Bin\$(Configuration)_$(Platform)\CefClient\</OutDir>
@@ -84,6 +85,7 @@
     <IncludePath>$(SolutionDir)ThirdParty\cef_binary\;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <SourcePath>$(VC_SourcePath);</SourcePath>
     <LibraryPath>$(OutDir)..\;$(OutDir);$(LibraryPath)</LibraryPath>
+    <TargetName>ApoapsePro</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
