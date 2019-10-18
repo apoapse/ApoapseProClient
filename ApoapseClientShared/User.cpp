@@ -85,7 +85,7 @@ std::string User::GetAvatarFilePath(const Username& username)
 {
 	const std::string path = "client_avatar/av_" + username.ToStr().substr(0, 24) + ".jpg";
 	
-	return (std::filesystem::exists(NativeUI::GetUserDirectory() + path) ? path : "");
+	return path;
 }
 
 /*std::pair<PrivateKeyBytes, PublicKeyBytes> User::GenerateIdentityKey()
