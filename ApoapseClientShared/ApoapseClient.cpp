@@ -315,6 +315,9 @@ void ApoapseClient::OnDisconnect()
 	m_authenticatedUser.reset();
 	m_loginCmd.reset();
 
+	m_fileStreamIOService->stop();
+	m_mainConnectionIOService->stop();
+
 	m_lastDroppedFiles.clear();
 
 	m_usergroupManager.reset();
