@@ -6,7 +6,6 @@
 #include <optional>
 #include <thread>
 #include <deque>
-#include <boost/shared_ptr.hpp>
 #include "Database.hpp"
 #include "CommandV2.h"
 #include "ContentManager.h"
@@ -21,8 +20,6 @@ class ApoapseError;
 
 class ApoapseClient
 {
-	boost::shared_ptr<IDatabase> m_databaseSharedPtr;
-	
 	std::thread m_ioServiceThread;
 	std::thread m_fileStreamIoServiceThread;
 	std::unique_ptr<boost::asio::io_service> m_fileStreamIOService;

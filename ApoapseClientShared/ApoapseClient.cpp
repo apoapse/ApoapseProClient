@@ -6,7 +6,6 @@
 #include "HTMLUI.h"
 #include "User.h"
 #include "GlobalVarDefines.hpp"
-#include "LibraryLoader.hpp"
 #include "DatabaseIntegrityPatcher.h"
 #include "Hash.hpp"
 #include "CommandsManagerV2.h"
@@ -312,7 +311,6 @@ void ApoapseClient::OnDisconnect()
 {
 	m_connected = false;
 	m_connection = nullptr;
-	m_authenticatedUser.reset();
 	m_loginCmd.reset();
 
 	m_fileStreamIOService->stop();
@@ -325,8 +323,10 @@ void ApoapseClient::OnDisconnect()
 	m_contentManager.reset();
 	m_clientOperations.reset();
 
-	if (global->database != nullptr)
+	if (global->database != nullptr && IsAuthenticated())
 		UnloadDatabase();
+
+	m_authenticatedUser.reset();
 
 	global->htmlUI->UpdateStatusBar("@disconnected_status", true);
 
@@ -437,15 +437,6 @@ void ApoapseClient::OnAuthenticated()
 
 bool ApoapseClient::LoadDatabase()
 {
-#ifdef DO_NOT_ENCRYPT_DATABASE
-	m_databaseSharedPtr = LibraryLoader::LoadLibrary<IDatabase>("DatabaseImpl.sqlite");
-	LOG << "WARNING: THE DATABASE ENCRYPTION IS DISABLED" << LogSeverity::security_alert;
-#else
-	m_databaseSharedPtr = LibraryLoader::LoadLibrary<IDatabase>("DatabaseImpl.sqlcipher");
-#endif
-
-	global->database = m_databaseSharedPtr.get();
-
 	std::vector<const char*> dbParams;
 
 	const std::string dbFileName = NativeUI::GetUserDirectory() + "user_" + m_authenticatedUser->username.ToStr() + ".db";
@@ -462,7 +453,7 @@ bool ApoapseClient::LoadDatabase()
 	m_dbPassword.reset();
 #endif
 
-	if (m_databaseSharedPtr->Open(dbParams.data(), dbParams.size()))
+	if (global->database->Open(dbParams.data(), dbParams.size()))
 	{
 		LOG << "Database accessed successfully.";
 		return true;
@@ -476,9 +467,7 @@ bool ApoapseClient::LoadDatabase()
 
 void ApoapseClient::UnloadDatabase()
 {
-	m_databaseSharedPtr->Close();
-	m_databaseSharedPtr.reset();
-	global->database = nullptr;
+	global->database->Close();
 }
 
 void ApoapseClient::RefreshUserInfo() const

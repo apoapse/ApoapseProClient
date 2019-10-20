@@ -8,12 +8,14 @@
 #include "ThreadUtils.h"
 #include <filesystem>
 #include "NativeUI.h"
+#include "LibraryLoader.hpp"
 
 #ifdef UNIT_TESTS
 #include "UnitTestsManager.h"
 #endif //UNIT_TESTS
 
 ApoapseClient* m_apoapseClient = nullptr;
+boost::shared_ptr<IDatabase> m_database;
 
 int ApoapseClientEntry::ClientMain(const std::vector<std::string>& launchArgs)
 {
@@ -32,6 +34,15 @@ int ApoapseClientEntry::ClientMain(const std::vector<std::string>& launchArgs)
 
 	global->logger = std::make_unique<Logger>("log_client.txt");
 	global->threadPool = std::make_unique<ThreadPool>("Global thread pool", 2, true);
+	
+#ifdef DO_NOT_ENCRYPT_DATABASE
+	m_database = LibraryLoader::LoadLibrary<IDatabase>("DatabaseImpl.sqlite");
+	LOG << "WARNING: THE DATABASE ENCRYPTION IS DISABLED" << LogSeverity::security_alert;
+#else
+	m_database = LibraryLoader::LoadLibrary<IDatabase>("DatabaseImpl.sqlcipher");
+#endif
+
+	global->database = m_database.get();
 
 	// Main thread
 	{
