@@ -194,6 +194,9 @@ void ClientCmdManager::OnReceivedCommand(CommandV2& cmd, GenericConnection& netC
 		auto user = User(cmd.GetData(), apoapseClient);
 		apoapseClient.GetClientUsers().OnAddNewUser(user);
 		apoapseClient.GetContentManager().RegisterPrivateMsgThread(apoapseClient.GetClientUsers().GetUserByUsername(user.username));
+
+		if (user.username == apoapseClient.GetLocalUser().username)
+			apoapseClient.RefreshUserInfo();
 	}
 
 	else if (cmd.name == "change_user_status")

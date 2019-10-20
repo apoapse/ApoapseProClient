@@ -87,11 +87,12 @@ public:
 
 	void InitUsergroupManager(std::vector<DataStructure>& usergroupsDat);
 	UsergroupManager& GetUsergroupManager() const;
+	void RefreshUserInfo() const;
+	
 private:
 	static std::string GenerateDbPassword(const std::string& password);
 	void OnAuthenticated();
 	bool LoadDatabase();
 	void UnloadDatabase();
-	void RefreshUserInfo() const;
 	static std::tuple<std::string, UInt16> ParseAddress(const std::string& address);
 };
