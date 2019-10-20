@@ -184,8 +184,8 @@ void ContentManager::OnAddNewRoom(DataStructure& data)
 
 	m_rooms.push_back(std::move(room));
 
-	if (m_rooms.size() == 1)
-		OpenRoom(*m_rooms[0]);	//If this is the first room created, open it directly
+	if (m_rooms.size() == 1 && (m_rooms.at(0)->threadsLayout != Room::ThreadsLayout::multiple))
+		OpenRoom(*m_rooms.at(0));	//If this is the first room created, open it directly
 	else
 		UIRoomsUpdate();
 }
@@ -450,7 +450,7 @@ void ContentManager::OpenRoom(Room& room)
 	PreSwitchPage();
 	m_selectedRoom = &room;
 
-	LOG << "Selected room " << room.name;
+	LOG << "Selected room " << room.name << " type: " << magic_enum::enum_name(room.threadsLayout);
 
 	room.RefreshUnreadMessagesCount();
 
@@ -477,7 +477,8 @@ void ContentManager::OpenRoom(Room& room)
 		}
 		else
 		{
-			ASSERT(false);
+			LOG << LogSeverity::error << "Trying to open a room of layout single thread but the default thread do not exist yet";
+			PreSwitchPage();
 		}
 	}
 
