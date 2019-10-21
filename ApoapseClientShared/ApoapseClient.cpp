@@ -301,12 +301,17 @@ void ApoapseClient::OnConnectedToServer()
 
 void ApoapseClient::OnDisconnect()
 {
+	if (!m_connected)
+		return;
+	
 	m_connected = false;
 	m_connection = nullptr;
 	m_loginCmd.reset();
 
 	m_fileStreamIOService->stop();
 	m_mainConnectionIOService->stop();
+	m_fileStreamConnection.reset();
+	m_connection.reset();
 
 	m_lastDroppedFiles.clear();
 
@@ -346,6 +351,8 @@ void ApoapseClient::OnReceivedError(ApoapseError& error)
 
 	if (m_connection && m_connection->IsConnected())
 		m_connection->Close();
+
+	OnDisconnect();
 }
 
 void ApoapseClient::AuthenticateFileStream(const std::vector<byte>& authCode)

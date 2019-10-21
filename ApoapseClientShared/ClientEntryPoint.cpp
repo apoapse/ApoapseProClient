@@ -43,6 +43,7 @@ int ApoapseClientEntry::ClientMain(const std::vector<std::string>& launchArgs)
 #endif
 
 	global->database = m_database.get();
+	global->database->Initialize();
 
 	// Main thread
 	{
