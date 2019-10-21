@@ -14,6 +14,7 @@
 #include "UsergroupManager.h"
 #include "Attachment.h"
 #include "DatabaseSettings.h"
+#include "JsonFileSettings.h"
 class ClientConnection;
 class ClientFileStreamConnection;
 class ApoapseError;
@@ -27,7 +28,7 @@ class ApoapseClient
 	
 	std::shared_ptr<ClientConnection> m_connection;
 	std::shared_ptr<ClientFileStreamConnection> m_fileStreamConnection;
-	bool m_connected;
+	bool m_connected = false;
 	
 	std::optional<CommandV2> m_loginCmd;
 	//hashSecBytes m_identityPasswordHash;
@@ -42,12 +43,10 @@ class ApoapseClient
 	std::unique_ptr<ClientUsers> m_clientUsers;
 	std::unique_ptr<ContentManager> m_contentManager;
 	std::unique_ptr<ClientOperations> m_clientOperations;
-
-	std::optional<std::string> m_clientSettingsTxt;
 	
 public:
 	DatabaseSettings serverSettings;
-	JsonHelper clientSettings;
+	JsonFileSettings clientSettings;
 	
 	ApoapseClient();
 	//virtual ~ApoapseClient();

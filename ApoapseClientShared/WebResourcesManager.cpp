@@ -30,7 +30,7 @@ std::vector<byte> WebResourcesManager::ReadFile(const std::string& filename, con
 
 	if (filename == "main.html")
 	{
-		const std::string prefix = "<script>g_locale = '" + m_apoapseClient.clientSettings.ReadFieldValue<std::string>("language").value() + "';</script>";	// Global variables
+		const std::string prefix = "<script>g_locale = '" + m_apoapseClient.clientSettings.settings.ReadFieldValue<std::string>("language").value() + "';</script>";	// Global variables
 		std::vector<byte> output(prefix.size() + res.size());
 		
 		std::copy(prefix.begin(), prefix.end(), output.begin());

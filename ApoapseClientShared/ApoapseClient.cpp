@@ -15,22 +15,11 @@
 #include "NativeUI.h"
 #include "ImageUtils.h"
 #include "ApoapseError.h"
-#include "FileUtils.h"
 #include <filesystem>
 
 ApoapseClient::ApoapseClient()
 {
-	{
-		const auto jsonData = FileUtils::ReadFile("client_global_settings.json");
-		m_clientSettingsTxt = std::string(jsonData.begin(), jsonData.end());
-
-		// We have to clean the json file first 
-		m_clientSettingsTxt = std::regex_replace(m_clientSettingsTxt.value(), std::regex("\\n"), "");
-		m_clientSettingsTxt = std::regex_replace(m_clientSettingsTxt.value(), std::regex("\\r"), "");
-		m_clientSettingsTxt = std::regex_replace(m_clientSettingsTxt.value(), std::regex("\\t"), "");
-		
-		clientSettings = JsonHelper(m_clientSettingsTxt.value());
-	}
+	clientSettings = JsonFileSettings(NativeUI::GetUserDirectory() + "client_global_settings.json");
 }
 
 void ApoapseClient::Connect(const std::string& serverAddress, const std::string& username, const std::string& password)
@@ -40,6 +29,10 @@ void ApoapseClient::Connect(const std::string& serverAddress, const std::string&
 		global->htmlUI->UpdateStatusBar("@invalid_server_address", true);
 		return;
 	}
+
+	clientSettings.settings.EditField<std::string>("default_server", serverAddress);
+	clientSettings.settings.EditField<std::string>("default_username", username);
+	clientSettings.SaveToFile();
 
 	global->htmlUI->UpdateStatusBar("@password_encryption_status");
 
@@ -142,8 +135,7 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 
 	else if (name == "OnUIReady")
 	{
-		global->htmlUI->SendSignal("SetClientGlobalSettings", m_clientSettingsTxt.value());
-		m_clientSettingsTxt.reset();
+		global->htmlUI->SendSignal("SetClientGlobalSettings", clientSettings.GetJson());
 	}
 
 	else if (name == "OnFilesDropped")

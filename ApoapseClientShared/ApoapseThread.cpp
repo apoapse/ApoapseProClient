@@ -74,10 +74,14 @@ JsonHelper ApoapseMessage::GetJson() const
 	ser.Insert("is_read", isRead);
 	ser.Insert("support_tags", supportTags);
 
+	size_t totalSize = 0;
 	for (Attachment* attachment : attachments)
 	{
 		ser.Insert("attachments", attachment->GetJson());
+		totalSize += attachment->relatedFile.fileSize;
 	}
+
+	ser.Insert("attachments_totalSize", totalSize / 1000);	// In kb
 
 	return ser;
 }
