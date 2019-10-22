@@ -43,5 +43,5 @@ public:
 	void CopyFileLocally(const std::string& localFilePath);
 	JsonHelper GetJson() const;
 
-	static std::string GetAttachmentFilePath(const Username& username, const Uuid& attUuid, const std::string& fileFullName);
+	static std::string GetAttachmentFilePath(const std::string& attDirectory, const Username& username, const Uuid& attUuid, const std::string& fileFullName);
 };

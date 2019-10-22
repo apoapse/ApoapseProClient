@@ -84,6 +84,8 @@ public:
 	void InitUsergroupManager(std::vector<DataStructure>& usergroupsDat);
 	UsergroupManager& GetUsergroupManager() const;
 	void RefreshUserInfo() const;
+
+	std::string GetAttachmentsDirectory();
 	
 private:
 	static std::string GenerateDbPassword(const std::string& password);

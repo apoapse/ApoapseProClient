@@ -406,7 +406,7 @@ void ApoapseClient::OnAuthenticated()
 
 	// Create attachment folder
 	{
-		const std::string attachmentFolderPath = NativeUI::GetUserDirectory() + "client_download_" + GetLocalUser().username.ToStr().substr(0, 16);
+		const std::string attachmentFolderPath = GetAttachmentsDirectory();
 		if (!std::filesystem::exists(attachmentFolderPath))
 			std::filesystem::create_directory(attachmentFolderPath);
 	}
@@ -438,7 +438,7 @@ bool ApoapseClient::LoadDatabase()
 {
 	std::vector<const char*> dbParams;
 
-	const std::string dbFileName = NativeUI::GetUserDirectory() + "user_" + m_authenticatedUser->username.ToStr() + ".db";
+	const std::string dbFileName = NativeUI::GetUserDirectory() + "user_" + serverSettings.GetValue<std::string>("server_prefix") + "_" + m_authenticatedUser->username.ToStr().substr(0, 32) + ".db";
 
 	if (!std::filesystem::exists(dbFileName))
 		m_firstConnection = true;
@@ -484,6 +484,11 @@ void ApoapseClient::RefreshUserInfo() const
 	}
 
 	global->htmlUI->SendSignal("UpdateUserInfo", ser.Generate());
+}
+
+std::string ApoapseClient::GetAttachmentsDirectory()
+{
+	return NativeUI::GetUserDirectory() + "client_dw_" + serverSettings.GetValue<std::string>("server_prefix") + "_" + GetLocalUser().username.ToStr().substr(0, 18);
 }
 
 std::tuple<std::string, UInt16> ApoapseClient::ParseAddress(const std::string& address)

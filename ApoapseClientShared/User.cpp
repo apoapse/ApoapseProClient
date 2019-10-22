@@ -59,26 +59,10 @@ std::vector<byte> User::HashPasswordForServer(const std::string& password)
 
 std::string User::GenerateTemporaryRandomPassword()
 {
-	std::string output;
 	constexpr int maxLength = 25;
 	constexpr int minLength = 8;
 
-	auto bytes = Cryptography::GenerateRandomBytes(35);
-
-	for (const auto& cByte : bytes)
-	{
-		if (output.size() >= maxLength)
-			return output;
-
-		// We make sure to use only certain ascii chars/bytes from the original random bytes string
-		if (cByte != 0x22 && cByte != 0x27 && (IsInBound<byte>(cByte, 0x21, 0x3B) || IsInBound<byte>(cByte, 0x41, 0x5A) || IsInBound<byte>(cByte, 0x61, 0x7A)))
-			output += cByte;
-	}
-
-	if (output.size() < minLength)
-		return GenerateTemporaryRandomPassword();
-	else
-		return output;
+	return Cryptography::GenerateRandomCharacters(minLength, maxLength);
 }
 
 std::string User::GetAvatarFilePath(const Username& username)

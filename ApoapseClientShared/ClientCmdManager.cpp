@@ -175,7 +175,7 @@ void ClientCmdManager::OnReceivedCommand(CommandV2& cmd, GenericConnection& netC
 		}
 	}
 
-	else if (cmd.name == "server_setting")
+	else if (cmd.name == "server_settings")
 	{
 		apoapseClient.serverSettings = DatabaseSettings(cmd.GetData());
 	}

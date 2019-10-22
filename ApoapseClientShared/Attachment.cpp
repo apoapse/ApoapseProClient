@@ -36,7 +36,7 @@ Attachment::Attachment(DataStructure& data, ApoapseClient& client) : apoapseClie
 	file.uuid = data.GetField("uuid").GetValue<Uuid>();
 	file.fileName = data.GetField("name").GetValue<std::string>();
 	file.fileSize = data.GetField("file_size").GetValue<Int64>();
-	file.filePath = GetAttachmentFilePath(apoapseClient.GetLocalUser().GetUsername(), file.uuid, file.fileName);
+	file.filePath = GetAttachmentFilePath(apoapseClient.GetAttachmentsDirectory(), apoapseClient.GetLocalUser().GetUsername(), file.uuid, file.fileName);
 	file.isDownloaded = (data.GetField("is_downloaded").HasValue()) ? data.GetField("is_downloaded").GetValue<bool>() : false;
 	file.isAvailable = data.GetField("is_available").GetValue<bool>();
 	relatedFile = file;
@@ -54,7 +54,7 @@ Attachment::Attachment(DataStructure& data, ApoapseClient& client) : apoapseClie
 
 void Attachment::RequestOpenFile()
 {
-	const std::string filePath = GetAttachmentFilePath(apoapseClient.GetLocalUser().GetUsername(), relatedFile.uuid, relatedFile.fileName);
+	const std::string filePath = GetAttachmentFilePath(apoapseClient.GetAttachmentsDirectory(), apoapseClient.GetLocalUser().GetUsername(), relatedFile.uuid, relatedFile.fileName);
 
 	if (relatedFile.isDownloaded)
 	{
@@ -146,7 +146,7 @@ void Attachment::SetFileAsAvailable()
 
 void Attachment::CopyFileLocally(const std::string& localFilePath)
 {
-	const std::string finalPath = GetAttachmentFilePath(apoapseClient.GetLocalUser().GetUsername(), relatedFile.uuid, relatedFile.fileName);
+	const std::string finalPath = GetAttachmentFilePath(apoapseClient.GetAttachmentsDirectory(), apoapseClient.GetLocalUser().GetUsername(), relatedFile.uuid, relatedFile.fileName);
 	const std::string filePathFolder = std::filesystem::path(finalPath).parent_path().string();
 	
 	// We create the parent directory if it does not exist
@@ -174,8 +174,8 @@ JsonHelper Attachment::GetJson() const
 	return ser;
 }
 
-std::string Attachment::GetAttachmentFilePath(const Username& username, const Uuid& attUuid, const std::string& fileFullName)
+std::string Attachment::GetAttachmentFilePath(const std::string& attDirectory, const Username& username, const Uuid& attUuid, const std::string& fileFullName)
 {
 	const std::string uuidStr = BytesToHexString(attUuid.GetBytes());
-	return NativeUI::GetUserDirectory() + "client_download_" + username.ToStr().substr(0, 16) + '/' + uuidStr.substr(0, 10) + '/' + fileFullName;
+	return attDirectory + '/' + uuidStr.substr(0, 10) + '/' + fileFullName;
 }
