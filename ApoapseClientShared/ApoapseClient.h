@@ -71,7 +71,7 @@ public:
 //	const hashSecBytes& GetIdentityPasswordHash() const;
 	const LocalUser& GetLocalUser() const;
 
-	void OnDradFiles(const std::vector<std::string> filesRaw);
+	void OnDragFiles(const std::vector<std::string> filesRaw);
 	void OnDropFiles();
 	void SendQueuedDroppedFile();
 	std::vector<Attachment::File> GetDroppedFilesToSend();

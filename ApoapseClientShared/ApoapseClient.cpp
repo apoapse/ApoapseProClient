@@ -532,11 +532,19 @@ const LocalUser& ApoapseClient::GetLocalUser() const
 	return m_authenticatedUser.value();
 }
 
-void ApoapseClient::OnDradFiles(const std::vector<std::string> filesRaw)
+void ApoapseClient::OnDragFiles(const std::vector<std::string> filesRaw)
 {
 	for (const std::string& filePath : filesRaw)
 	{
-		Attachment::File file = Attachment::File(filePath);
+		const auto res = std::find_if(m_lastDroppedFiles.begin(), m_lastDroppedFiles.end(), [&filePath](const Attachment::File& file)
+		{
+			return (file.filePath == filePath);
+		});
+		
+		if (res != m_lastDroppedFiles.end())	// Exclude duplicates
+			continue;
+		
+		auto file = Attachment::File(filePath);
 		file.uuid = Uuid::Generate();
 		
 		LOG << "Drag and Drop: user dragged file " << file.fileName << " size: " << file.fileSize;

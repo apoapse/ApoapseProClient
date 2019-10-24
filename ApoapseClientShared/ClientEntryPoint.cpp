@@ -105,5 +105,5 @@ std::string ApoapseClientEntry::OnReceivedSignal(const std::string& name, const 
 
 void ApoapseClientEntry::SetLastFilesDrop(const std::vector<std::string>& files)
 {
-	m_apoapseClient->OnDradFiles(files);
+	m_apoapseClient->OnDragFiles(files);
 }
