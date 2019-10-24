@@ -164,8 +164,16 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 
 	else if (name == "openURL")
 	{
-		const std::string cmd = "start " + json.ReadFieldValue<std::string>("url").value();
-		std::system(cmd.c_str());
+		const std::string url = json.ReadFieldValue<std::string>("url").value();
+		if (url.length() > 7 && url.substr(0, 7) == "http://" || url.substr(0, 8) == "https://")
+		{
+			const std::string cmd = "start " + url;
+			std::system(cmd.c_str());
+		}
+		else
+		{
+			FatalError("Trying to open a link that is not an url");
+		}
 	}
 
 	else if (name == "disconnect" && m_connected)
