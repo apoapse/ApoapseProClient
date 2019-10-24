@@ -39,6 +39,11 @@ JsonHelper Room::GetJson() const
 	ser.Insert("name", HTMLUI::HtmlSpecialChars(name));
 	ser.Insert("unreadMsgCount", unreadMsgCount);
 
+	if (threadsLayout == ThreadsLayout::single)
+		ser.Insert("threadsLayout", "single");
+	else
+		ser.Insert("threadsLayout", "multiple");
+
 	return ser;
 }
 
@@ -470,6 +475,12 @@ void ContentManager::OpenRoom(Room& room)
 	}
 	else
 	{
+		{
+			JsonHelper ser;
+			ser.Insert("room", room.GetJson());
+			global->htmlUI->SendSignal("OnOpenRoom", ser.Generate());
+		}
+		
 		if (!room.threads.empty())
 		{
 			OpenThread(*room.threads.at(0));
