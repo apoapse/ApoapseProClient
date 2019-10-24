@@ -5,6 +5,8 @@
 #include "StringExtensions.h"
 #include <sstream>
 #include <ShlObj.h>
+#include <filesystem>
+#include <shellapi.h>
 
 std::string NativeUI::OpenFileDialog(const std::vector<std::string>& extensionsSupported, const std::string& extensionsGroup)
 {
@@ -44,4 +46,16 @@ std::string NativeUI::GetUserDirectory()
 	filePath = std::regex_replace(filePath, std::regex(R"(\\)"), R"(/)");	// We convert backslashes in slashes
 
 	return filePath + "/Apoapse/";
+}
+
+void NativeUI::SystemOpenFile(const std::string& filePath)
+{
+	if (std::filesystem::exists(filePath))
+	{
+		ShellExecute(NULL, "open", filePath.c_str(), NULL, NULL, SW_HIDE);
+	}
+	else
+	{
+		LOG << LogSeverity::error << "System: Unable to open the requested file";
+	}
 }

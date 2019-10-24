@@ -61,7 +61,7 @@ void Attachment::RequestOpenFile()
 		if (std::filesystem::exists(filePath))
 		{
 			LOG << "Opening attachment file " << filePath;
-			std::system(std::string("start " + filePath).c_str());
+			NativeUI::SystemOpenFile(filePath);
 		}
 		else
 		{
