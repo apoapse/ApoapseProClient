@@ -80,6 +80,7 @@ public:
 	ContentManager& GetContentManager() const;
 	ClientOperations& GetClientOperations() const;
 	ClientUsers& GetClientUsers() const;
+	static class ClientCmdManager* GetCmdManager();
 
 	void InitUsergroupManager(std::vector<DataStructure>& usergroupsDat);
 	UsergroupManager& GetUsergroupManager() const;

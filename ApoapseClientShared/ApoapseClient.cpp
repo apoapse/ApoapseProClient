@@ -16,6 +16,7 @@
 #include "ImageUtils.h"
 #include "ApoapseError.h"
 #include <filesystem>
+#include "ClientCmdManager.h"
 
 ApoapseClient::ApoapseClient()
 {
@@ -327,6 +328,9 @@ void ApoapseClient::OnDisconnect()
 	m_clientUsers.reset();
 	m_contentManager.reset();
 	m_clientOperations.reset();
+
+	if (global->cmdManager)
+		GetCmdManager()->Reset();
 
 	if (global->database != nullptr && IsAuthenticated())
 		UnloadDatabase();
@@ -659,6 +663,11 @@ ClientOperations& ApoapseClient::GetClientOperations() const
 ClientUsers& ApoapseClient::GetClientUsers() const
 {
 	return *m_clientUsers;
+}
+
+ClientCmdManager* ApoapseClient::GetCmdManager()
+{
+	return dynamic_cast<ClientCmdManager*>(global->cmdManager.get());
 }
 
 void ApoapseClient::InitUsergroupManager(std::vector<DataStructure>& usergroupsDat)

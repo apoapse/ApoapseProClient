@@ -175,6 +175,15 @@ void ClientCmdManager::OnReceivedCommand(CommandV2& cmd, GenericConnection& netC
 		}
 	}
 
+	else if (cmd.name == "start_sync")
+	{
+		m_isSynchronizing = true;
+		m_itemsToSyncTotal = cmd.GetData().GetField("nb_items").GetValue<Int64>();
+
+		ASSERT(m_itemsToSyncTotal > 0);
+		global->htmlUI->SendSignal("OnCmdSyncStart", GetSyncUIJson().Generate());
+	}
+
 	else if (cmd.name == "server_settings")
 	{
 		apoapseClient.serverSettings = DatabaseSettings(cmd.GetData());
@@ -259,5 +268,42 @@ void ClientCmdManager::OnReceivedCommand(CommandV2& cmd, GenericConnection& netC
 
 void ClientCmdManager::OnReceivedCommandPost(CommandV2& cmd, GenericConnection& netConnection)
 {
+	if (IsSynchronizing() && cmd.name != "start_sync")
+	{
+		m_itemsSynced++;
 
+		if (m_itemsSynced >= m_itemsToSyncTotal)
+		{
+			global->htmlUI->SendSignal("OnCmdSyncEnd", GetSyncUIJson().Generate());
+			
+			m_isSynchronizing = false;
+			m_itemsSynced = 0;
+			m_itemsToSyncTotal = 0;
+		}
+		else
+		{
+			global->htmlUI->SendSignal("UpdateCmdSync", GetSyncUIJson().Generate());
+		}
+	}
+}
+
+bool ClientCmdManager::IsSynchronizing() const
+{
+	return m_isSynchronizing;
+}
+
+void ClientCmdManager::Reset()
+{
+	m_isSynchronizing = false;
+	m_itemsSynced = 0;
+	m_itemsToSyncTotal = 0;
+}
+
+JsonHelper ClientCmdManager::GetSyncUIJson() const
+{
+	JsonHelper ser;
+	ser.Insert("itemsSynced", m_itemsSynced);
+	ser.Insert("toSyncTotal", m_itemsToSyncTotal);
+
+	return ser;
 }
