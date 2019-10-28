@@ -310,8 +310,8 @@ void ApoapseClient::OnConnectedToServer()
 
 void ApoapseClient::OnDisconnect()
 {
-	if (!m_connected)
-		return;
+	//if (!m_connected)
+	//	return;
 	
 	m_connected = false;
 	m_connection = nullptr;
