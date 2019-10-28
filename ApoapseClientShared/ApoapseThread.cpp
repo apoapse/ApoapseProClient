@@ -7,6 +7,8 @@
 #include "Username.h"
 #include "HTMLUI.h"
 #include "ApoapseClient.h"
+#include <filesystem>
+#include "NativeUI.h"
 
 ApoapseMessage::ApoapseMessage(DataStructure& data, ApoapseClient& client) : apoapseClient(client)
 {
@@ -68,7 +70,12 @@ JsonHelper ApoapseMessage::GetJson() const
 	
 	ser.Insert("author.name", author->nickname);
 	ser.Insert("author.id", author->id);
-	ser.Insert("author.avatar", User::GetAvatarFilePath(author->username));
+
+	const std::string avatarPath = User::GetAvatarFilePath(author->username);
+	if (std::filesystem::exists(NativeUI::GetUserDirectory() + avatarPath))
+		ser.Insert("author.avatar", avatarPath);
+	else
+		ser.Insert("author.avatar", "");
 	
 	ser.InsertArray("tags", tags);
 	ser.Insert("is_read", isRead);
