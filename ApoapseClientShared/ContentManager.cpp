@@ -305,6 +305,13 @@ void ContentManager::MarkMessageAsRead(const Uuid& uuid)
 
 		UIRoomsUpdate();
 	}
+
+	{
+		JsonHelper ser;
+		ser.Insert("msgId", dat.GetDbId());
+		
+		global->htmlUI->SendSignal("mark_msg_as_read", ser.Generate());
+	}
 }
 
 Room& ContentManager::GetRoomById(DbId id)
