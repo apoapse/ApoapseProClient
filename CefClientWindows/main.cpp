@@ -48,6 +48,7 @@ int main(int argcount, char* argv[])
 	CefRefPtr<ApoapseCefApp> app(new ApoapseCefApp);
 
 	CefInitialize(mainArgs, settings, app.get(), sandbox_info);
+	app->SetMainWindowsHwnd(GetActiveWindow());
 
 	// Run the CEF message loop. This will block until CefQuitMessageLoop() is called.
 	CefRunMessageLoop();

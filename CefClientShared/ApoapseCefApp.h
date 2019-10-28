@@ -5,6 +5,7 @@
 class ApoapseCefApp : public CefApp, public CefBrowserProcessHandler, public ISignalSender
 {
 	CefRefPtr<CefBrowser> m_browser;
+	HWND m_hwnd = 0;
 
 public:
 	ApoapseCefApp();
@@ -18,6 +19,8 @@ public:
 	virtual void OnContextInitialized() override;
 
 	virtual void SendSignal(const std::string& name, const std::string& data) override;
+
+	void SetMainWindowsHwnd(HWND hwnd);
 
 private:
 	// Include the default reference counting implementation.

@@ -54,6 +54,9 @@
     <ClCompile Include="SearchResult.cpp">
       <Filter>Systems\Content</Filter>
     </ClCompile>
+    <ClCompile Include="NotificationsManager.cpp">
+      <Filter>Systems\Notifications</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientEntryPoint.h" />
@@ -114,6 +117,9 @@
     <ClInclude Include="SearchResult.h">
       <Filter>Systems\Content</Filter>
     </ClInclude>
+    <ClInclude Include="NotificationsManager.h">
+      <Filter>Systems\Notifications</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="UI">
@@ -136,6 +142,9 @@
     </Filter>
     <Filter Include="ImageProcessing">
       <UniqueIdentifier>{9704ddb1-4e9c-4853-9d0c-ca696469f897}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Systems\Notifications">
+      <UniqueIdentifier>{d57ff0b6-2a82-4ddf-b6db-dac1de6f8ff6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

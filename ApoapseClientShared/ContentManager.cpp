@@ -7,6 +7,8 @@
 #include "PrivateMsgThread.h"
 #include "SearchResult.h"
 #include <magic_enum.hpp>
+#include "ClientCmdManager.h"
+#include <numeric>
 
 Room::Room(DataStructure& data)
 {
@@ -16,7 +18,7 @@ Room::Room(DataStructure& data)
 	id = data.GetDbId();
 }
 
-void Room::RefreshUnreadMessagesCount()
+void Room::RefreshUnreadMessagesCount(ContentManager& contentManager)
 {
 	unreadMsgCount = 0;
 
@@ -67,6 +69,8 @@ ContentManager::ContentManager(ApoapseClient& apoapseClient) : client(apoapseCli
 
 void ContentManager::Init()
 {
+	m_notificationsManager = std::make_unique<NotificationsManager>(client);
+	
 	// Load attachments
 	{
 		auto attachments = global->apoapseData->ReadListFromDatabase("attachment", "", "");
@@ -86,7 +90,8 @@ void ContentManager::Init()
 		{
 			auto room = std::make_unique<Room>(roomData);
 			ApoapseThread::LoadAllThreads(*room, *this);
-			room->RefreshUnreadMessagesCount();
+			room->RefreshUnreadMessagesCount(*this);
+			RefreshTotalUnreadMsgCount();
 
 			m_rooms.push_back(std::move(room));
 		}
@@ -107,6 +112,7 @@ void ContentManager::Init()
 			RegisterPrivateMsgThread(*user);
 		}
 
+		RefreshTotalUnreadMsgCount();
 		// UIUserListUpdate(); do not update here as it it already updated when receiving the server_info cmd
 	}
 
@@ -189,7 +195,7 @@ void ContentManager::OnAddNewRoom(DataStructure& data)
 
 	m_rooms.push_back(std::move(room));
 
-	if (m_rooms.size() == 1 && (m_rooms.at(0)->threadsLayout != Room::ThreadsLayout::multiple))
+	if (m_rooms.size() == 1/* && (m_rooms.at(0)->threadsLayout != Room::ThreadsLayout::single)*/)
 		OpenRoom(*m_rooms.at(0));	//If this is the first room created, open it directly
 	else
 		UIRoomsUpdate();
@@ -197,6 +203,8 @@ void ContentManager::OnAddNewRoom(DataStructure& data)
 
 void ContentManager::OnAddNewThread(DataStructure& data)
 {
+	ASSERT(m_selectedRoom);
+	
 	auto& parentRoom = GetRoomByUuid(data.GetField("parent_room").GetValue<Uuid>());
 	auto thread = std::make_unique<ApoapseThread>(data, parentRoom, *this);
 
@@ -222,6 +230,7 @@ void ContentManager::OnAddNewMessage(DataStructure& data)
 	auto& parentThread = GetThreadByUuid(message.threadUuid.value());
 
 	parentThread.AddNewMessage(message);
+	RefreshTotalUnreadMsgCount();
 }
 
 void ContentManager::OnAddNewPrivateMessage(DataStructure& data)
@@ -235,6 +244,13 @@ void ContentManager::OnAddNewPrivateMessage(DataStructure& data)
 	{
 		global->htmlUI->SendSignal("NewMessage", message.GetJson().Generate());
 	}
+
+	if (!ApoapseClient::GetCmdManager()->IsSynchronizing() && !message.isRead)
+	{
+		m_notificationsManager->NewMessage();
+	}
+
+	RefreshTotalUnreadMsgCount();
 }
 
 void ContentManager::OnAddNewTag(DataStructure& data)
@@ -312,6 +328,23 @@ void ContentManager::MarkMessageAsRead(const Uuid& uuid)
 		
 		global->htmlUI->SendSignal("mark_msg_as_read", ser.Generate());
 	}
+	
+	RefreshTotalUnreadMsgCount();
+}
+
+void ContentManager::RefreshTotalUnreadMsgCount()
+{
+	m_totalUnreadMsgCount = std::accumulate(m_rooms.begin(), m_rooms.end(), 0, [](Int64 currentCount, auto& roomPtr)
+	{
+		return (currentCount + roomPtr->unreadMsgCount);
+	});
+
+	for (const auto& privateMsgThread : m_privateMsgThreads)
+	{
+		m_totalUnreadMsgCount += privateMsgThread->unreadMesagesCount;
+	}
+
+	m_notificationsManager->OnUpdateTotalUnreadMsgCount(m_totalUnreadMsgCount);
 }
 
 Room& ContentManager::GetRoomById(DbId id)
@@ -464,7 +497,7 @@ void ContentManager::OpenRoom(Room& room)
 
 	LOG << "Selected room " << room.name << " type: " << magic_enum::enum_name(room.threadsLayout);
 
-	room.RefreshUnreadMessagesCount();
+	room.RefreshUnreadMessagesCount(*this);
 
 	if (room.threadsLayout == Room::ThreadsLayout::multiple)
 	{

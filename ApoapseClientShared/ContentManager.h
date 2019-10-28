@@ -4,6 +4,7 @@
 #include "ApoapseThread.h"
 #include "PrivateMsgThread.h"
 #include "Attachment.h"
+#include "NotificationsManager.h"
 class ApoapseClient;
 
 struct Room
@@ -25,13 +26,15 @@ struct Room
 	Room(DataStructure& data);
 	bool operator==(const Room& other) const;
 
-	void RefreshUnreadMessagesCount();
+	void RefreshUnreadMessagesCount(class ContentManager& contentManager);
 	JsonHelper GetJson() const;
 	ApoapseThread& GetThread(DbId dbId);
 };
 
 class ContentManager
 {
+	std::unique_ptr<NotificationsManager> m_notificationsManager;
+	
 	std::vector<std::unique_ptr<Room>> m_rooms;
 	std::vector<std::unique_ptr<PrivateMsgThread>> m_privateMsgThreads;
 	std::vector<std::shared_ptr<Attachment>> m_attachmentsPool;
@@ -39,6 +42,8 @@ class ContentManager
 	Room* m_selectedRoom = nullptr;
 	ApoapseThread* m_selectedThread = nullptr;
 	PrivateMsgThread* m_selectedUserPage = nullptr;
+
+	Int64 m_totalUnreadMsgCount = 0;
 
 public:
 	ApoapseClient& client;
@@ -52,6 +57,7 @@ public:
 	void OnAddNewPrivateMessage(DataStructure& data);
 	void OnAddNewTag(DataStructure& data);
 	void MarkMessageAsRead(const Uuid& uuid);
+	void RefreshTotalUnreadMsgCount();
 
 	void OnReceivedSignal(const std::string& name, const JsonHelper& json);
 	

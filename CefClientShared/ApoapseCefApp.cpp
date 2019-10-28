@@ -9,6 +9,7 @@
 
 #include "ApoapseSchemeHandler.h"
 #include "ClientEntryPoint.h"
+#include "../CefClientWindows/resource.h"
 
 ApoapseCefApp::ApoapseCefApp() = default;
 
@@ -57,4 +58,35 @@ void ApoapseCefApp::SendSignal(const std::string& name, const std::string& data)
 	{
 		m_browser->GetMainFrame()->ExecuteJavaScript("$(document).trigger(\"" + name + "\");", "", 1);
 	}
+
+#ifdef WIN32
+	if (name == "set_icon")
+	{
+		if (data == "default")
+		{
+			HANDLE icon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON_BIG));
+			SendMessage(m_hwnd, WM_SETICON, ICON_BIG, (LPARAM)icon);
+		}
+		else
+		{
+			HANDLE icon = LoadImage(GetModuleHandle(NULL), data.c_str(), IMAGE_ICON, 24, 24, LR_LOADFROMFILE);
+			SendMessage(m_hwnd, WM_SETICON, ICON_BIG, (LPARAM)icon);
+		}
+	}
+	else if (name == "icon_blink")
+	{
+		FLASHWINFO fi;	// https://docs.microsoft.com/fr-fr/windows/win32/api/winuser/ns-winuser-flashwinfo
+		fi.cbSize = sizeof(FLASHWINFO);
+		fi.hwnd = m_hwnd;
+		fi.dwFlags = FLASHW_TRAY/* | FLASHW_TIMERNOFG*/;
+		fi.uCount = 4;
+		fi.dwTimeout = 0;
+		FlashWindowEx(&fi);
+	}
+#endif
+}
+
+void ApoapseCefApp::SetMainWindowsHwnd(HWND hwnd)
+{
+	m_hwnd = hwnd;
 }

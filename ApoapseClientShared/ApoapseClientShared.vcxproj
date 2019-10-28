@@ -166,6 +166,7 @@
     <ClCompile Include="LocalUser.cpp" />
     <ClCompile Include="ClientFileStreamConnection.cpp" />
     <ClCompile Include="NativeUI.cpp" />
+    <ClCompile Include="NotificationsManager.cpp" />
     <ClCompile Include="PrivateMsgThread.cpp" />
     <ClCompile Include="SearchResult.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -193,6 +194,7 @@
     <ClInclude Include="LocalUser.h" />
     <ClInclude Include="ClientFileStreamConnection.h" />
     <ClInclude Include="NativeUI.h" />
+    <ClInclude Include="NotificationsManager.h" />
     <ClInclude Include="PrivateMsgThread.h" />
     <ClInclude Include="SearchResult.h" />
     <ClInclude Include="User.h" />
