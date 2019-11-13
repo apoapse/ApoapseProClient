@@ -137,6 +137,7 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 	else if (name == "OnUIReady")
 	{
 		global->htmlUI->SendSignal("SetClientGlobalSettings", clientSettings.GetJson());
+		global->htmlUI->SendSignal("set_icon", "ClientResources/disconnected_icon.ico");
 	}
 
 	else if (name == "OnFilesDropped")
@@ -302,6 +303,7 @@ void ApoapseClient::OnConnectedToServer()
 {
 	m_connected = true;
 	global->htmlUI->UpdateStatusBar("@connected_waiting_authentication");
+	global->htmlUI->SendSignal("set_icon", "ClientResources/active_icon.ico");
 
 	m_loginCmd->Send(*m_connection);
 	m_loginCmd.reset();
@@ -336,6 +338,7 @@ void ApoapseClient::OnDisconnect()
 
 	m_authenticatedUser.reset();
 
+	global->htmlUI->SendSignal("set_icon", "ClientResources/disconnected_icon.ico");
 	global->htmlUI->UpdateStatusBar("@disconnected_status", true);
 
 	global->htmlUI->SendSignal("OnDisconnect", "");
