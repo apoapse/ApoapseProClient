@@ -59,3 +59,8 @@ void NativeUI::SystemOpenFile(const std::string& filePath)
 		LOG << LogSeverity::error << "System: Unable to open the requested file";
 	}
 }
+
+void NativeUI::SystemOpenURL(const std::string& url)
+{
+	ShellExecute(0, 0, url.c_str(), 0, 0 , SW_HIDE);
+}

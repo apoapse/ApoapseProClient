@@ -168,8 +168,7 @@ std::string ApoapseClient::OnReceivedSignal(const std::string& name, const JsonH
 		const std::string url = json.ReadFieldValue<std::string>("url").value();
 		if (url.length() > 7 && url.substr(0, 7) == "http://" || url.substr(0, 8) == "https://")
 		{
-			const std::string cmd = "start " + url;
-			std::system(cmd.c_str());
+			NativeUI::SystemOpenURL(url);
 		}
 		else
 		{
