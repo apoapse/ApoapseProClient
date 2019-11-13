@@ -133,6 +133,19 @@ PrivateMessage& PrivateMsgThread::GetMessageById(DbId id)
 	return *res;
 }
 
+PrivateMessage* PrivateMsgThread::GetMessageByUuid(const Uuid& uuid)
+{
+	const auto res = std::find_if(m_messages.begin(), m_messages.end(), [&uuid](ApoapseMessage& msg)
+	{
+		return (msg.uuid == uuid);
+	});
+
+	if (res == m_messages.end())
+		return nullptr;
+
+	return &*res;
+}
+
 void PrivateMsgThread::AddNewMessage(PrivateMessage& message)
 {
 	if (!m_messages.empty())

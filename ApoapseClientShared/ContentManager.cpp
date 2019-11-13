@@ -251,6 +251,7 @@ void ContentManager::OnAddNewPrivateMessage(DataStructure& data)
 	}
 
 	RefreshTotalUnreadMsgCount();
+	UIUserListUpdate();
 }
 
 void ContentManager::OnAddNewTag(DataStructure& data)
@@ -300,6 +301,13 @@ void ContentManager::MarkMessageAsRead(const Uuid& uuid)
 		PrivateMsgThread* privateThread = GetPrivateThreadByUserId(relatedUser->id);
 		privateThread->unreadMesagesCount--;
 
+		auto* msg = privateThread->GetMessageByUuid(uuid);
+		if (msg != nullptr)
+		{
+			msg->isRead = true;
+		}
+
+		LOG_DEBUG << "MarkMessageAsRead (private msg) unreadMesagesCount: " << privateThread->unreadMesagesCount;
 		UIUserListUpdate();
 
 		/*if (IsUserPageDisplayed() && GetCurrentUserPage().relatedUserId == relatedUser->id)

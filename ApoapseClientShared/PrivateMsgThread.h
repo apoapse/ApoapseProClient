@@ -33,6 +33,7 @@ public:
 	
 	JsonHelper GetJson() const;
 	PrivateMessage& GetMessageById(DbId id);
+	PrivateMessage* GetMessageByUuid(const Uuid& uuid);
 
 private:
 };
