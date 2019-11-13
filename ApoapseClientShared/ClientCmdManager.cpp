@@ -77,6 +77,25 @@ bool ClientCmdManager::OnReceivedCommandPre(CommandV2& cmd, GenericConnection& n
 {
 	auto& connection = dynamic_cast<ClientConnection&>(netConnection);
 
+	// Sync counter
+	if (IsSynchronizing() && cmd.name != "start_sync")
+	{
+		m_itemsSynced++;
+
+		if (m_itemsSynced >= m_itemsToSyncTotal)
+		{
+			global->htmlUI->SendSignal("OnCmdSyncEnd", GetSyncUIJson().Generate());
+			
+			m_isSynchronizing = false;
+			m_itemsSynced = 0;
+			m_itemsToSyncTotal = 0;
+		}
+		else
+		{
+			global->htmlUI->SendSignal("UpdateCmdSync", GetSyncUIJson().Generate());
+		}
+	}
+
 	// Checks if the operation/item is not already registered
 	if (cmd.operationRegister)
 	{
@@ -268,23 +287,6 @@ void ClientCmdManager::OnReceivedCommand(CommandV2& cmd, GenericConnection& netC
 
 void ClientCmdManager::OnReceivedCommandPost(CommandV2& cmd, GenericConnection& netConnection)
 {
-	if (IsSynchronizing() && cmd.name != "start_sync")
-	{
-		m_itemsSynced++;
-
-		if (m_itemsSynced >= m_itemsToSyncTotal)
-		{
-			global->htmlUI->SendSignal("OnCmdSyncEnd", GetSyncUIJson().Generate());
-			
-			m_isSynchronizing = false;
-			m_itemsSynced = 0;
-			m_itemsToSyncTotal = 0;
-		}
-		else
-		{
-			global->htmlUI->SendSignal("UpdateCmdSync", GetSyncUIJson().Generate());
-		}
-	}
 }
 
 bool ClientCmdManager::IsSynchronizing() const
