@@ -237,7 +237,7 @@ void ApoapseThread::AddNewMessage(ApoapseMessage& message)
 	}
 
 	// User is on the threads list
-	if (!contentManager.IsThreadDisplayed() && contentManager.GetCurrentRoom() == parrentRoom)
+	if (!contentManager.IsThreadDisplayed() && !contentManager.IsUserPageDisplayed() && contentManager.GetCurrentRoom() == parrentRoom)
 	{
 		global->htmlUI->SendSignal("UpdateThreadPreview", GetJson().Generate());
 
@@ -251,7 +251,7 @@ void ApoapseThread::AddNewMessage(ApoapseMessage& message)
 	}
 
 	// User is reading the thread
-	if (contentManager.GetCurrentRoom() == parrentRoom && contentManager.IsThreadDisplayed() && contentManager.GetCurrentThread() == *this)
+	if (contentManager.IsThreadDisplayed() && contentManager.GetCurrentRoom() == parrentRoom && contentManager.GetCurrentThread() == *this)
 	{
 		global->htmlUI->SendSignal("NewMessage", message.GetJson().Generate());
 	}
