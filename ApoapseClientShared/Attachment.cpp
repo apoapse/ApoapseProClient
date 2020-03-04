@@ -157,7 +157,7 @@ void Attachment::CopyFileLocally(const std::string& localFilePath)
 	
 	std::filesystem::copy(localFilePath, finalPath);
 	
-	SetFileAsDownloaded(false);
+	//SetFileAsDownloaded(false);
 }
 
 JsonHelper Attachment::GetJson() const
