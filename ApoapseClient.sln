@@ -8,7 +8,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CefClientWindows", "CefClie
 		{F0C23CB2-DBA1-4C2A-8564-ED2901F1EBCD} = {F0C23CB2-DBA1-4C2A-8564-ED2901F1EBCD}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ApoapseCore", "..\ApoapseCore\Code\ApoapseCore.vcxproj", "{8F57335E-BE7D-466B-9860-74AD3ED4F810}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ApoapseProtocol", "..\ApoapseProtocol\Code\ApoapseProtocol.vcxproj", "{8F57335E-BE7D-466B-9860-74AD3ED4F810}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CefClients", "CefClients", "{0230EC21-938A-4416-8E6D-6E3A5D8137CC}"
 EndProject
@@ -24,9 +24,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CefClientShared", "CefClien
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DatabaseImpl", "DatabaseImpl", "{298222A4-B4EE-42ED-AB33-EF2DED213AA2}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DatabaseImpl.sqlcipher", "..\ApoapseCore\DatabaseImpl.sqlcipher\DatabaseImpl.sqlcipher.vcxproj", "{E395B25C-06DF-4B43-9A98-D6D88342317E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DatabaseImpl.sqlcipher", "..\ApoapseProtocol\DatabaseImpl.sqlcipher\DatabaseImpl.sqlcipher.vcxproj", "{E395B25C-06DF-4B43-9A98-D6D88342317E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DatabaseImpl.sqlite", "..\ApoapseCore\DatabaseImpl.sqlite\DatabaseImpl.sqlite.vcxproj", "{A1FFE00D-482E-473E-87A5-D849319532E2}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DatabaseImpl.sqlite", "..\ApoapseProtocol\DatabaseImpl.sqlite\DatabaseImpl.sqlite.vcxproj", "{A1FFE00D-482E-473E-87A5-D849319532E2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

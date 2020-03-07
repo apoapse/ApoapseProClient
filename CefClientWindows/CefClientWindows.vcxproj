@@ -102,7 +102,7 @@
       <ExceptionHandling>Sync</ExceptionHandling>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>..\CefClientShared\;..\ApoapseClientShared\;..\..\ApoapseCore\Code\;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CefClientShared\;..\ApoapseClientShared\;..\..\ApoapseProtocol\Code\;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>UNIT_TESTS;_WIN32_WINNT=0x0501;_SCL_SECURE_NO_WARNINGS;DEBUG;_MBCS;CEF_USE_ATL;NOMINMAX;UNICODE;_UNICODE</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <DisableSpecificWarnings>

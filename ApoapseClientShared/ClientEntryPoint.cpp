@@ -11,7 +11,7 @@
 #include "LibraryLoader.hpp"
 
 #ifdef UNIT_TESTS
-#include "UnitTestsManager.h"
+#include "UnitTest.hpp"
 #endif //UNIT_TESTS
 
 ApoapseClient* m_apoapseClient = nullptr;
@@ -74,7 +74,7 @@ int ApoapseClientEntry::ClientMain(const std::vector<std::string>& launchArgs)
 	if (std::find(launchArgs.begin(), launchArgs.end(), "-run_unit_tests") != launchArgs.end())
 	{
 		LOG << "Starting Unit tests";
-		UnitTestsManager::GetInstance().RunTests();
+		UnitTestsManager::GetInstance().RunTests(std::cout);
 		return 0;
 	}
 #endif //UNIT_TESTS

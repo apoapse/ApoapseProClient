@@ -72,9 +72,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>..\..\Bin\$(Configuration)_$(Platform)\CefClient\</OutDir>
     <IntDir>..\..\vs_build\$(ProjectName)\$(Configuration)_$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)ThirdParty\opencv\include\;$(SolutionDir)..\ApoapseCore\ThirdParty\magic_enum\include\;C:\OpenSSL-Win64-3\include;$(SolutionDir)..\ApoapseCore\ThirdParty\cryptopp\;$(SolutionDir)..\ApoapseCore\ThirdParty\boost_1_71_0\;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)ThirdParty\opencv\include\;$(SolutionDir)..\ApoapseProtocol\ThirdParty\magic_enum\include\;$(SolutionDir)..\ApoapseProtocol\ThirdParty\openssl\include;$(SolutionDir)..\ApoapseProtocol\ThirdParty\cryptopp\;$(SolutionDir)..\ApoapseProtocol\ThirdParty\Apoapse-Very-Simple-Unit-Test-framework\;$(SolutionDir)..\ApoapseProtocol\ThirdParty\boost\;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <SourcePath>$(VC_SourcePath);</SourcePath>
-    <LibraryPath>$(SolutionDir)ThirdParty\opencv\x64\vc15\lib\;C:\OpenSSL-Win64-3\lib;$(SolutionDir)..\ApoapseCore\ThirdParty\cryptopp\cryptopp\x64\Output\Debug;$(OutDir);$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)ThirdParty\opencv\x64\vc15\lib\;$(SolutionDir)..\ApoapseProtocol\ThirdParty\openssl\lib\;$(SolutionDir)..\ApoapseProtocol\ThirdParty\boost\lib64\;$(SolutionDir)..\ApoapseProtocol\ThirdParty\cryptopp\cryptopp\x64\Output\Debug\;$(OutDir);$(LibraryPath)</LibraryPath>
     <LinkIncremental>true</LinkIncremental>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
@@ -101,7 +101,7 @@
       <ExceptionHandling>Sync</ExceptionHandling>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>..\..\ApoapseCore\Code\;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ApoapseProtocol\Code\;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DO_NOT_ENCRYPT_DATABASE;ENABLE_SECURITY_ASSERTS;APOAPSE_CLIENT;DYN_LIBRARY;UNIT_TESTS;_WIN32_WINNT=0x0501;_SCL_SECURE_NO_WARNINGS;DEBUG;_MBCS;_SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING;_SILENCE_CXX17_OLD_ALLOCATOR_MEMBERS_DEPRECATION_WARNING;_SILENCE_CXX17_UNCAUGHT_EXCEPTION_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
@@ -186,7 +186,9 @@
     <ClInclude Include="ClientDatabaseScheme.hpp" />
     <ClInclude Include="ClientEntryPoint.h" />
     <ClInclude Include="ClientOperations.h" />
+    <ClInclude Include="CommandsDef.hpp" />
     <ClInclude Include="ContentManager.h" />
+    <ClInclude Include="DataStructures.hpp" />
     <ClInclude Include="HTMLUI.h" />
     <ClInclude Include="ImageUtils.h" />
     <ClInclude Include="ISignalSender.hpp" />

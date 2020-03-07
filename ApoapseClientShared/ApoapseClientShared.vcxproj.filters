@@ -120,6 +120,8 @@
     <ClInclude Include="NotificationsManager.h">
       <Filter>Systems\Notifications</Filter>
     </ClInclude>
+    <ClInclude Include="DataStructures.hpp" />
+    <ClInclude Include="CommandsDef.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="UI">
