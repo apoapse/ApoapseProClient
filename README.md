@@ -14,4 +14,4 @@ The client also use specific third party libraries that must be acquired manuall
 You can then compile the client using CMake or the Visual Studio solution provided.
 
 ## User Interface
-The UI of the Apoapse Pro Client is made using web technologies relying on the Chromium Embedded Framework for rendering. The Apoapse Pro Client HTML UI must be placed in a folder called *ClientResources* alongside the client executable. See the [Apoapse Pro Client HTML UI repository](https://) for more details.
+The UI of the Apoapse Pro Client is made using web technologies relying on the Chromium Embedded Framework for rendering. The Apoapse Pro Client HTML UI must be placed in a folder called *ClientResources* alongside the client executable. See the [Apoapse Pro Client HTML UI repository](https://github.com/apoapse/ApoapseProClientHtmlUI) for more details.
