@@ -4,6 +4,8 @@ The Apoapse Pro Client is part of the Apoapse Pro messaging platform, offering a
 ![Apoapse Pro Login](https://apoapse.space/wp-content/uploads/2019/10/2_min.jpg)
 ![Apoapse Pro User Interface](https://apoapse.space/wp-content/uploads/2019/10/3_min.png)
 
+[🚀 Find out more about Apoapse](https://apoapse.space/) | [📥 Receive all news and updates directly to your inbox](https://apoapse.space/newsletter-opt-in/)
+
 ## How to build
 To compile the Apoapse Pro Client, you first need to compile the Apoapse Protocol as a static library that must be linked into the *ApoapseClientShared* dynamic library. As such, you first need to obtain and compile the Apoapse Protocol following the instructions on the Apoapse Protocol repository. With most of the third party libraries shared between these two repositories, both repositories must be placed into a same folder, alongside each other.
 
